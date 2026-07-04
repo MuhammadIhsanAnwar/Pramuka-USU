@@ -9,9 +9,10 @@ use App\Models\Gallery;
 use App\Models\NewsPost;
 use App\Models\SiteSetting;
 use App\Models\User;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class PublicController extends Controller
 {
@@ -46,6 +47,41 @@ class PublicController extends Controller
                 ],
             ];
         });
+
+        if (! is_array($homeData)
+            || ! isset($homeData['latestNews'])
+            || ! $homeData['latestNews'] instanceof Collection
+        ) {
+            Cache::forget('public.home.data');
+
+            $homeData = [
+                'latestNews' => NewsPost::query()
+                    ->published()
+                    ->with(['category', 'author'])
+                    ->latest('published_at')
+                    ->take(3)
+                    ->get(),
+                'upcomingAgendas' => EventAgenda::query()
+                    ->published()
+                    ->upcoming()
+                    ->orderBy('starts_at')
+                    ->take(3)
+                    ->get(),
+                'galleryItems' => Gallery::query()
+                    ->with('uploader')
+                    ->latest()
+                    ->take(6)
+                    ->get(),
+                'stats' => [
+                    'users' => User::query()->active()->count(),
+                    'pembina' => User::query()->active()->pembina()->count(),
+                    'peserta_didik' => User::query()->active()->pesertaDidik()->count(),
+                    'news' => NewsPost::query()->published()->count(),
+                    'agendas' => EventAgenda::query()->published()->count(),
+                    'attendance' => Attendance::query()->count(),
+                ],
+            ];
+        }
 
         return view('public.home', [
             'siteName' => $this->siteName(),
@@ -151,6 +187,14 @@ class PublicController extends Controller
         ]);
     }
 
+    public function agendaShow(EventAgenda $eventAgenda): View
+    {
+        return view('public.agenda.show', [
+            'siteName' => $this->siteName(),
+            'agenda' => $eventAgenda,
+        ]);
+    }
+
     public function galleryIndex(): View
     {
         $galleries = Gallery::query()
@@ -161,6 +205,14 @@ class PublicController extends Controller
         return view('public.gallery.index', [
             'siteName' => $this->siteName(),
             'galleries' => $galleries,
+        ]);
+    }
+
+    public function galleryShow(Gallery $gallery): View
+    {
+        return view('public.gallery.show', [
+            'siteName' => $this->siteName(),
+            'gallery' => $gallery,
         ]);
     }
 
@@ -179,4 +231,31 @@ class PublicController extends Controller
             'siteName' => $this->siteName(),
             'title' => $title,
             'lead' => $lead,
-        
+            'points' => $points,
+        ]);
+    }
+
+    private function siteName(): string
+    {
+        return (string) $this->settingValue('site_name', 'Pramuka USU');
+    }
+
+    private function settingValue(string $key, mixed $default = null): mixed
+    {
+        $setting = SiteSetting::query()
+            ->where('setting_key', $key)
+            ->first();
+
+        if ($setting === null) {
+            return $default;
+        }
+
+        $value = $setting->value;
+
+        if (is_array($value)) {
+            return $value[0] ?? $default;
+        }
+
+        return $value ?? $default;
+    }
+}

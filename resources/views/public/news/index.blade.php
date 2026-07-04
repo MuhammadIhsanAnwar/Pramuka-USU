@@ -19,4 +19,22 @@
                 <article class="surface-card overflow-hidden">
                     <img src="{{ $post->thumbnail_url }}" alt="{{ $post->title }}" class="h-56 w-full object-cover">
                     <div class="p-6">
-                        <div class="text-xs font-semibold uppercase tracking-[0.2em] text-
+                        <div class="text-xs font-semibold uppercase tracking-[0.2em] text-[#5D4037]">{{ $post->category?->name ?? 'Berita' }}</div>
+                        <h2 class="mt-3 text-lg font-bold text-slate-900">{{ $post->title }}</h2>
+                        <p class="mt-3 text-sm leading-6 text-slate-600">{{ $post->excerpt }}</p>
+                        <div class="mt-5 flex items-center justify-between text-xs text-slate-500">
+                            <span>{{ $post->published_at?->format('d M Y') }}</span>
+                            <a href="{{ route('news.show', $post->slug) }}" class="font-semibold text-[#5D4037]">Baca</a>
+                        </div>
+                    </div>
+                </article>
+            @empty
+                <div class="surface-card p-6 text-sm text-slate-600">Tidak ada berita yang cocok dengan filter ini.</div>
+            @endforelse
+        </div>
+
+        <div class="mt-10">
+            {{ $newsPosts->links() }}
+        </div>
+    </section>
+@endsection

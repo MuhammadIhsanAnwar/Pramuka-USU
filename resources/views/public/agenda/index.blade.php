@@ -10,13 +10,15 @@
         <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             @foreach ($agendas as $agenda)
                 <article class="surface-card overflow-hidden">
-                    <img src="{{ $agenda->poster_url }}" alt="{{ $agenda->name }}" class="h-56 w-full object-cover">
-                    <div class="p-6">
-                        <div class="text-xs font-semibold uppercase tracking-[0.2em] text-[#5D4037]">{{ $agenda->status }}</div>
-                        <h2 class="mt-3 text-xl font-bold text-slate-900">{{ $agenda->name }}</h2>
-                        <p class="mt-3 text-sm text-slate-600">{{ $agenda->location }}</p>
-                        <p class="mt-2 text-sm text-slate-500">{{ $agenda->starts_at?->format('d M Y, H:i') }}</p>
-                    </div>
+                    <a href="{{ route('agenda.show', $agenda) }}" class="block">
+                        <img src="{{ $agenda->poster_url }}" alt="{{ $agenda->name }}" class="h-56 w-full object-cover">
+                        <div class="p-6">
+                            <div class="text-xs font-semibold uppercase tracking-[0.2em] text-[#5D4037]">{{ $agenda->status }}</div>
+                            <h2 class="mt-3 text-xl font-bold text-slate-900">{{ $agenda->name }}</h2>
+                            <p class="mt-3 text-sm text-slate-600">{{ $agenda->location }}</p>
+                            <p class="mt-2 text-sm text-slate-500">{{ $agenda->starts_at?->format('d M Y, H:i') }}</p>
+                        </div>
+                    </a>
                 </article>
             @endforeach
         </div>

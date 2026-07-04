@@ -13,7 +13,9 @@ Route::get('/struktur-organisasi', [PublicController::class, 'structure'])->name
 Route::get('/berita', [PublicController::class, 'newsIndex'])->name('news.index');
 Route::get('/berita/{slug}', [PublicController::class, 'newsShow'])->name('news.show');
 Route::get('/agenda', [PublicController::class, 'agendaIndex'])->name('agenda.index');
+Route::get('/agenda/{eventAgenda}', [PublicController::class, 'agendaShow'])->name('agenda.show');
 Route::get('/galeri', [PublicController::class, 'galleryIndex'])->name('gallery.index');
+Route::get('/galeri/{gallery}', [PublicController::class, 'galleryShow'])->name('gallery.show');
 Route::get('/kontak', [PublicController::class, 'contact'])->name('contact');
 
 Route::middleware('auth')->group(function (): void {

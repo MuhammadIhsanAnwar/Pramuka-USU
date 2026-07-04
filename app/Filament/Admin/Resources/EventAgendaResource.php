@@ -82,6 +82,10 @@ class EventAgendaResource extends Resource
                 ImageColumn::make('poster_path')
                     ->label('Poster')
                     ->square(),
+                ImageColumn::make('qr_code_path')
+                    ->label('QR Code')
+                    ->square()
+                    ->toggleable(),
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),

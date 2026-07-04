@@ -50,20 +50,17 @@ class User extends Authenticatable implements FilamentUser
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'jenis_user' => UserKind::class,
-            'birth_date' => 'date',
-            'is_active' => 'boolean',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'jenis_user' => UserKind::class,
+        'birth_date' => 'date',
+        'is_active' => 'boolean',
+        'password' => 'hashed',
+    ];
 
     public function newsPosts(): HasMany
     {
