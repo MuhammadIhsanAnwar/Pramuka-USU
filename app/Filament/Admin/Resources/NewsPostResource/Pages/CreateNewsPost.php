@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\NewsPostResource\Pages;
 use App\Filament\Admin\Resources\NewsPostResource;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class CreateNewsPost extends CreateRecord
 {
@@ -12,7 +13,7 @@ class CreateNewsPost extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['author_id'] = auth()->id();
+        $data['author_id'] = Auth::id();
 
         return $data;
     }

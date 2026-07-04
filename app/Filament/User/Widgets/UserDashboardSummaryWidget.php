@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use App\Models\EventAgenda;
 use App\Models\NewsPost;
 use Filament\Widgets\Widget;
+use Illuminate\Support\Facades\Auth;
 
 class UserDashboardSummaryWidget extends Widget
 {
@@ -15,7 +16,7 @@ class UserDashboardSummaryWidget extends Widget
 
     protected function getViewData(): array
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         return [
             'user' => $user,

@@ -18,75 +18,51 @@ class PublicController extends Controller
 {
     public function home(): View
     {
-        $homeData = Cache::remember('public.home.data', now()->addMinutes(5), function (): array {
-            return [
-                'latestNews' => NewsPost::query()
-                    ->published()
-                    ->with(['category', 'author'])
-                    ->latest('published_at')
-                    ->take(3)
-                    ->get(),
-                'upcomingAgendas' => EventAgenda::query()
-                    ->published()
-                    ->upcoming()
-                    ->orderBy('starts_at')
-                    ->take(3)
-                    ->get(),
-                'galleryItems' => Gallery::query()
-                    ->with('uploader')
-                    ->latest()
-                    ->take(6)
-                    ->get(),
-                'stats' => [
-                    'users' => User::query()->active()->count(),
-                    'pembina' => User::query()->active()->pembina()->count(),
-                    'peserta_didik' => User::query()->active()->pesertaDidik()->count(),
-                    'news' => NewsPost::query()->published()->count(),
-                    'agendas' => EventAgenda::query()->published()->count(),
-                    'attendance' => Attendance::query()->count(),
-                ],
-            ];
-        });
+        $homeData = Cache::get('public.home.data');
 
         if (! is_array($homeData)
             || ! isset($homeData['latestNews'])
             || ! $homeData['latestNews'] instanceof Collection
         ) {
-            Cache::forget('public.home.data');
-
-            $homeData = [
-                'latestNews' => NewsPost::query()
-                    ->published()
-                    ->with(['category', 'author'])
-                    ->latest('published_at')
-                    ->take(3)
-                    ->get(),
-                'upcomingAgendas' => EventAgenda::query()
-                    ->published()
-                    ->upcoming()
-                    ->orderBy('starts_at')
-                    ->take(3)
-                    ->get(),
-                'galleryItems' => Gallery::query()
-                    ->with('uploader')
-                    ->latest()
-                    ->take(6)
-                    ->get(),
-                'stats' => [
-                    'users' => User::query()->active()->count(),
-                    'pembina' => User::query()->active()->pembina()->count(),
-                    'peserta_didik' => User::query()->active()->pesertaDidik()->count(),
-                    'news' => NewsPost::query()->published()->count(),
-                    'agendas' => EventAgenda::query()->published()->count(),
-                    'attendance' => Attendance::query()->count(),
-                ],
-            ];
+            $homeData = $this->buildHomeData();
+            Cache::put('public.home.data', $homeData, now()->addMinutes(5));
         }
 
         return view('public.home', [
             'siteName' => $this->siteName(),
             ...$homeData,
         ]);
+    }
+
+    private function buildHomeData(): array
+    {
+        return [
+            'latestNews' => NewsPost::query()
+                ->published()
+                ->with(['category', 'author'])
+                ->latest('published_at')
+                ->take(3)
+                ->get(),
+            'upcomingAgendas' => EventAgenda::query()
+                ->published()
+                ->upcoming()
+                ->orderBy('starts_at')
+                ->take(3)
+                ->get(),
+            'galleryItems' => Gallery::query()
+                ->with('uploader')
+                ->latest()
+                ->take(6)
+                ->get(),
+            'stats' => [
+                'users' => User::query()->active()->count(),
+                'pembina' => User::query()->active()->pembina()->count(),
+                'peserta_didik' => User::query()->active()->pesertaDidik()->count(),
+                'news' => NewsPost::query()->published()->count(),
+                'agendas' => EventAgenda::query()->published()->count(),
+                'attendance' => Attendance::query()->count(),
+            ],
+        ];
     }
 
     public function about(): View

@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\GalleryResource\Pages;
 
 use App\Filament\Admin\Resources\GalleryResource;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Auth;
 
 class CreateGallery extends CreateRecord
 {
@@ -11,7 +12,7 @@ class CreateGallery extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['uploaded_by'] = auth()->id();
+        $data['uploaded_by'] = Auth::id();
 
         return $data;
     }

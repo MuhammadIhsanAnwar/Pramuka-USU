@@ -5,15 +5,20 @@ namespace Database\Seeders;
 use App\Models\NewsCategory;
 use App\Models\SiteSetting;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class ContentSeeder extends Seeder
 {
     public function run(): void
     {
         foreach (['Kegiatan', 'Pengumuman', 'Prestasi'] as $categoryName) {
-            NewsCategory::query()->firstOrCreate([
-                'name' => $categoryName,
-            ]);
+            NewsCategory::query()->firstOrCreate(
+                ['name' => $categoryName],
+                [
+                    'slug' => Str::slug($categoryName),
+                    'is_active' => true,
+                ],
+            );
         }
 
         $settings = [

@@ -10,7 +10,11 @@ class AuthServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        Gate::before(static function (User $user): ?bool {
+        Gate::before(static function (User $user, string $ability): ?bool {
+            if (in_array($ability, ['access-admin-dashboard', 'access-user-dashboard'], true)) {
+                return null;
+            }
+
             return $user->hasRole('Admin') ? true : null;
         });
 
@@ -19,7 +23,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('access-user-dashboard', static function (User $user): bool {
-            return $user->hasRole('User') || $user->hasRole('Admin');
+            return $user->hasRole('User');
         });
     }
 }

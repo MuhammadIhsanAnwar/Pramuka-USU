@@ -6,6 +6,7 @@ use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicController::class, 'home'])->name('home');
+Route::redirect('/home', '/');
 Route::get('/tentang-kami', [PublicController::class, 'about'])->name('about');
 Route::get('/sejarah', [PublicController::class, 'history'])->name('history');
 Route::get('/visi-misi', [PublicController::class, 'visionMission'])->name('vision-mission');
