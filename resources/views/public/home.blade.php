@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @section('content')
-<section class="w-full bg-center relative overflow-hidden" style="background-image: url({{ asset('storage/beranda/beranda.png') }}); background-size: cover; background-position: center bottom; background-repeat: no-repeat; min-height: 420px;">
+<section class="w-full bg-center relative overflow-hidden" style="background-image: url({{ asset('storage/beranda/Beranda.png') }}); background-size: cover; background-position: center bottom; background-repeat: no-repeat; min-height: 420px;">
     <div class="absolute inset-0 bg-slate-950/10"></div>
     <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24 relative z-10">
         <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
@@ -121,21 +121,19 @@
 </section>
 
 <section class="overflow-hidden bg-[#5D4037]">
-    <div class="grid min-h-[650px] lg:grid-cols-2">
+    <div class="grid gap-10 px-4 py-16 sm:px-6 lg:mx-auto lg:grid-cols-2 lg:max-w-7xl lg:items-center">
 
         {{-- Text --}}
         <div class="flex items-center">
-            <div class="mx-auto w-full max-w-xl px-8 lg:px-12">
+            <div class="mx-auto w-full max-w-xl px-0 lg:px-12">
 
-                <span
-                    class="section-kicker">Kutipan</span>
-                </span>
+                <span class="section-kicker">Kutipan</span>
 
-                <h2 class="mt-6 text-4xl font-bold leading-tight text-white lg:text-5xl">
+                <h2 class="mt-6 max-w-3xl text-3xl font-semibold leading-tight text-white lg:text-4xl">
                     “We never fail when we try to do our duty, we always fail when we neglect to do it.”
                 </h2>
 
-                <p class="mt-6 text-xl font-semibold" style="color:#E6C76A;">
+                <p class="mt-4 text-lg font-medium text-[#E6C76A]">
                     — Lord Baden Powell
                 </p>
 
@@ -149,7 +147,7 @@
             <img
                 src="{{ asset('storage/kutipan/Baden Powell.png') }}"
                 alt="Lord Baden Powell"
-                style="height:300px;width:auto;">
+                class="max-h-[20rem] w-auto rounded-[1.5rem] object-contain" />
         </div>
     </div>
 </section>
