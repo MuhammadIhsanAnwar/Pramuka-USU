@@ -35,6 +35,14 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name
 Route::get('/forgot-password', function () {
     return view('auth.passwords.email');
 })->middleware('guest')->name('password.request');
+Route::post('/forgot-password', function (Illuminate\Http\Request $request) {
+    $request->validate(['email' => ['required', 'email']]);
+
+    return back()->with('status', 'Jika email terdaftar, kami akan mengirim tautan reset password.');
+})->middleware('guest')->name('password.email');
+Route::get('/reset-password/{token}', function (string $token) {
+    return view('auth.passwords.reset', ['token' => $token]);
+})->middleware('guest')->name('password.reset');
 
 Route::middleware('auth')->group(function (): void {
 	Route::get('/presensi/{eventAgenda}/{token}', [AttendanceController::class, 'scan'])->name('attendance.scan');
