@@ -34,4 +34,16 @@
     .btn-secondary {
         @apply inline-flex items-center justify-center rounded-full border border-[#5D4037]/20 bg-white px-5 py-3 text-sm font-semibold text-[#5D4037] transition hover:border-[#5D4037]/40 hover:bg-[#F5F5DC]/50;
     }
+
+    .quote-attribution {
+        @apply inline-flex items-center gap-2 text-lg font-semibold tracking-[0.02em] text-[#FFF7D6];
+    }
+
+    .quote-attribution .quote-name {
+        @apply rounded-full border border-[#F9E4A6]/40 bg-[#FFF7D6]/15 px-3 py-1 text-[#FFF7D6] shadow-sm;
+    }
+
+    .quote-portrait {
+        @apply h-[10rem] w-auto rounded-[1.25rem] object-contain shadow-[0_12px_40px_rgba(0,0,0,0.22)] sm:h-[11.5rem] lg:h-[12rem];
+    }
 }
