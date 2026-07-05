@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? config('app.name', 'Pramuka USU') }}</title>
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
-    <link rel="icon" type="image/png" href="{{ asset('favicon.ico') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('storage/logo/Logo Pramuka USU.png') }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
         <header class="sticky top-0 z-50 border-b border-[#5D4037]/10 bg-white/90 backdrop-blur">
             <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
                 <a href="{{ route('home') }}" class="flex items-center gap-3">
-                    <div class="flex h-11 w-11 items-center justify-center rounded-full bg-[#5D4037] text-sm font-bold text-white">P</div>
+                    <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Logo Pramuka USU" class="h-11 w-11 object-contain" />
                     <div>
                         <div class="text-sm font-bold tracking-wide text-[#5D4037]">Pramuka USU</div>
                         <div class="text-xs text-slate-500">Gerakan Pramuka Universitas Sumatera Utara</div>
@@ -95,22 +95,22 @@
                     <div class="mt-4 space-y-3 text-sm text-slate-600">
                                 <div class="flex items-center gap-3">
                             <a href="https://linktr.ee/PramukaUSU" target="_blank" rel="noopener" class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#F5F5DC]/40 transition hover:bg-[#5D4037]/10 hover:border-[#5D4037]">
-                                <span class="text-xs font-semibold text-[#5D4037]">LT</span>
+                                <img src="{{ asset('storage/ikon/Linktree copy.png') }}" alt="Linktree" class="h-6 w-6 object-contain" />
                             </a>
                             <a href="https://instagram.com/pramuka_usu" target="_blank" rel="noopener" class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#F5F5DC]/40 transition hover:bg-[#5D4037]/10 hover:border-[#5D4037]">
-                                <span class="text-xs font-semibold text-[#5D4037]">IG</span>
+                                <img src="{{ asset('storage/ikon/Instagram copy.png') }}" alt="Instagram" class="h-6 w-6 object-contain" />
                             </a>
                             <a href="https://facebook.com/pramukausu1974" target="_blank" rel="noopener" class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#F5F5DC]/40 transition hover:bg-[#5D4037]/10 hover:border-[#5D4037]">
-                                <span class="text-xs font-semibold text-[#5D4037]">FB</span>
+                                <img src="{{ asset('storage/ikon/Facebook copy.png') }}" alt="Facebook" class="h-6 w-6 object-contain" />
                             </a>
                             <a href="https://threads.com/@pramuka_usu" target="_blank" rel="noopener" class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#F5F5DC]/40 transition hover:bg-[#5D4037]/10 hover:border-[#5D4037]">
-                                <span class="text-xs font-semibold text-[#5D4037]">TH</span>
+                                <img src="{{ asset('storage/ikon/Threads copy.png') }}" alt="Threads" class="h-6 w-6 object-contain" />
                             </a>
                             <a href="https://tiktok.com/@pramuka_usu" target="_blank" rel="noopener" class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#F5F5DC]/40 transition hover:bg-[#5D4037]/10 hover:border-[#5D4037]">
-                                <span class="text-xs font-semibold text-[#5D4037]">TT</span>
+                                <img src="{{ asset('storage/ikon/Tiktok copy.png') }}" alt="TikTok" class="h-6 w-6 object-contain" />
                             </a>
                             <a href="https://youtube.com/@pramuka_usu" target="_blank" rel="noopener" class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#F5F5DC]/40 transition hover:bg-[#5D4037]/10 hover:border-[#5D4037]">
-                                <span class="text-xs font-semibold text-[#5D4037]">YT</span>
+                                <img src="{{ asset('storage/ikon/Youtube copy.png') }}" alt="YouTube" class="h-6 w-6 object-contain" />
                             </a>
                         </div>
                     </div>

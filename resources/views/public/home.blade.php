@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @section('content')
-<section class="w-full bg-center relative overflow-hidden" style="background-image: url({{ asset('images/default-hero.jpg') }}); background-size: cover; background-position: center bottom; background-repeat: no-repeat; min-height: 420px;">
+<section class="w-full bg-center relative overflow-hidden" style="background-image: url({{ asset('storage/beranda/Beranda.png') }}); background-size: cover; background-position: center bottom; background-repeat: no-repeat; min-height: 420px;">
     <div class="absolute inset-0 bg-slate-950/10"></div>
     <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24 relative z-10">
         <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
@@ -18,18 +18,17 @@
             </div>
             <div class="flex flex-col items-center justify-end gap-5">
                 <div class="w-full max-w-md overflow-hidden rounded-[2rem] bg-white/10 shadow-[0_30px_60px_-20px_rgba(15,23,42,0.65)] ring-1 ring-white/10 backdrop-blur-xl">
-                    <div class="flex h-full min-h-[260px] w-full items-center justify-center rounded-[2rem] bg-[#5D4037] px-6 text-center text-white" style="border-radius: 2rem;">
-                        <div>
-                            <div class="text-xl font-semibold">Pramuka USU</div>
-                            <div class="mt-2 text-sm text-[#F9E4A6]">Video promosi akan tersedia segera.</div>
-                        </div>
-                    </div>
+                    <video src="{{ asset('storage/beranda/Intro.mp4') }}" autoplay muted loop playsinline class="h-full w-full rounded-[2rem] block object-cover" style="border-radius: 2rem;"></video>
                 </div>
                 <div class="mx-auto w-max overflow-hidden rounded-full bg-white px-4 py-3 shadow-[0_20px_45px_-20px_rgba(15,23,42,0.25)] ring-1 ring-slate-300/80 backdrop-blur-sm">
                     <div class="flex items-center justify-center gap-1.5 whitespace-nowrap">
-                        <div class="text-sm font-semibold text-[#5D4037]">Logo</div>
-                        <div class="text-sm font-semibold text-[#5D4037]">Pramuka USU</div>
-                        <div class="text-sm font-semibold text-[#5D4037]">USU</div>
+                        <img src="{{ asset('storage/logo/WOSM Ungu.png') }}" alt="WOSM Ungu" class="h-8 w-auto max-w-[4.5rem] flex-none object-contain">
+                        <img src="{{ asset('storage/logo/Pramuka Scout Movement.png') }}" alt="Pramuka Scout Movement" class="h-8 w-auto max-w-[4.5rem] flex-none object-contain">
+                        <img src="{{ asset('storage/logo/Logo USU.png') }}" alt="Logo USU" class="h-8 w-auto max-w-[4.5rem] flex-none object-contain">
+                        <img src="{{ asset('storage/logo/Logo KwardaSU.png') }}" alt="Logo KwardaSU" class="h-8 w-auto max-w-[4.5rem] flex-none object-contain">
+                        <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Logo Pramuka USU" class="h-8 w-auto max-w-[4.5rem] flex-none object-contain">
+                        <img src="{{ asset('storage/logo/Pewarta.png') }}" alt="Pewarta" class="h-8 w-auto max-w-[4.5rem] flex-none object-contain">
+                        <img src="{{ asset('storage/logo/Diktisaintek Berdampak.png') }}" alt="Diktisaintek Berdampak" class="h-8 w-auto max-w-[4.5rem] flex-none object-contain">
                     </div>
                 </div>
             </div>
@@ -146,7 +145,7 @@
         {{-- Image --}}
         <div class="flex items-end justify-end">
             <img
-                src="{{ asset('images/default-avatar.png') }}"
+                src="{{ asset('storage/kutipan/Baden Powell.png') }}"
                 alt="Lord Baden Powell"
                 class="max-h-[14rem] w-auto rounded-[1.5rem] object-contain" />
         </div>
