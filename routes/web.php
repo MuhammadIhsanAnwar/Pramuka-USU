@@ -20,6 +20,14 @@ Route::get('/galeri', [PublicController::class, 'galleryIndex'])->name('gallery.
 Route::get('/galeri/{gallery}', [PublicController::class, 'galleryShow'])->name('gallery.show');
 Route::get('/kontak', [PublicController::class, 'contact'])->name('contact');
 
+Route::get('/admin', function () {
+    if (auth()->check()) {
+        return redirect('/admin/users');
+    }
+
+    return redirect('/admin/login');
+});
+
 // Fortify login routes fallback if package routes are unavailable
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
