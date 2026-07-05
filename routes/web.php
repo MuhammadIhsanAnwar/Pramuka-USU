@@ -4,6 +4,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
 Route::get('/', [PublicController::class, 'home'])->name('home');
 Route::redirect('/home', '/');
@@ -18,6 +19,11 @@ Route::get('/agenda/{eventAgenda}', [PublicController::class, 'agendaShow'])->na
 Route::get('/galeri', [PublicController::class, 'galleryIndex'])->name('gallery.index');
 Route::get('/galeri/{gallery}', [PublicController::class, 'galleryShow'])->name('gallery.show');
 Route::get('/kontak', [PublicController::class, 'contact'])->name('contact');
+
+// Fortify login routes fallback if package routes are unavailable
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
 Route::middleware('auth')->group(function (): void {
 	Route::get('/presensi/{eventAgenda}/{token}', [AttendanceController::class, 'scan'])->name('attendance.scan');
