@@ -16,27 +16,27 @@
                 <div class="text-sm font-semibold text-[#5D4037]">Ikuti Kami</div>
                 <div class="mt-4 space-y-3 text-sm text-slate-700">
                     <a href="https://linktr.ee/PramukaUSU" target="_blank" rel="noopener" class="flex items-center gap-3 rounded-xl px-3 py-3 transition hover:bg-[#5D4037]/10 hover:text-[#5D4037]">
-                        <img src="{{ asset('storage/ikon/Linktree copy.png') }}" alt="Linktree" class="h-5 w-5 object-contain" />
+                        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-[#5D4037]/10 text-[10px] font-semibold text-[#5D4037]">LT</span>
                         <span>Linktree</span>
                     </a>
                     <a href="https://instagram.com/pramuka_usu" target="_blank" rel="noopener" class="flex items-center gap-3 rounded-xl px-3 py-3 transition hover:bg-[#5D4037]/10 hover:text-[#5D4037]">
-                        <img src="{{ asset('storage/ikon/Instagram copy.png') }}" alt="Instagram" class="h-5 w-5 object-contain" />
+                        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-[#5D4037]/10 text-[10px] font-semibold text-[#5D4037]">IG</span>
                         <span>Instagram</span>
                     </a>
                     <a href="https://facebook.com/pramukausu1974" target="_blank" rel="noopener" class="flex items-center gap-3 rounded-xl px-3 py-3 transition hover:bg-[#5D4037]/10 hover:text-[#5D4037]">
-                        <img src="{{ asset('storage/ikon/Facebook copy.png') }}" alt="Facebook" class="h-5 w-5 object-contain" />
+                        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-[#5D4037]/10 text-[10px] font-semibold text-[#5D4037]">FB</span>
                         <span>Facebook</span>
                     </a>
                     <a href="https://threads.com/@pramuka_usu" target="_blank" rel="noopener" class="flex items-center gap-3 rounded-xl px-3 py-3 transition hover:bg-[#5D4037]/10 hover:text-[#5D4037]">
-                        <img src="{{ asset('storage/ikon/Threads copy.png') }}" alt="Threads" class="h-5 w-5 object-contain" />
+                        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-[#5D4037]/10 text-[10px] font-semibold text-[#5D4037]">TH</span>
                         <span>Threads</span>
                     </a>
                     <a href="https://tiktok.com/@pramuka_usu" target="_blank" rel="noopener" class="flex items-center gap-3 rounded-xl px-3 py-3 transition hover:bg-[#5D4037]/10 hover:text-[#5D4037]">
-                        <img src="{{ asset('storage/ikon/Tiktok copy.png') }}" alt="TikTok" class="h-5 w-5 object-contain" />
+                        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-[#5D4037]/10 text-[10px] font-semibold text-[#5D4037]">TT</span>
                         <span>TikTok</span>
                     </a>
                     <a href="https://youtube.com/@pramuka_usu" target="_blank" rel="noopener" class="flex items-center gap-3 rounded-xl px-3 py-3 transition hover:bg-[#5D4037]/10 hover:text-[#5D4037]">
-                        <img src="{{ asset('storage/ikon/Youtube copy.png') }}" alt="YouTube" class="h-5 w-5 object-contain" />
+                        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-[#5D4037]/10 text-[10px] font-semibold text-[#5D4037]">YT</span>
                         <span>YouTube</span>
                     </a>
                 </div>
