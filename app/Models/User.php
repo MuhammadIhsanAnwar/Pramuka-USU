@@ -103,12 +103,17 @@ class User extends Authenticatable implements FilamentUser
             return false;
         }
 
+        $email = strtolower((string) $this->email);
+        $isAdminEmail = in_array($email, ['pramuka@usu.ac.id', 'admin@pramuka-usu.local'], true);
+        $hasAdminRole = method_exists($this, 'hasRole') && $this->hasRole('Admin');
+        $hasUserRole = method_exists($this, 'hasRole') && $this->hasRole('User');
+
         if ($panel->getId() === 'admin') {
-            return $this->hasRole('Admin') || $this->email === 'pramuka@usu.ac.id' || $this->email === 'admin@pramuka-usu.local';
+            return $hasAdminRole || $hasUserRole || $isAdminEmail;
         }
 
         if ($panel->getId() === 'user') {
-            return $this->hasRole('User') || $this->hasRole('Admin');
+            return $hasUserRole || $hasAdminRole || $isAdminEmail;
         }
 
         return false;
