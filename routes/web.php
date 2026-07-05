@@ -26,7 +26,7 @@ Route::get('/admin', function () {
     }
 
     return redirect('/admin/login');
-});
+})->name('admin.home');
 
 // Fortify login routes fallback if package routes are unavailable
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
