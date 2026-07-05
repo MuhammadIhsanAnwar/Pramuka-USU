@@ -14,15 +14,24 @@ class AdminStatsOverview extends StatsOverviewWidget
 {
     protected function getStats(): array
     {
-        return Cache::remember('dashboard.admin.stats', now()->addMinutes(5), function (): array {
+        $counts = Cache::remember('dashboard.admin.stats', now()->addMinutes(5), function (): array {
             return [
-                Stat::make('Jumlah User', User::query()->count()),
-                Stat::make('Jumlah Pembina', User::query()->pembina()->count()),
-                Stat::make('Jumlah Peserta Didik', User::query()->pesertaDidik()->count()),
-                Stat::make('Jumlah Berita', NewsPost::query()->count()),
-                Stat::make('Jumlah Presensi', Attendance::query()->count()),
-                Stat::make('Jumlah Agenda', EventAgenda::query()->count()),
+                'users' => User::query()->count(),
+                'pembina' => User::query()->pembina()->count(),
+                'peserta_didik' => User::query()->pesertaDidik()->count(),
+                'news' => NewsPost::query()->count(),
+                'attendance' => Attendance::query()->count(),
+                'agendas' => EventAgenda::query()->count(),
             ];
         });
+
+        return [
+            Stat::make('Jumlah User', $counts['users']),
+            Stat::make('Jumlah Pembina', $counts['pembina']),
+            Stat::make('Jumlah Peserta Didik', $counts['peserta_didik']),
+            Stat::make('Jumlah Berita', $counts['news']),
+            Stat::make('Jumlah Presensi', $counts['attendance']),
+            Stat::make('Jumlah Agenda', $counts['agendas']),
+        ];
     }
 }

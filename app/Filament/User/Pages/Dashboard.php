@@ -7,6 +7,8 @@ use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends BaseDashboard
 {
+    protected static ?string $title = 'Dashboard User';
+
     public function getWidgets(): array
     {
         return [

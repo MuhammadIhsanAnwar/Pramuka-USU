@@ -18,6 +18,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use UnitEnum;
 use BackedEnum;
@@ -111,7 +112,7 @@ class UserResource extends Resource
                 TextColumn::make('jenis_user')
                     ->label('Jenis')
                     ->badge(),
-                Toggle::make('is_active')
+                ToggleColumn::make('is_active')
                     ->label('Aktif'),
                 TextColumn::make('created_at')
                     ->label('Dibuat')

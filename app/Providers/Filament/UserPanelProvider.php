@@ -20,8 +20,6 @@ class UserPanelProvider extends PanelProvider
         return $panel
             ->id('user')
             ->path('dashboard')
-            ->login()
-            ->passwordReset()
             ->profile()
             ->brandName('Pramuka USU')
             ->colors([

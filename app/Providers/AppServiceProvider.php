@@ -31,6 +31,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Fortify::loginView('auth.login');
+        Fortify::requestPasswordResetLinkView('auth.passwords.email');
+        Fortify::resetPasswordView('auth.passwords.reset');
 
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::lower($request->input(Fortify::username()).'|'.$request->ip());

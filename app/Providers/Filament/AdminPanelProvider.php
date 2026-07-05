@@ -21,8 +21,6 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
-            ->passwordReset()
             ->profile()
             ->brandName('Pramuka USU')
             ->colors([
