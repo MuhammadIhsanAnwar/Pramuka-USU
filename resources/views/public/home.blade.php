@@ -133,7 +133,7 @@
                     “We never fail when we try to do our duty, we always fail when we neglect to do it.”
                 </h2>
 
-                <p class="mt-4 text-lg font-medium text-[#E6C76A]">
+                <p class="mt-4 text-lg font-medium text-[#F9E4A6]">
                     — Lord Baden Powell
                 </p>
 
@@ -147,7 +147,7 @@
             <img
                 src="{{ asset('storage/kutipan/Baden Powell.png') }}"
                 alt="Lord Baden Powell"
-                class="max-h-[20rem] w-auto rounded-[1.5rem] object-contain" />
+                class="max-h-[14rem] w-auto rounded-[1.5rem] object-contain" />
         </div>
     </div>
 </section>

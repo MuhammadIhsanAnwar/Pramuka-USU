@@ -9,7 +9,9 @@ use App\Observers\EventAgendaObserver;
 use App\Observers\GalleryObserver;
 use App\Observers\NewsPostObserver;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider;
@@ -22,7 +24,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->scoped(StatefulGuard::class, function () {
+            return Auth::guard(config('fortify.guard', 'web'));
+        });
     }
 
     /**
