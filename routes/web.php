@@ -24,6 +24,9 @@ Route::get('/kontak', [PublicController::class, 'contact'])->name('contact');
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+Route::get('/forgot-password', function () {
+    return view('auth.passwords.email');
+})->middleware('guest')->name('password.request');
 
 Route::middleware('auth')->group(function (): void {
 	Route::get('/presensi/{eventAgenda}/{token}', [AttendanceController::class, 'scan'])->name('attendance.scan');

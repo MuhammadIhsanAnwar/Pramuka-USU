@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
+use Laravel\Fortify\Contracts\RedirectsIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,6 +29,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->scoped(StatefulGuard::class, function () {
             return Auth::guard(config('fortify.guard', 'web'));
         });
+
+        $this->app->singleton(RedirectsIfTwoFactorAuthenticatable::class, RedirectIfTwoFactorAuthenticatable::class);
     }
 
     /**
