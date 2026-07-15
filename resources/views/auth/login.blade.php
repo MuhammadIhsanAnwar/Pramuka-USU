@@ -2,6 +2,13 @@
 
 @section('content')
     <section class="mx-auto max-w-xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mb-6 flex items-center justify-center flex-col gap-3">
+            <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Pramuka USU" class="h-20 w-20 object-contain" />
+            <div class="text-center">
+                <div class="text-xl font-bold text-[#5D4037]">SIPRAUSU</div>
+                <div class="text-sm text-slate-500">Sistem Informasi Pramuka USU</div>
+            </div>
+        </div>
         <div class="surface-card rounded-3xl border border-slate-200 bg-white p-8 shadow-lg">
             <h1 class="text-2xl font-bold text-slate-900">Masuk</h1>
             <p class="mt-2 text-sm text-slate-600">Silakan masuk dengan email dan password akun Anda.</p>
