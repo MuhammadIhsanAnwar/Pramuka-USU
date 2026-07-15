@@ -33,21 +33,10 @@ Route::middleware(['auth', 'role:Admin'])->group(function (): void {
 	});
 });
 
-Route::get('/admin', function () {
-	if (Auth::check()) {
-		return redirect('/admin/users');
-	}
-
-	return redirect('/admin/login');
-})->name('admin.home');
-
 // Legacy redirect: keep `/dashboard` pointing to the user panel at `/user`.
 Route::redirect('/dashboard', '/user');
 
-// Compatibility route for Filament navigation (some Filament versions expect this named route)
-Route::get('/_filament_dashboard', function () {
-	return redirect('/admin');
-})->name('filament.admin.pages.dashboard');
+// (Removed compatibility route to avoid duplicate route name with Filament.)
 
 // Fortify login routes fallback if package routes are unavailable
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
