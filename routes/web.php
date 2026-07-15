@@ -28,6 +28,11 @@ Route::get('/admin', function () {
     return redirect('/admin/login');
 })->name('admin.home');
 
+// Compatibility route for Filament navigation (some Filament versions expect this named route)
+Route::get('/_filament_dashboard', function () {
+	return redirect('/admin');
+})->name('filament.admin.pages.dashboard');
+
 // Fortify login routes fallback if package routes are unavailable
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
