@@ -4,6 +4,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
 Route::get('/', [PublicController::class, 'home'])->name('home');
@@ -21,11 +22,11 @@ Route::get('/galeri/{gallery}', [PublicController::class, 'galleryShow'])->name(
 Route::get('/kontak', [PublicController::class, 'contact'])->name('contact');
 
 Route::get('/admin', function () {
-    if (auth()->check()) {
-        return redirect('/admin/users');
-    }
+	if (Auth::check()) {
+		return redirect('/admin/users');
+	}
 
-    return redirect('/admin/login');
+	return redirect('/admin/login');
 })->name('admin.home');
 
 // Compatibility route for Filament navigation (some Filament versions expect this named route)

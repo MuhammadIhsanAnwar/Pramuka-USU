@@ -13,8 +13,19 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans">
+    @if (request()->routeIs('home'))
+        <div id="homepage-loader" role="status" aria-live="polite" aria-label="Memuat halaman">
+            <div class="loader-inner">
+                <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Pramuka USU" />
+                <div class="brand-text">Pramuka USU</div>
+                <div class="loader-progress" aria-hidden="true">
+                    <div class="loader-progress-bar" style="width:0%"></div>
+                </div>
+            </div>
+        </div>
+    @endif
     <div class="relative min-h-screen overflow-hidden">
-        <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[32rem] bg-[radial-gradient(circle_at_top,_rgba(201,162,39,0.18),_transparent_55%),radial-gradient(circle_at_20%_20%,_rgba(93,64,55,0.12),_transparent_30%)]"></div>
+        <div class="pointer-events-none absolute inset-x-0 top-0 -z-10" style="height:32rem; background-image: radial-gradient(circle at top, rgba(201,162,39,0.18), transparent 55%), radial-gradient(circle at 20% 20%, rgba(93,64,55,0.12), transparent 30%);"></div>
 
         <header class="sticky top-0 z-50 border-b border-[#5D4037]/10 bg-white/90 backdrop-blur">
             <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
