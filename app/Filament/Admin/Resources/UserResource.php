@@ -8,12 +8,8 @@ use App\Models\User;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\ImageColumn;
@@ -52,36 +48,16 @@ class UserResource extends Resource
                     ->label('Role')
                     ->options(collect(RoleName::cases())->mapWithKeys(fn (RoleName $role): array => [$role->value => $role->value])->all())
                     ->default(RoleName::User->value)
-                    ->required(),
+                    ->required()
+                    ->reactive(),
                 Select::make('jenis_user')
                     ->label('Jenis User')
                     ->options([
                         'pembina' => 'Pembina',
                         'peserta_didik' => 'Peserta Didik',
                     ])
-                    ->required(),
-                TextInput::make('phone')
-                    ->label('Telepon')
-                    ->tel()
-                    ->maxLength(30),
-                DatePicker::make('birth_date')
-                    ->label('Tanggal Lahir'),
-                FileUpload::make('avatar_path')
-                    ->label('Foto Profil')
-                    ->image()
-                    ->directory('avatars')
-                    ->visibility('public')
-                    ->maxSize(2048),
-                Toggle::make('is_active')
-                    ->label('Aktif'),
-                Textarea::make('bio')
-                    ->label('Bio')
-                    ->columnSpanFull()
-                    ->rows(4),
-                Textarea::make('address')
-                    ->label('Alamat')
-                    ->columnSpanFull()
-                    ->rows(4),
+                    ->required(fn (callable $get): bool => $get('role_name') !== RoleName::Admin->value)
+                    ->hidden(fn (callable $get): bool => $get('role_name') === RoleName::Admin->value),
                 TextInput::make('password')
                     ->label('Password')
                     ->password()

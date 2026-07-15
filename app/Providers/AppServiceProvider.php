@@ -20,7 +20,7 @@ use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
 use Laravel\Fortify\Contracts\RedirectsIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
-use Laravel\Fortify\Http\Responses\LoginResponse;
+use App\Http\Responses\LoginResponse as AppLoginResponse;
 use App\Http\Responses\LogoutResponse as AppLogoutResponse;
 use Filament\Auth\Http\Responses\Contracts\LogoutResponse as FilamentLogoutResponseContract;
 use App\Http\Responses\FilamentLogoutResponse;
@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
             return Auth::guard(config('fortify.guard', 'web'));
         });
 
-        $this->app->singleton(LoginResponseContract::class, LoginResponse::class);
+        $this->app->singleton(LoginResponseContract::class, AppLoginResponse::class);
         $this->app->singleton(LogoutResponseContract::class, AppLogoutResponse::class);
         // Override Filament logout response to redirect to public homepage
         $this->app->singleton(FilamentLogoutResponseContract::class, FilamentLogoutResponse::class);

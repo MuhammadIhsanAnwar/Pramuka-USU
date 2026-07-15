@@ -80,11 +80,12 @@
                 <div class="grid gap-6 lg:grid-cols-2">
                     @forelse ($group->members as $member)
                     <article class="overflow-hidden rounded-4xl border border-[#5D4037]/10 bg-white shadow-sm">
-                        <img src="{{ $member->photo_url }}" alt="{{ $member->name }}" class="h-56 w-full object-cover">
+                        <div class="aspect-[3/4] overflow-hidden">
+                            <img src="{{ $member->photo_url }}" alt="{{ $member->name }}" class="h-full w-full object-cover">
+                        </div>
                         <div class="p-6">
                             <div class="text-sm font-semibold uppercase tracking-[0.2em] text-[#5D4037]">{{ $member->position ?: 'Anggota' }}</div>
                             <h3 class="mt-3 text-xl font-bold text-slate-900">{{ $member->name }}</h3>
-                            <p class="mt-3 text-sm leading-6 text-slate-600">{{ $member->bio ?: 'Deskripsi singkat tentang peran anggota ini belum tersedia.' }}</p>
                         </div>
                     </article>
                     @empty

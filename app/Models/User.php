@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RoleName;
 use App\Enums\UserKind;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -31,11 +32,61 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'password',
         'jenis_user',
-        'avatar_path',
-        'phone',
+        'birth_place',
         'birth_date',
-        'bio',
+        'gender',
+        'religion',
+        'blood_type',
+        'hobby',
+        'siblings_count',
+        'phone',
+        'whatsapp_number',
+        'marital_status',
+        'job',
+        'avatar_path',
         'address',
+        'domisili_country',
+        'domisili_province',
+        'domisili_city',
+        'domisili_district',
+        'domisili_village',
+        'domisili_rt',
+        'domisili_rw',
+        'domisili_postal_code',
+        'domisili_street',
+        'asal_country',
+        'asal_province',
+        'asal_city',
+        'asal_district',
+        'asal_village',
+        'asal_rt',
+        'asal_rw',
+        'asal_postal_code',
+        'asal_street',
+        'education_status',
+        'nim',
+        'kampus',
+        'fakultas',
+        'program_studi',
+        'father_name',
+        'father_status',
+        'father_address',
+        'father_phone',
+        'mother_name',
+        'mother_status',
+        'mother_address',
+        'mother_phone',
+        'guardian_name',
+        'guardian_status',
+        'guardian_address',
+        'guardian_phone',
+        'satuan',
+        'jabatan',
+        'nta',
+        'tahun_masuk_pramuka_usu',
+        'nama_omantaru',
+        'golongan',
+        'tingkatan',
         'is_active',
     ];
 
@@ -60,6 +111,8 @@ class User extends Authenticatable implements FilamentUser
         'birth_date' => 'date',
         'is_active' => 'boolean',
         'password' => 'hashed',
+        'siblings_count' => 'integer',
+        'tahun_masuk_pramuka_usu' => 'integer',
     ];
 
     public function newsPosts(): HasMany
@@ -95,6 +148,75 @@ class User extends Authenticatable implements FilamentUser
     public function scopePesertaDidik($query)
     {
         return $query->where('jenis_user', UserKind::PesertaDidik->value);
+    }
+
+    public function needsProfileCompletion(): bool
+    {
+        if ($this->hasRole(RoleName::Admin->value)) {
+            return false;
+        }
+
+        $requiredFields = [
+            'jenis_user',
+            'birth_place',
+            'birth_date',
+            'gender',
+            'religion',
+            'blood_type',
+            'hobby',
+            'siblings_count',
+            'phone',
+            'whatsapp_number',
+            'marital_status',
+            'job',
+            'avatar_path',
+            'domisili_country',
+            'domisili_province',
+            'domisili_city',
+            'domisili_district',
+            'domisili_village',
+            'domisili_rt',
+            'domisili_rw',
+            'domisili_postal_code',
+            'domisili_street',
+            'asal_country',
+            'asal_province',
+            'asal_city',
+            'asal_district',
+            'asal_village',
+            'asal_rt',
+            'asal_rw',
+            'asal_postal_code',
+            'asal_street',
+            'education_status',
+            'nim',
+            'kampus',
+            'fakultas',
+            'program_studi',
+            'father_name',
+            'father_status',
+            'father_address',
+            'father_phone',
+            'mother_name',
+            'mother_status',
+            'mother_address',
+            'mother_phone',
+            'satuan',
+            'jabatan',
+            'nta',
+            'tahun_masuk_pramuka_usu',
+            'nama_omantaru',
+            'golongan',
+            'tingkatan',
+        ];
+
+        foreach ($requiredFields as $field) {
+            if (! filled($this->{$field})) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function canAccessPanel(Panel $panel): bool

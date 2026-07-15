@@ -11,6 +11,13 @@ class EditUser extends EditRecord
 {
     protected static string $resource = UserResource::class;
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $data['role_name'] = $this->record->getRoleNames()->first() ?? RoleName::User->value;
+
+        return $data;
+    }
+
     protected function mutateFormDataBeforeSave(array $data): array
     {
         if (blank($data['password'] ?? null)) {

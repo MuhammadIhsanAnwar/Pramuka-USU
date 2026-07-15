@@ -28,7 +28,7 @@ class AboutMember extends Model
 
     public function group(): BelongsTo
     {
-        return $this->belongsTo(AboutGroup::class);
+        return $this->belongsTo(AboutGroup::class, 'about_group_id');
     }
 
     public function getPhotoUrlAttribute(): string

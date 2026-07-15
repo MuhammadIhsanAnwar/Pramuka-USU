@@ -22,7 +22,7 @@ class AboutGroupResource extends Resource
 {
     protected static ?string $model = AboutGroup::class;
 
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-collection';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-group';
 
     protected static string|UnitEnum|null $navigationGroup = 'Tentang Kami';
 

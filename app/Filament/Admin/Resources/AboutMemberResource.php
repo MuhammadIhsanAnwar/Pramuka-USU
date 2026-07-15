@@ -56,16 +56,22 @@ class AboutMemberResource extends Resource
                 FileUpload::make('photo_path')
                     ->label('Foto')
                     ->image()
+                    ->imageAspectRatio('3:4')
+                    ->automaticallyCropImagesToAspectRatio()
+                    ->imageEditor()
+                    ->automaticallyOpenImageEditorForAspectRatio()
+                    ->automaticallyResizeImagesMode('cover')
+                    ->automaticallyResizeImagesToWidth('1200')
+                    ->automaticallyResizeImagesToHeight('1600')
+                    ->automaticallyUpscaleImagesWhenResizing(false)
+                    ->imagePreviewHeight('280')
+                    ->helperText('Unggah foto maksimal 2MB dengan rasio 3:4. Jika file terlalu besar, kompres gambar sebelum mengunggah.')
                     ->directory('about-members')
                     ->visibility('public')
-                    ->maxSize(4096),
+                    ->maxSize(2048),
                 Toggle::make('is_active')
                     ->label('Aktif')
                     ->default(true),
-                Textarea::make('bio')
-                    ->label('Bio / Deskripsi')
-                    ->columnSpanFull()
-                    ->rows(4),
             ]);
     }
 

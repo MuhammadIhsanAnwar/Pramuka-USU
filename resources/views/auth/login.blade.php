@@ -6,7 +6,7 @@
             <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Pramuka USU" width="96" height="96" style="width:96px;height:auto;max-width:100%;object-fit:contain;" class="object-contain" />
             <div class="text-center">
                 <div class="text-xl font-bold text-[#5D4037]">SIPRAUSU</div>
-                <div class="text-sm text-slate-500">Sistem Informasi Pramuka USU</div>
+                <div class="text-sm text-slate-500">Sistem Informasi Pramuka Universitas Sumatera Utara</div>
             </div>
         </div>
         <div class="surface-card rounded-3xl border border-slate-200 bg-white p-8 shadow-lg">
