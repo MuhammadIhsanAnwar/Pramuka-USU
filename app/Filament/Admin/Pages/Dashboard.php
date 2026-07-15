@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Pages;
 
+use App\Filament\Admin\Widgets\AdminDashboardHeaderWidget;
 use App\Filament\Admin\Widgets\AdminStatsOverview;
 use App\Filament\Admin\Widgets\AttendanceChartWidget;
 use App\Filament\Admin\Widgets\NewsMonthlyChartWidget;
@@ -12,6 +13,7 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
+            AdminDashboardHeaderWidget::class,
             AdminStatsOverview::class,
             AttendanceChartWidget::class,
             NewsMonthlyChartWidget::class,

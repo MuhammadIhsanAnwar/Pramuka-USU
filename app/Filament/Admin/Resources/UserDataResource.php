@@ -21,7 +21,7 @@ class UserDataResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Manajemen';
+    protected static string|UnitEnum|null $navigationGroup = 'Manajemen Akun';
 
     protected static ?string $navigationLabel = 'Data User';
 
@@ -62,6 +62,10 @@ class UserDataResource extends Resource
                 TextColumn::make('address')
                     ->label('Alamat')
                     ->limit(50)
+                    ->wrap(),
+                TextColumn::make('bio')
+                    ->label('Bio')
+                    ->limit(80)
                     ->wrap(),
                 ToggleColumn::make('is_active')
                     ->label('Aktif'),

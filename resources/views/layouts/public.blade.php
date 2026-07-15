@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? config('app.name', 'Pramuka USU') }}</title>
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
+    <link rel="shortcut icon" href="{{ asset('storage/logo/Logo Pramuka USU.png') }}" />
     <link rel="icon" type="image/png" href="{{ asset('storage/logo/Logo Pramuka USU.png') }}" />
+    <link rel="apple-touch-icon" href="{{ asset('storage/logo/Logo Pramuka USU.png') }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -84,6 +85,7 @@
                     <a href="{{ route('news.index') }}" class="transition hover:text-[#5D4037]">Berita</a>
                     <a href="{{ route('agenda.index') }}" class="transition hover:text-[#5D4037]">Agenda</a>
                     <a href="{{ route('gallery.index') }}" class="transition hover:text-[#5D4037]">Galeri</a>
+                    <a href="{{ route('surat-masuk') }}" class="transition hover:text-[#5D4037]">Surat Masuk</a>
                     <a href="{{ route('contact') }}" class="transition hover:text-[#5D4037]">Kontak</a>
                     @auth
                         @if(auth()->user()->hasRole('Admin'))
@@ -105,6 +107,7 @@
                         <a href="{{ route('news.index') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Berita</a>
                         <a href="{{ route('agenda.index') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Agenda</a>
                         <a href="{{ route('gallery.index') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Galeri</a>
+                        <a href="{{ route('surat-masuk') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Surat Masuk</a>
                         <a href="{{ route('contact') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Kontak</a>
                         @auth
                             @if(auth()->user()->hasRole('Admin'))

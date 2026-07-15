@@ -24,7 +24,7 @@ class AboutGroupResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-group';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Tentang Kami';
+    protected static string|UnitEnum|null $navigationGroup = 'Manajemen Tim';
 
     protected static ?string $navigationLabel = 'Grup Tim';
 

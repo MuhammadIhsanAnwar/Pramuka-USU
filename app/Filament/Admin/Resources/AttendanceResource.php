@@ -25,7 +25,7 @@ class AttendanceResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-qr-code';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Manajemen Presensi';
+    protected static string|UnitEnum|null $navigationGroup = 'Manajemen Kegiatan';
 
     protected static ?string $navigationLabel = 'Presensi';
 

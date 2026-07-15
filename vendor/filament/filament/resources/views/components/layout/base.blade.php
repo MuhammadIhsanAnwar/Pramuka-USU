@@ -25,6 +25,9 @@
         @if ($favicon = filament()->getFavicon())
             <link rel="icon" href="{{ $favicon }}" />
         @endif
+        <link rel="shortcut icon" href="{{ asset('storage/logo/Logo Pramuka USU.png') }}" />
+        <link rel="icon" type="image/png" href="{{ asset('storage/logo/Logo Pramuka USU.png') }}" />
+        <link rel="apple-touch-icon" href="{{ asset('storage/logo/Logo Pramuka USU.png') }}" />
 
         @php
             $title = trim(strip_tags($livewire?->getTitle() ?? ''));

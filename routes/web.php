@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\IncomingLetterController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +21,17 @@ Route::get('/agenda/{eventAgenda}', [PublicController::class, 'agendaShow'])->na
 Route::get('/galeri', [PublicController::class, 'galleryIndex'])->name('gallery.index');
 Route::get('/galeri/{gallery}', [PublicController::class, 'galleryShow'])->name('gallery.show');
 Route::get('/kontak', [PublicController::class, 'contact'])->name('contact');
+Route::get('/surat-masuk', function () {
+    return view('public.surat-masuk');
+})->name('surat-masuk');
+
+// Incoming letters are managed by Filament resource pages. Add a compatibility
+// redirect so legacy links to `/admin/surat-masuk` open the Filament CRUD index.
+Route::middleware(['auth', 'role:Admin'])->group(function (): void {
+	Route::get('/admin/surat-masuk', function () {
+		return redirect()->route('filament.admin.resources.incoming-letters.index');
+	});
+});
 
 Route::get('/admin', function () {
 	if (Auth::check()) {

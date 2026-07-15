@@ -52,7 +52,7 @@
     "src": "_instrument-sans-600-normal-DMks36a2.woff"
   },
   "resources/css/app.css": {
-    "file": "assets/app-T87rqbFZ.css",
+    "file": "assets/app-CRyjbF0w.css",
     "name": "app",
     "names": [
       "app.css"
@@ -60,8 +60,17 @@
     "src": "resources/css/app.css",
     "isEntry": true
   },
+  "resources/css/filament-dashboard.css": {
+    "file": "assets/filament-dashboard-_UrHHbV0.css",
+    "name": "filament-dashboard",
+    "names": [
+      "filament-dashboard.css"
+    ],
+    "src": "resources/css/filament-dashboard.css",
+    "isEntry": true
+  },
   "resources/js/app.js": {
-    "file": "assets/app-BvRk9kiK.js",
+    "file": "assets/app-CxJDtriU.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true
