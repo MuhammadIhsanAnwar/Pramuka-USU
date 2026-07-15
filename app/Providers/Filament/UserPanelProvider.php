@@ -20,7 +20,7 @@ class UserPanelProvider extends PanelProvider
     {
         return $panel
             ->id('user')
-            ->path('dashboard')
+            ->path('user')
             ->profile()
             ->brandName('SIPRAUSU')
             ->brandLogo(asset('storage/logo/Logo Pramuka USU.png'))

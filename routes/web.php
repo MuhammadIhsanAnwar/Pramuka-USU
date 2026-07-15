@@ -41,6 +41,9 @@ Route::get('/admin', function () {
 	return redirect('/admin/login');
 })->name('admin.home');
 
+// Legacy redirect: keep `/dashboard` pointing to the user panel at `/user`.
+Route::redirect('/dashboard', '/user');
+
 // Compatibility route for Filament navigation (some Filament versions expect this named route)
 Route::get('/_filament_dashboard', function () {
 	return redirect('/admin');
