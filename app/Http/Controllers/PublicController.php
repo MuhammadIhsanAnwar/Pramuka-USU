@@ -7,6 +7,7 @@ use App\Models\NewsCategory;
 use App\Models\EventAgenda;
 use App\Models\Gallery;
 use App\Models\NewsPost;
+use App\Models\AboutGroup;
 use App\Models\SiteSetting;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
@@ -67,9 +68,15 @@ class PublicController extends Controller
 
     public function about(): View
     {
-        return $this->pageView('Tentang Kami', 'Pramuka USU adalah wadah pembinaan karakter dan kepemimpinan di lingkungan Universitas Sumatera Utara.', [
-            'Kami membina anggota agar disiplin, mandiri, dan berjiwa pelayanan.',
-            'Kegiatan mencakup latihan rutin, pengabdian masyarakat, kemah, dan pelatihan kepemimpinan.',
+        $groups = AboutGroup::query()
+            ->active()
+            ->orderBy('order')
+            ->with(['members' => fn ($query) => $query->active()->orderBy('order')->orderBy('name')])
+            ->get();
+
+        return view('public.about', [
+            'siteName' => $this->siteName(),
+            'groups' => $groups,
         ]);
     }
 
