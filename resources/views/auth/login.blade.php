@@ -2,8 +2,8 @@
 
 @section('content')
     <section class="mx-auto max-w-xl px-4 py-20 sm:px-6 lg:px-8">
-        <div class="mb-7 flex items-center justify-center flex-col gap-3">
-            <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Pramuka USU" class="h-14 w-14 object-contain" />
+        <div class="mb-6 flex items-center justify-center flex-col gap-3">
+            <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Pramuka USU" width="96" height="96" style="width:96px;height:auto;max-width:100%;object-fit:contain;" class="object-contain" />
             <div class="text-center">
                 <div class="text-xl font-bold text-[#5D4037]">SIPRAUSU</div>
                 <div class="text-sm text-slate-500">Sistem Informasi Pramuka USU</div>

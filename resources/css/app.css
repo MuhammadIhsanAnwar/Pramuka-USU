@@ -58,6 +58,12 @@
     @media (min-width: 1024px) {
         .quote-portrait { height: 12rem; }
     }
+
+    .homepage-hero {
+        background-image: url('/storage/beranda/Beranda.png');
+        background-size: cover;
+        background-position: center;
+    }
 }
 
 /* Page transitions and homepage loader */

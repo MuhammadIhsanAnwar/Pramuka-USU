@@ -14,15 +14,57 @@
 </head>
 <body class="font-sans">
     @if (request()->routeIs('home'))
-        <div id="homepage-loader" role="status" aria-live="polite" aria-label="Memuat halaman">
-            <div class="loader-inner">
-                <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Pramuka USU" />
-                <div class="brand-text">Pramuka USU</div>
-                <div class="loader-progress" aria-hidden="true">
-                    <div class="loader-progress-bar" style="width:0%"></div>
+        <div id="homepage-loader" role="status" aria-live="polite" aria-label="Memuat halaman"
+             style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,244,234,0.95));z-index:99999;transition:opacity 420ms ease,visibility 420ms ease;backdrop-filter:blur(3px)">
+            <div class="loader-inner" style="display:flex;flex-direction:column;align-items:center;gap:10px">
+                <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Pramuka USU" style="width:96px;height:96px;object-fit:contain" />
+                <div class="brand-text" style="font-weight:700;color:#5D4037;font-size:16px">Pramuka USU</div>
+                <div class="loader-progress" aria-hidden="true" style="width:220px;height:8px;border-radius:999px;background:rgba(0,0,0,0.06);overflow:hidden;margin-top:12px">
+                    <div class="loader-progress-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#5D4037 0%,#C9A227 60%);transition:width 180ms linear"></div>
                 </div>
             </div>
         </div>
+
+        {{-- Inline fallback script: network-aware progress and auto-hide when compiled assets are missing or slow --}}
+        <script>
+            if (!window.__homepage_loader_inline) {
+                window.__homepage_loader_inline = true;
+                (function(){
+                    var loader = document.getElementById('homepage-loader');
+                    if (!loader) return;
+                    var progressBar = loader.querySelector('.loader-progress-bar');
+                    var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || null;
+                    var estimateMs = 2000;
+                    if (conn) {
+                        var t = (conn.effectiveType || '').toLowerCase();
+                        var downlink = conn.downlink || 10;
+                        if (t.indexOf('slow-2g') !== -1) estimateMs = 12000;
+                        else if (t.indexOf('2g') !== -1) estimateMs = 9000;
+                        else if (t.indexOf('3g') !== -1) estimateMs = 5000;
+                        else if (t.indexOf('4g') !== -1) estimateMs = 1500;
+                        estimateMs = Math.max(1000, Math.round(estimateMs * (1 / Math.max(0.3, Math.min(downlink / 10, 2)))));
+                    }
+                    var percent = 4;
+                    if (progressBar) progressBar.style.width = percent + '%';
+                    var start = Date.now();
+                    var intervalId = setInterval(function(){
+                        var elapsed = Date.now() - start;
+                        var target = Math.min(99, Math.round((elapsed / estimateMs) * 100));
+                        if (target > percent) percent = target; else percent = Math.min(99, percent + Math.random() * 3);
+                        if (progressBar) progressBar.style.width = percent + '%';
+                    }, 200);
+                    var finished = false;
+                    var finish = function(){
+                        if (finished) return; finished = true;
+                        clearInterval(intervalId);
+                        if (progressBar) progressBar.style.width = '100%';
+                        setTimeout(function(){ loader.style.opacity = 0; loader.style.visibility = 'hidden'; setTimeout(function(){ if (loader.parentNode) loader.remove(); }, 480); }, 160);
+                    };
+                    window.addEventListener('load', finish);
+                    setTimeout(function(){ if (document.body.contains(loader)) finish(); }, Math.min(20000, Math.max(8000, estimateMs * 3)));
+                })();
+            }
+        </script>
     @endif
     <div class="relative min-h-screen overflow-hidden">
         <div class="pointer-events-none absolute inset-x-0 top-0 -z-10" style="height:32rem; background-image: radial-gradient(circle at top, rgba(201,162,39,0.18), transparent 55%), radial-gradient(circle at 20% 20%, rgba(93,64,55,0.12), transparent 30%);"></div>

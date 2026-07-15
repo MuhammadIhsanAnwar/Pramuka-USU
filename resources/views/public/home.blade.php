@@ -1,15 +1,15 @@
 @extends('layouts.public')
 
 @section('content')
-<section class="w-full bg-center relative overflow-hidden" style="min-height: 420px;">
-    <div class="absolute inset-0 bg-slate-950/10"></div>
+<section class="w-full bg-center relative overflow-hidden homepage-hero" style="min-height: 420px;">
+    <div class="absolute inset-0 bg-slate-950/20"></div>
     <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24 relative z-10">
         <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
-                <h1 class="mt-4 inline-block bg-[#5D4037] px-3 py-1 rounded-md font-semibold text-white" style="font-size: clamp(0.75rem, 1.2vw, 1rem);">Selamat datang di laman resmi</h1>
+                <h1 class="mt-4 inline-block bg-[#5D4037] px-3 py-1 rounded-md font-semibold text-white text-sm sm:text-base">Selamat datang di laman resmi</h1>
                 <div class="mt-6 max-w-3xl flex flex-col items-start gap-1">
-                    <div class="bg-[#5D4037] px-4 py-2 rounded-md text-white font-extrabold" style="font-size: clamp(1.25rem, 2vw, 2rem);">Pramuka</div>
-                    <div class="bg-[#5D4037] px-4 py-3 rounded-md text-white font-extrabold" style="font-size: clamp(1.25rem, 2vw, 2rem);">Universitas Sumatera Utara</div>
+                    <div class="bg-[#5D4037] px-4 py-2 rounded-md text-white font-extrabold text-2xl sm:text-3xl">Pramuka</div>
+                    <div class="bg-[#5D4037] px-4 py-3 rounded-md text-white font-extrabold text-2xl sm:text-3xl">Universitas Sumatera Utara</div>
                 </div>
                 <div class="mt-8 flex flex-wrap gap-3">
                     <a href="{{ route('news.index') }}" class="btn-primary">Lihat Berita</a>
@@ -18,17 +18,17 @@
             </div>
             <div class="flex flex-col items-center justify-end gap-5">
                 <div class="w-full max-w-md overflow-hidden rounded-4xl bg-white/10 shadow-[0_30px_60px_-20px_rgba(15,23,42,0.65)] ring-1 ring-white/10 backdrop-blur-xl">
-                    <video src="{{ asset('storage/beranda/Intro.mp4') }}" autoplay muted loop playsinline class="h-full w-full rounded-4xl block object-cover" style="border-radius: 2rem;"></video>
+                    <video src="{{ asset('storage/beranda/Intro.mp4') }}" autoplay muted loop playsinline class="h-full w-full rounded-4xl block object-cover"></video>
                 </div>
                 <div class="mx-auto w-max overflow-hidden rounded-full bg-white px-4 py-3 shadow-[0_20px_45px_-20px_rgba(15,23,42,0.25)] ring-1 ring-slate-300/80 backdrop-blur-sm">
                     <div class="flex items-center justify-center gap-1.5 whitespace-nowrap">
-                        <img src="{{ asset('storage/logo/WOSM Ungu.png') }}" alt="WOSM Ungu" class="h-8 w-auto flex-none object-contain" style="max-width:4.5rem">
-                        <img src="{{ asset('storage/logo/Pramuka Scout Movement.png') }}" alt="Pramuka Scout Movement" class="h-8 w-auto flex-none object-contain" style="max-width:4.5rem">
-                        <img src="{{ asset('storage/logo/Logo USU.png') }}" alt="Logo USU" class="h-8 w-auto flex-none object-contain" style="max-width:4.5rem">
-                        <img src="{{ asset('storage/logo/Logo KwardaSU.png') }}" alt="Logo KwardaSU" class="h-8 w-auto flex-none object-contain" style="max-width:4.5rem">
-                        <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Logo Pramuka USU" class="h-8 w-auto flex-none object-contain" style="max-width:4.5rem">
-                        <img src="{{ asset('storage/logo/Pewarta.png') }}" alt="Pewarta" class="h-8 w-auto flex-none object-contain" style="max-width:4.5rem">
-                        <img src="{{ asset('storage/logo/Diktisaintek Berdampak.png') }}" alt="Diktisaintek Berdampak" class="h-8 w-auto flex-none object-contain" style="max-width:4.5rem">
+                        <img src="{{ asset('storage/logo/WOSM Ungu.png') }}" alt="WOSM Ungu" class="h-8 w-auto flex-none object-contain">
+                        <img src="{{ asset('storage/logo/Pramuka Scout Movement.png') }}" alt="Pramuka Scout Movement" class="h-8 w-auto flex-none object-contain">
+                        <img src="{{ asset('storage/logo/Logo USU.png') }}" alt="Logo USU" class="h-8 w-auto flex-none object-contain">
+                        <img src="{{ asset('storage/logo/Logo KwardaSU.png') }}" alt="Logo KwardaSU" class="h-8 w-auto flex-none object-contain">
+                        <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Logo Pramuka USU" class="h-8 w-auto flex-none object-contain">
+                        <img src="{{ asset('storage/logo/Pewarta.png') }}" alt="Pewarta" class="h-8 w-auto flex-none object-contain">
+                        <img src="{{ asset('storage/logo/Diktisaintek Berdampak.png') }}" alt="Diktisaintek Berdampak" class="h-8 w-auto flex-none object-contain">
                     </div>
                 </div>
             </div>
