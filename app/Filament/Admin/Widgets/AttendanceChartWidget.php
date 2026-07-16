@@ -31,8 +31,8 @@ class AttendanceChartWidget extends ChartWidget
                     [
                         'label' => 'Presensi',
                         'data' => $data,
-                        'borderColor' => '#5D4037',
-                        'backgroundColor' => 'rgba(93, 64, 55, 0.2)',
+                        'borderColor' => '#3E271A',
+                        'backgroundColor' => 'rgba(62, 39, 26, 0.2)',
                         'fill' => true,
                     ],
                 ],

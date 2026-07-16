@@ -28,6 +28,16 @@ class NewsCategoryResource extends Resource
 
     protected static ?string $navigationLabel = 'Kategori Berita';
 
+    public static function getPluralModelLabel(): string
+    {
+        return 'Kategori Berita';
+    }
+
+    public static function getSingularModelLabel(): string
+    {
+        return 'Kategori Berita';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->columns(2)->components([

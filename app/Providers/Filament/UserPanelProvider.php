@@ -22,11 +22,12 @@ class UserPanelProvider extends PanelProvider
             ->id('user')
             ->path('user')
             ->profile()
-            ->brandName('SIPRAUSU')
-            ->brandLogo(asset('storage/logo/Logo Pramuka USU.png'))
-            ->brandLogoHeight('1.75rem')
+            ->darkMode(false)
+            ->renderHook('panels::topbar.start', fn() => view('filament.user.topbar-brand'))
+                ->renderHook('panels::styles.after', fn() => view('filament.overrides'))
+                ->renderHook('panels::scripts.after', fn() => view('filament.overrides-js'))
             ->colors([
-                'primary' => Color::hex('#5D4037'),
+                'primary' => Color::hex('#3E271A'),
                 'warning' => Color::hex('#C9A227'),
                 'gray' => Color::Neutral,
             ])

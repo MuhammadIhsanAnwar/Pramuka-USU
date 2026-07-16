@@ -82,9 +82,27 @@ class PublicController extends Controller
 
     public function history(): View
     {
-        return $this->pageView('Sejarah', 'Gerakan Pramuka di USU tumbuh sebagai bagian dari penguatan karakter mahasiswa dan kader kepemimpinan.', [
-            'Unit ini berperan aktif dalam kegiatan kampus, pembinaan internal, dan jejaring antar gugus depan.',
-            'Perjalanan organisasi dibangun di atas semangat Dasa Dharma dan Tri Satya.',
+        $historyPage = \App\Models\HistoryPage::query()
+            ->active()
+            ->orderBy('updated_at', 'desc')
+            ->first();
+
+        if ($historyPage === null) {
+            return view('public.history', [
+                'siteName' => $this->siteName(),
+                'title' => 'Sejarah',
+                'lead' => 'Gerakan Pramuka di USU tumbuh sebagai bagian dari penguatan karakter mahasiswa dan kader kepemimpinan.',
+                'content' => '<p>Unit ini berperan aktif dalam kegiatan kampus, pembinaan internal, dan jejaring antar gugus depan.</p><p>Perjalanan organisasi dibangun di atas semangat Dasa Dharma dan Tri Satya.</p>',
+                'photo_paths' => [],
+            ]);
+        }
+
+        return view('public.history', [
+            'siteName' => $this->siteName(),
+            'title' => $historyPage->title,
+            'lead' => $historyPage->lead,
+            'content' => $historyPage->content,
+            'photo_paths' => $historyPage->photo_paths ?? [],
         ]);
     }
 

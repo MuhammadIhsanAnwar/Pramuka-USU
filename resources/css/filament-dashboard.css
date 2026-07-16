@@ -1,0 +1,5 @@
+/* Filament dashboard override colors to match site theme */
+html.fi .btn-primary{color:#fff!important;background-color:#3E271A!important;border:none!important}
+html.fi .btn-secondary{color:#3E271A!important;border-color:rgba(62,39,26,0.2)!important}
+html.fi .fi-logo .brand-text{color:#3E271A!important}
+:root{--fi-color-primary:#3E271A;--fi-color-warning:#C9A227}

@@ -5,7 +5,7 @@
         <div class="mb-6 flex items-center justify-center flex-col gap-3">
             <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Pramuka USU" width="96" height="96" style="width:96px;height:auto;max-width:100%;object-fit:contain;" class="object-contain" />
             <div class="text-center">
-                <div class="text-xl font-bold text-[#5D4037]">SIPRAUSU</div>
+                <img src="{{ asset('storage/logo/SIPRAUSU.png') }}" alt="SIPRAUSU" style="width:160px;height:auto;max-width:100%;object-fit:contain;margin:0 auto;" />
                 <div class="text-sm text-slate-500">Sistem Informasi Pramuka Universitas Sumatera Utara</div>
             </div>
         </div>

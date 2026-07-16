@@ -4,8 +4,10 @@ namespace App\Filament\Admin\Resources\UserResource\Pages;
 
 use App\Enums\RoleName;
 use App\Filament\Admin\Resources\UserResource;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class EditUser extends EditRecord
 {
@@ -37,5 +39,13 @@ class EditUser extends EditRecord
         $record->syncRoles([$roleName]);
 
         return $record;
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            DeleteAction::make()
+                ->visible(fn (): bool => Auth::id() !== $this->record->id),
+        ];
     }
 }

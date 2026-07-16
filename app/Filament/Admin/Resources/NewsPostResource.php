@@ -31,6 +31,16 @@ class NewsPostResource extends Resource
 
     protected static ?string $navigationLabel = 'Berita';
 
+    public static function getPluralModelLabel(): string
+    {
+        return 'Berita';
+    }
+
+    public static function getSingularModelLabel(): string
+    {
+        return 'Berita';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

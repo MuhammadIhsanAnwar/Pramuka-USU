@@ -20,19 +20,19 @@
 
 @layer components {
     .surface-card {
-        @apply rounded-xl border border-[#5D4037]/10 bg-white shadow-[0_12px_40px_rgba(93,64,55,0.08)];
+        @apply rounded-xl border border-[#3E271A]/10 bg-white shadow-[0_12px_40px_rgba(62,39,26,0.08)];
     }
 
     .section-kicker {
-        @apply inline-flex items-center rounded-full bg-[#F5F5DC] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#5D4037];
+        @apply inline-flex items-center rounded-full bg-[#F5F5DC] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#3E271A];
     }
 
     .btn-primary {
-        @apply inline-flex items-center justify-center rounded-full bg-[#5D4037] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#4a332d];
+        @apply inline-flex items-center justify-center rounded-full bg-[#3E271A] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#2e1d15];
     }
 
     .btn-secondary {
-        @apply inline-flex items-center justify-center rounded-full border border-[#5D4037]/20 bg-white px-5 py-3 text-sm font-semibold text-[#5D4037] transition hover:border-[#5D4037]/40 hover:bg-[#F5F5DC]/50;
+        @apply inline-flex items-center justify-center rounded-full border border-[#3E271A]/20 bg-white px-5 py-3 text-sm font-semibold text-[#3E271A] transition hover:border-[#3E271A]/40 hover:bg-[#F5F5DC]/50;
     }
 
     .quote-attribution {
@@ -121,7 +121,7 @@
 
     #homepage-loader .brand-text {
         font-weight: 700;
-        color: #5D4037;
+        color: #3E271A;
         font-size: 16px;
     }
 
@@ -139,7 +139,7 @@
     #homepage-loader .loader-progress-bar {
         height: 100%;
         width: 0%;
-        background: linear-gradient(90deg, #5D4037 0%, #C9A227 60%);
+        background: linear-gradient(90deg, #3E271A 0%, #C9A227 60%);
         transition: width 180ms linear;
     }
 

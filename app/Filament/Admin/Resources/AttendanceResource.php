@@ -29,6 +29,16 @@ class AttendanceResource extends Resource
 
     protected static ?string $navigationLabel = 'Presensi';
 
+    public static function getPluralModelLabel(): string
+    {
+        return 'Presensi';
+    }
+
+    public static function getSingularModelLabel(): string
+    {
+        return 'Presensi';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

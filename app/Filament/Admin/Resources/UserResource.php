@@ -18,6 +18,7 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use UnitEnum;
 use BackedEnum;
+use Illuminate\Support\Facades\Auth;
 
 class UserResource extends Resource
 {
@@ -28,6 +29,16 @@ class UserResource extends Resource
     protected static string|UnitEnum|null $navigationGroup = 'Manajemen Akun';
 
     protected static ?string $navigationLabel = 'Pengguna';
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Pengguna';
+    }
+
+    public static function getSingularModelLabel(): string
+    {
+        return 'Pengguna';
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -51,7 +62,7 @@ class UserResource extends Resource
                     ->required()
                     ->reactive(),
                 Select::make('jenis_user')
-                    ->label('Jenis User')
+                    ->label('Jenis Pengguna')
                     ->options([
                         'pembina' => 'Pembina',
                         'peserta_didik' => 'Peserta Didik',
@@ -86,7 +97,7 @@ class UserResource extends Resource
                     ->label('Role')
                     ->badge(),
                 TextColumn::make('jenis_user')
-                    ->label('Jenis')
+                    ->label('Jenis Pengguna')
                     ->badge(),
                 ToggleColumn::make('is_active')
                     ->label('Aktif'),
@@ -97,10 +108,14 @@ class UserResource extends Resource
             ])
             ->actions([
                 EditAction::make(),
-                DeleteAction::make(),
+                DeleteAction::make()
+                    ->visible(fn (User $record): bool => Auth::id() !== $record->id)
+                    ->disabled(fn (User $record): bool => Auth::id() === $record->id),
             ])
             ->bulkActions([
-                DeleteBulkAction::make(),
+                DeleteBulkAction::make()
+                    ->visible(fn (): bool => true)
+                    ->disabled(fn (): bool => false),
             ]);
     }
 

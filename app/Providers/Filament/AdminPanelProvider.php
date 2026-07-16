@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Admin\Pages\EditProfile;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -21,12 +22,13 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->profile()
-            ->brandName('SIPRAUSU')
-            ->brandLogo(asset('storage/logo/Logo Pramuka USU.png'))
-            ->brandLogoHeight('1.75rem')
+            ->profile(EditProfile::class)
+            ->darkMode(false)
+            ->renderHook('panels::topbar.start', fn() => view('filament.admin.topbar-brand'))
+            ->renderHook('panels::styles.after', fn() => view('filament.overrides'))
+            ->renderHook('panels::scripts.after', fn() => view('filament.overrides-js'))
             ->colors([
-                'primary' => Color::hex('#5D4037'),
+                'primary' => Color::hex('#3E271A'),
                 'warning' => Color::hex('#C9A227'),
                 'gray' => Color::Neutral,
             ])

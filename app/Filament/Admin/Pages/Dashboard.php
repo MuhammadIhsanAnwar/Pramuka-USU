@@ -13,7 +13,6 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
-            AdminDashboardHeaderWidget::class,
             AdminStatsOverview::class,
             AttendanceChartWidget::class,
             NewsMonthlyChartWidget::class,

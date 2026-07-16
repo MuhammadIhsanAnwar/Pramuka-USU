@@ -28,7 +28,17 @@ class SiteSettingResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Pengaturan';
 
-    protected static ?string $navigationLabel = 'Website';
+    protected static ?string $navigationLabel = 'Pengaturan Website';
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Pengaturan Website';
+    }
+
+    public static function getSingularModelLabel(): string
+    {
+        return 'Pengaturan Website';
+    }
 
     public static function form(Schema $schema): Schema
     {

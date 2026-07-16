@@ -82,6 +82,7 @@
 
                 <nav class="hidden items-center gap-6 text-sm font-medium text-slate-700 md:flex">
                     <a href="{{ route('about') }}" class="transition hover:text-[#5D4037]">Tentang</a>
+                    <a href="{{ route('history') }}" class="transition hover:text-[#5D4037]">Sejarah</a>
                     <a href="{{ route('news.index') }}" class="transition hover:text-[#5D4037]">Berita</a>
                     <a href="{{ route('agenda.index') }}" class="transition hover:text-[#5D4037]">Agenda</a>
                     <a href="{{ route('gallery.index') }}" class="transition hover:text-[#5D4037]">Galeri</a>
@@ -104,6 +105,7 @@
                     <summary class="cursor-pointer list-none rounded-full border border-[#5D4037]/10 bg-white px-4 py-2 text-sm font-semibold text-[#5D4037] shadow-sm">Menu</summary>
                     <div class="absolute right-0 mt-3 w-56 rounded-xl border border-[#5D4037]/10 bg-white p-3 shadow-xl">
                         <a href="{{ route('about') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Tentang</a>
+                        <a href="{{ route('history') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Sejarah</a>
                         <a href="{{ route('news.index') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Berita</a>
                         <a href="{{ route('agenda.index') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Agenda</a>
                         <a href="{{ route('gallery.index') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Galeri</a>
@@ -141,8 +143,10 @@
                     <div class="mt-4 flex flex-col gap-3 text-sm text-slate-600">
                         <a href="{{ route('home') }}">Home</a>
                         <a href="{{ route('about') }}">Tentang Kami</a>
+                        <a href="{{ route('history') }}">Sejarah</a>
                         <a href="{{ route('news.index') }}">Berita</a>
                         <a href="{{ route('agenda.index') }}">Agenda</a>
+                        <a href="{{ route('surat-masuk') }}">Surat Masuk</a>
                     </div>
                 </div>
                 <div>

@@ -31,6 +31,16 @@ class AboutMemberResource extends Resource
 
     protected static ?string $navigationLabel = 'Anggota Tim';
 
+    public static function getPluralModelLabel(): string
+    {
+        return 'Anggota Tim';
+    }
+
+    public static function getSingularModelLabel(): string
+    {
+        return 'Anggota Tim';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

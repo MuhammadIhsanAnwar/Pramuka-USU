@@ -28,6 +28,16 @@ class AboutGroupResource extends Resource
 
     protected static ?string $navigationLabel = 'Grup Tim';
 
+    public static function getPluralModelLabel(): string
+    {
+        return 'Grup Tim';
+    }
+
+    public static function getSingularModelLabel(): string
+    {
+        return 'Grup Tim';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -37,12 +47,7 @@ class AboutGroupResource extends Resource
                     ->label('Nama Grup')
                     ->required()
                     ->maxLength(255),
-                TextInput::make('slug')
-                    ->label('Slug')
-                    ->required()
-                    ->maxLength(150)
-                    ->unique(ignoreRecord: true)
-                    ->helperText('Slug digunakan untuk identifikasi tab menu.'),
+                // slug field removed from form
                 Textarea::make('description')
                     ->label('Deskripsi Grup')
                     ->rows(4)
@@ -62,7 +67,7 @@ class AboutGroupResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')->label('Nama')->searchable()->sortable(),
-                TextColumn::make('slug')->label('Slug')->searchable(),
+                // slug column removed from table
                 TextColumn::make('description')->label('Deskripsi')->limit(80),
                 TextColumn::make('order')->label('Urutan')->sortable(),
                 ToggleColumn::make('is_active')->label('Aktif'),

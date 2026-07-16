@@ -16,7 +16,7 @@
     @endif
 
     <div class="flex min-w-0 flex-col leading-none" style="font-size: inherit; line-height: 1.1; margin-left: 0.15rem;">
-        <div style="font-size: 0.86rem; font-weight: 700; letter-spacing: 0.04em; color: #5D4037; text-transform: uppercase;">SIPRAUSU</div>
+        <div style="font-size: 0.86rem; font-weight: 700; letter-spacing: 0.04em; color: #3E271A; text-transform: uppercase;">SIPRAUSU</div>
         <div style="margin-top: 0.14rem; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.01em; color: #64748b;">Sistem Informasi Pramuka Universitas Sumatera Utara</div>
     </div>
 </div>

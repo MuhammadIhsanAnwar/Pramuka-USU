@@ -31,6 +31,16 @@ class EventAgendaResource extends Resource
 
     protected static ?string $navigationLabel = 'Agenda';
 
+    public static function getPluralModelLabel(): string
+    {
+        return 'Agenda';
+    }
+
+    public static function getSingularModelLabel(): string
+    {
+        return 'Agenda';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

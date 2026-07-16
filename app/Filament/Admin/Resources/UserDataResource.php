@@ -23,7 +23,17 @@ class UserDataResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Manajemen Akun';
 
-    protected static ?string $navigationLabel = 'Data User';
+    protected static ?string $navigationLabel = 'Data Pengguna';
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Data Pengguna';
+    }
+
+    public static function getSingularModelLabel(): string
+    {
+        return 'Data Pengguna';
+    }
 
     protected static ?int $navigationSort = 2;
 
@@ -51,7 +61,7 @@ class UserDataResource extends Resource
                     ->label('Role')
                     ->badge(),
                 TextColumn::make('jenis_user')
-                    ->label('Jenis User')
+                    ->label('Jenis Pengguna')
                     ->badge(),
                 TextColumn::make('phone')
                     ->label('Telepon')
