@@ -63,7 +63,8 @@ class IncomingLetterResource extends Resource
                     ->rows(4),
                 FileUpload::make('file_path')
                     ->label('Upload File')
-                    ->directory('incoming-letters')
+                    ->directory('surat_masuk')
+                    ->disk('public')
                     ->visibility('public')
                     ->acceptedFileTypes(['application/pdf','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
                     ->maxSize(4096)

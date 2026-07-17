@@ -76,8 +76,7 @@ class EventAgendaResource extends Resource
                 FileUpload::make('poster_path')
                     ->label('Poster')
                     ->image()
-                    ->directory('agendas/posters')
-                    ->visibility('public')
+                    ->directory('agendas/posters')                    ->disk('public')                    ->visibility('public')
                     ->maxSize(4096),
                 RichEditor::make('description')
                     ->label('Deskripsi')

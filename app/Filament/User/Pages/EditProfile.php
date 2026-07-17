@@ -109,6 +109,7 @@ class EditProfile extends BaseEditProfile
                                                     ->label('Upload Pas Foto')
                                                     ->image()
                                                     ->directory('avatars')
+                                                    ->disk('public')
                                                     ->visibility('public')
                                                     ->maxSize(2048)
                                                     ->imageCropAspectRatio('3:4')

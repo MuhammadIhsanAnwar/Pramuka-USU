@@ -43,6 +43,8 @@ class SiteSettingResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
+        SiteSetting::ensureDefaultSettings();
+
         return $schema
             ->columns(2)
             ->components([
@@ -84,6 +86,7 @@ class SiteSettingResource extends Resource
                 FileUpload::make('setting_value')
                     ->label('Nilai')
                     ->directory('beranda')
+                    ->disk('public')
                     ->visibility('public')
                     ->acceptedFileTypes(fn (callable $get): array => $get('setting_type') === 'video'
                         ? ['video/mp4', 'video/webm', 'video/ogg']
@@ -103,6 +106,8 @@ class SiteSettingResource extends Resource
 
     public static function table(Table $table): Table
     {
+        SiteSetting::ensureDefaultSettings();
+
         return $table
             ->columns([
                 TextColumn::make('label')->searchable(),

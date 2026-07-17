@@ -77,6 +77,7 @@ class AboutMemberResource extends Resource
                     ->imagePreviewHeight('280')
                     ->helperText('Unggah foto maksimal 2MB dengan rasio 3:4. Jika file terlalu besar, kompres gambar sebelum mengunggah.')
                     ->directory('about-members')
+                    ->disk('public')
                     ->visibility('public')
                     ->maxSize(2048),
                 Toggle::make('is_active')

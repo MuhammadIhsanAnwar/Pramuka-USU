@@ -66,7 +66,8 @@ class NewsPostResource extends Resource
                 FileUpload::make('thumbnail_path')
                     ->label('Thumbnail')
                     ->image()
-                    ->directory('news/thumbnails')
+                    ->directory('berita')
+                    ->disk('public')
                     ->visibility('public')
                     ->maxSize(4096),
                 DateTimePicker::make('published_at')

@@ -54,7 +54,8 @@ class GalleryResource extends Resource
                     ->label('Foto')
                     ->image()
                     ->required()
-                    ->directory('galleries')
+                    ->directory('galeri')
+                    ->disk('public')
                     ->visibility('public')
                     ->maxSize(4096),
                 Textarea::make('description')

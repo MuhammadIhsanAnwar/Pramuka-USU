@@ -14,11 +14,15 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PublicController extends Controller
 {
     public function home(): View
     {
+        SiteSetting::ensureDefaultSettings();
+
         $homeData = Cache::get('public.home.data');
 
         if (! is_array($homeData)
@@ -31,10 +35,19 @@ class PublicController extends Controller
 
         return view('public.home', [
             'siteName' => $this->siteName(),
-            'backgroundImage' => $this->settingValue('home_background_image', asset('storage/beranda/Beranda.png')),
-            'videoIntro' => $this->settingValue('intro_video', asset('storage/beranda/Intro.mp4')),
+            'backgroundImage' => $this->normalizeSettingPath($this->settingValue('home_background_image', '/storage/beranda/Beranda.png', true)),
+            'videoIntro' => $this->normalizeSettingPath($this->settingValue('intro_video', '/storage/beranda/Intro.mp4', true)),
             ...$homeData,
         ]);
+    }
+
+    private function normalizeSettingPath(mixed $path): string
+    {
+        if (is_string($path) && Str::startsWith($path, ['http://', 'https://'])) {
+            return $path;
+        }
+
+        return asset(ltrim((string) $path, '/'));
     }
 
     private function buildHomeData(): array
@@ -255,10 +268,25 @@ class PublicController extends Controller
 
         $value = $setting->value;
 
-        if (is_array($value)) {
-            return $value[0] ?? $default;
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $value = $decoded;
+            }
         }
 
-        return $value ?? $default;
+        if (is_array($value)) {
+            if (array_key_exists(0, $value)) {
+                return $value[0];
+            }
+
+            return $default;
+        }
+
+        if ($value === null || $value === '') {
+            return $default;
+        }
+
+        return $value;
     }
 }

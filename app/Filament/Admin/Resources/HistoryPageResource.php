@@ -57,7 +57,8 @@ class HistoryPageResource extends Resource
                     ->label('Foto Sejarah')
                     ->image()
                     ->multiple()
-                    ->directory('history-pages')
+                    ->directory('sejarah')
+                    ->disk('public')
                     ->visibility('public')
                     ->maxSize(4096)
                     ->columnSpanFull(),
