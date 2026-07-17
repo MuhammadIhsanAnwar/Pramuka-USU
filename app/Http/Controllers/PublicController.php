@@ -35,14 +35,33 @@ class PublicController extends Controller
 
         return view('public.home', [
             'siteName' => $this->siteName(),
-            'backgroundImage' => $this->normalizeSettingPath($this->settingValue('home_background_image', '/storage/beranda/Beranda.png', true)),
-            'videoIntro' => $this->normalizeSettingPath($this->settingValue('intro_video', '/storage/beranda/Intro.mp4', true)),
+            'backgroundImage' => $this->resolveHomeAsset('home_background_image', '/storage/beranda/Beranda.png'),
+            'videoIntro' => $this->resolveHomeAsset('intro_video', '/storage/beranda/Intro.mp4'),
             ...$homeData,
         ]);
     }
 
-    private function normalizeSettingPath(mixed $path): string
+    private function resolveHomeAsset(string $key, string $default): ?string
     {
+        $value = $this->settingValue($key, $default, true);
+
+        if ($value === false) {
+            return null;
+        }
+
+        if ($value === null || $value === '') {
+            return $this->normalizeSettingPath($default);
+        }
+
+        return $this->normalizeSettingPath($value);
+    }
+
+    private function normalizeSettingPath(mixed $path): ?string
+    {
+        if ($path === false || $path === null || $path === '') {
+            return null;
+        }
+
         if (is_string($path) && Str::startsWith($path, ['http://', 'https://'])) {
             return $path;
         }
@@ -256,7 +275,7 @@ class PublicController extends Controller
         return (string) $this->settingValue('site_name', 'Pramuka USU');
     }
 
-    private function settingValue(string $key, mixed $default = null): mixed
+    private function settingValue(string $key, mixed $default = null, bool $allowFalsy = false): mixed
     {
         $setting = SiteSetting::query()
             ->where('setting_key', $key)
@@ -280,11 +299,11 @@ class PublicController extends Controller
                 return $value[0];
             }
 
-            return $default;
+            return $allowFalsy ? null : $default;
         }
 
         if ($value === null || $value === '') {
-            return $default;
+            return $allowFalsy ? $value : $default;
         }
 
         return $value;

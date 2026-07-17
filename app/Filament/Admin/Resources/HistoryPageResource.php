@@ -65,9 +65,7 @@ class HistoryPageResource extends Resource
                 RichEditor::make('content')
                     ->label('Konten')
                     ->columnSpanFull(),
-                Toggle::make('is_active')
-                    ->label('Aktif')
-                    ->default(true),
+
             ]);
     }
 
@@ -82,8 +80,6 @@ class HistoryPageResource extends Resource
                 TextColumn::make('lead')
                     ->label('Lead')
                     ->limit(80),
-                ToggleColumn::make('is_active')
-                    ->label('Aktif'),
             ])
             ->actions([
                 EditAction::make(),

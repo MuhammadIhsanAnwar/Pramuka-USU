@@ -56,9 +56,7 @@ class AboutGroupResource extends Resource
                     ->label('Urutan')
                     ->numeric()
                     ->default(0),
-                Toggle::make('is_active')
-                    ->label('Aktif')
-                    ->default(true),
+
             ]);
     }
 
@@ -70,7 +68,6 @@ class AboutGroupResource extends Resource
                 // slug column removed from table
                 TextColumn::make('description')->label('Deskripsi')->limit(80),
                 TextColumn::make('order')->label('Urutan')->sortable(),
-                ToggleColumn::make('is_active')->label('Aktif'),
             ])
             ->actions([
                 EditAction::make(),

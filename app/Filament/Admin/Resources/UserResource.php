@@ -6,8 +6,8 @@ use App\Enums\RoleName;
 use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
@@ -16,9 +16,10 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 use BackedEnum;
-use Illuminate\Support\Facades\Auth;
 
 class UserResource extends Resource
 {
@@ -100,7 +101,8 @@ class UserResource extends Resource
                     ->label('Jenis Pengguna')
                     ->badge(),
                 ToggleColumn::make('is_active')
-                    ->label('Aktif'),
+                    ->label('Aktif')
+                    ->hidden(fn (?User $record): bool => Filament::auth()->id() !== null && Filament::auth()->id() === $record?->id),
                 TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->dateTime()
@@ -109,14 +111,15 @@ class UserResource extends Resource
             ->actions([
                 EditAction::make(),
                 DeleteAction::make()
-                    ->visible(fn (User $record): bool => Auth::id() !== $record->id)
-                    ->disabled(fn (User $record): bool => Auth::id() === $record->id),
+                    ->visible(fn (User $record): bool => Filament::auth()->id() !== $record->id)
+                    ->disabled(fn (User $record): bool => Filament::auth()->id() === $record->id),
             ])
-            ->bulkActions([
-                DeleteBulkAction::make()
-                    ->visible(fn (): bool => true)
-                    ->disabled(fn (): bool => false),
-            ]);
+            ->bulkActions([]);
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return Filament::auth()->id() !== $record->id && parent::canDelete($record);
     }
 
     public static function getPages(): array

@@ -49,9 +49,7 @@ class NewsCategoryResource extends Resource
                 ->label('Deskripsi')
                 ->columnSpanFull()
                 ->rows(4),
-            Toggle::make('is_active')
-                ->label('Aktif')
-                ->default(true),
+
         ]);
     }
 
@@ -62,8 +60,6 @@ class NewsCategoryResource extends Resource
                 ->label('Nama')
                 ->searchable()
                 ->sortable(),
-            ToggleColumn::make('is_active')
-                ->label('Aktif'),
             TextColumn::make('created_at')
                 ->label('Dibuat')
                 ->dateTime()

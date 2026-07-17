@@ -80,9 +80,7 @@ class AboutMemberResource extends Resource
                     ->disk('public')
                     ->visibility('public')
                     ->maxSize(2048),
-                Toggle::make('is_active')
-                    ->label('Aktif')
-                    ->default(true),
+
             ]);
     }
 
@@ -107,8 +105,6 @@ class AboutMemberResource extends Resource
                 TextColumn::make('order')
                     ->label('Urutan')
                     ->sortable(),
-                ToggleColumn::make('is_active')
-                    ->label('Aktif'),
             ])
             ->actions([
                 EditAction::make(),

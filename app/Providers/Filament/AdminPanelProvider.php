@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Admin\Pages\EditProfile;
+use Filament\Enums\UserMenuPosition;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -23,6 +24,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->profile(EditProfile::class)
+            ->topbar(true)
+            ->userMenu(true, UserMenuPosition::Topbar)
             ->darkMode(false)
             ->renderHook('panels::topbar.start', fn() => view('filament.admin.topbar-brand'))
             ->renderHook('panels::styles.after', fn() => view('filament.overrides'))

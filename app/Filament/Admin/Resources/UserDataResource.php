@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\UserDataResource\Pages;
 use App\Models\User;
 use BackedEnum;
 use Filament\Resources\Resource;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Card;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Tables\Columns\ImageColumn;
@@ -13,6 +14,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class UserDataResource extends Resource
@@ -78,7 +80,8 @@ class UserDataResource extends Resource
                     ->limit(80)
                     ->wrap(),
                 ToggleColumn::make('is_active')
-                    ->label('Aktif'),
+                    ->label('Aktif')
+                    ->hidden(fn (?User $record): bool => Filament::auth()->id() === $record?->id),
                 TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->dateTime()

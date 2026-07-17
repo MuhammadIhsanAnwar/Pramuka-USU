@@ -98,9 +98,6 @@ class SiteSettingResource extends Resource
                     ->label('Nilai')
                     ->visible(fn (callable $get): bool => $get('setting_type') === 'toggle')
                     ->columnSpanFull(),
-                Toggle::make('is_public')
-                    ->label('Publik')
-                    ->default(true),
             ]);
     }
 
@@ -130,7 +127,7 @@ class SiteSettingResource extends Resource
                         'toggle' => 'Tombol',
                         default => $state,
                     }),
-                ToggleColumn::make('is_public'),
+
             ])
             ->actions([
                 EditAction::make(),

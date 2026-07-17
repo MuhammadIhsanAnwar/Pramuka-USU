@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\UserResource\Pages;
 use App\Enums\RoleName;
 use App\Filament\Admin\Resources\UserResource;
 use Filament\Actions\DeleteAction;
+use Filament\Facades\Filament;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -45,7 +46,12 @@ class EditUser extends EditRecord
     {
         return [
             DeleteAction::make()
-                ->visible(fn (): bool => Auth::id() !== $this->record->id),
+                ->visible(fn (): bool => Filament::auth()->id() !== $this->record->id),
         ];
+    }
+
+    protected function canDelete(Model $record): bool
+    {
+        return Filament::auth()->id() !== $record->id && parent::canDelete($record);
     }
 }
