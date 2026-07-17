@@ -7,16 +7,17 @@ use App\Models\SiteSetting;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use BackedEnum;
 use UnitEnum;
 
@@ -46,31 +47,54 @@ class SiteSettingResource extends Resource
             ->columns(2)
             ->components([
                 TextInput::make('setting_key')
-                    ->label('Key')
+                    ->label('Kunci')
+                    ->hidden()
                     ->required()
                     ->unique(ignoreRecord: true)
+                    ->default(fn (callable $get): string => Str::slug($get('label') ?? ''))
                     ->maxLength(255),
                 TextInput::make('label')
                     ->label('Label')
                     ->required()
                     ->maxLength(255),
                 TextInput::make('setting_group')
-                    ->label('Group')
+                    ->label('Grup')
                     ->maxLength(255),
                 Select::make('setting_type')
                     ->label('Tipe')
                     ->options([
-                        'text' => 'Text',
+                        'text' => 'Teks',
                         'textarea' => 'Textarea',
-                        'image' => 'Image',
-                        'number' => 'Number',
+                        'image' => 'Gambar',
+                        'video' => 'Video',
+                        'number' => 'Angka',
+                        'toggle' => 'Tombol',
                     ])
                     ->required()
                     ->default('text'),
+                TextInput::make('setting_value')
+                    ->label('Nilai')
+                    ->visible(fn (callable $get): bool => $get('setting_type') === 'text' || $get('setting_type') === 'number')
+                    ->columnSpanFull(),
                 Textarea::make('setting_value')
                     ->label('Nilai')
+                    ->visible(fn (callable $get): bool => $get('setting_type') === 'textarea')
                     ->columnSpanFull()
                     ->rows(4),
+                FileUpload::make('setting_value')
+                    ->label('Nilai')
+                    ->directory('beranda')
+                    ->visibility('public')
+                    ->acceptedFileTypes(fn (callable $get): array => $get('setting_type') === 'video'
+                        ? ['video/mp4', 'video/webm', 'video/ogg']
+                        : ['image/jpeg', 'image/png', 'image/webp'])
+                    ->visible(fn (callable $get): bool => in_array($get('setting_type'), ['image', 'video'], true))
+                    ->columnSpanFull()
+                    ->maxSize(10240),
+                Toggle::make('setting_value')
+                    ->label('Nilai')
+                    ->visible(fn (callable $get): bool => $get('setting_type') === 'toggle')
+                    ->columnSpanFull(),
                 Toggle::make('is_public')
                     ->label('Publik')
                     ->default(true),
@@ -81,15 +105,26 @@ class SiteSettingResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('setting_key')->searchable()->sortable(),
                 TextColumn::make('label')->searchable(),
-                TextColumn::make('setting_group')->badge()->toggleable(),
-                BadgeColumn::make('setting_type')->colors([
-                    'gray' => 'text',
-                    'info' => 'textarea',
-                    'success' => 'image',
-                    'warning' => 'number',
-                ]),
+                TextColumn::make('setting_group')->label('Grup')->badge()->toggleable(),
+                TextColumn::make('setting_type')
+                    ->label('Tipe')
+                    ->badge()
+                    ->colors([
+                        'gray' => 'text',
+                        'info' => 'textarea',
+                        'success' => 'image',
+                        'warning' => 'number',
+                        'primary' => 'toggle',
+                    ])
+                    ->formatStateUsing(fn (?string $state): ?string => match ($state) {
+                        'text' => 'Teks',
+                        'textarea' => 'Textarea',
+                        'image' => 'Gambar',
+                        'number' => 'Angka',
+                        'toggle' => 'Tombol',
+                        default => $state,
+                    }),
                 ToggleColumn::make('is_public'),
             ])
             ->actions([

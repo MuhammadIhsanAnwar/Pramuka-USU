@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @section('content')
-<section class="w-full bg-center relative overflow-hidden" style="min-height: 420px; background-image: url('/storage/beranda/Beranda.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+<section class="w-full bg-center relative overflow-hidden" style="min-height: 420px; background-image: url('{{ $backgroundImage }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
     <div class="absolute inset-0 bg-slate-950/20"></div>
     <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24 relative z-10">
         <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
@@ -18,7 +18,7 @@
             </div>
             <div class="flex flex-col items-center justify-end gap-5">
                 <div class="w-full max-w-md overflow-hidden rounded-4xl bg-white/10 shadow-[0_30px_60px_-20px_rgba(15,23,42,0.65)] ring-1 ring-white/10 backdrop-blur-xl">
-                    <video src="{{ asset('storage/beranda/Intro.mp4') }}" autoplay muted loop playsinline class="h-full w-full rounded-4xl block object-cover"></video>
+                    <video src="{{ $videoIntro }}" autoplay muted loop playsinline class="h-full w-full rounded-4xl block object-cover"></video>
                 </div>
                 <div class="mx-auto w-max overflow-hidden rounded-full bg-white px-4 py-3 shadow-[0_20px_45px_-20px_rgba(15,23,42,0.25)] ring-1 ring-slate-300/80 backdrop-blur-sm">
                     <div class="flex items-center justify-center gap-1.5 whitespace-nowrap">

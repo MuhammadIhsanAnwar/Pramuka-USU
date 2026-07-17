@@ -23,6 +23,7 @@ class UserPanelProvider extends PanelProvider
             ->path('user')
             ->profile()
             ->darkMode(false)
+            ->middleware(['maintenance'])
             ->renderHook('panels::topbar.start', fn() => view('filament.user.topbar-brand'))
                 ->renderHook('panels::styles.after', fn() => view('filament.overrides'))
                 ->renderHook('panels::scripts.after', fn() => view('filament.overrides-js'))

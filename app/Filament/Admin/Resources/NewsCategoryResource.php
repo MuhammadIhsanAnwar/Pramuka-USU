@@ -45,11 +45,6 @@ class NewsCategoryResource extends Resource
                 ->label('Nama')
                 ->required()
                 ->maxLength(150),
-            TextInput::make('slug')
-                ->label('Slug')
-                ->disabled()
-                ->dehydrated(false)
-                ->helperText('Slug dibuat otomatis dari nama.'),
             Textarea::make('description')
                 ->label('Deskripsi')
                 ->columnSpanFull()
@@ -63,10 +58,16 @@ class NewsCategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            TextColumn::make('name')->searchable()->sortable(),
-            TextColumn::make('slug')->searchable(),
-            ToggleColumn::make('is_active'),
-            TextColumn::make('created_at')->dateTime()->sortable(),
+            TextColumn::make('name')
+                ->label('Nama')
+                ->searchable()
+                ->sortable(),
+            ToggleColumn::make('is_active')
+                ->label('Aktif'),
+            TextColumn::make('created_at')
+                ->label('Dibuat')
+                ->dateTime()
+                ->sortable(),
         ])->actions([
             EditAction::make(),
             DeleteAction::make(),

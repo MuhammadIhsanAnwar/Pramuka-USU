@@ -14,7 +14,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -56,16 +55,11 @@ class NewsPostResource extends Resource
                     ->label('Judul')
                     ->required()
                     ->maxLength(255),
-                TextInput::make('slug')
-                    ->label('Slug')
-                    ->disabled()
-                    ->dehydrated(false)
-                    ->helperText('Slug dibuat otomatis dari judul.'),
                 Select::make('status')
                     ->label('Status')
                     ->options([
-                        'draft' => 'Draft',
-                        'publish' => 'Publish',
+                        'draft' => 'Draf',
+                        'publish' => 'Terbit',
                     ])
                     ->required()
                     ->default('draft'),
@@ -96,26 +90,34 @@ class NewsPostResource extends Resource
                     ->label('Thumbnail')
                     ->square(),
                 TextColumn::make('title')
+                    ->label('Judul')
                     ->searchable()
                     ->sortable()
                     ->limit(40),
                 TextColumn::make('category.name')
                     ->label('Kategori')
                     ->badge(),
-                BadgeColumn::make('status')
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
                     ->colors([
                         'gray' => 'draft',
                         'success' => 'publish',
-                    ]),
+                    ])
+                    ->formatStateUsing(fn (?string $state): ?string => match ($state) {
+                        'draft' => 'Draf',
+                        'publish' => 'Terbit',
+                        default => $state,
+                    }),
                 TextColumn::make('author.name')
                     ->label('Penulis')
                     ->toggleable(),
                 TextColumn::make('published_at')
-                    ->label('Publish')
+                    ->label('Tanggal Terbit')
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('viewer_count')
-                    ->label('Viewer')
+                    ->label('Jumlah Pengunjung')
                     ->sortable(),
             ])
             ->actions([

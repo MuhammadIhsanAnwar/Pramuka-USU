@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class SiteSetting extends Model
 {
@@ -35,5 +36,14 @@ class SiteSetting extends Model
             get: static fn ($value, array $attributes) => $attributes['setting_value'] ?? null,
             set: static fn ($value) => ['setting_value' => is_array($value) ? $value : [$value]],
         );
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $setting): void {
+            if (empty($setting->setting_key) && filled($setting->label)) {
+                $setting->setting_key = Str::slug($setting->label);
+            }
+        });
     }
 }

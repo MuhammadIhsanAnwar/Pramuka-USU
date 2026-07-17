@@ -8,22 +8,24 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
-Route::get('/', [PublicController::class, 'home'])->name('home');
-Route::redirect('/home', '/');
-Route::get('/tentang-kami', [PublicController::class, 'about'])->name('about');
-Route::get('/sejarah', [PublicController::class, 'history'])->name('history');
-Route::get('/visi-misi', [PublicController::class, 'visionMission'])->name('vision-mission');
-Route::get('/struktur-organisasi', [PublicController::class, 'structure'])->name('structure');
-Route::get('/berita', [PublicController::class, 'newsIndex'])->name('news.index');
-Route::get('/berita/{slug}', [PublicController::class, 'newsShow'])->name('news.show');
-Route::get('/agenda', [PublicController::class, 'agendaIndex'])->name('agenda.index');
-Route::get('/agenda/{eventAgenda}', [PublicController::class, 'agendaShow'])->name('agenda.show');
-Route::get('/galeri', [PublicController::class, 'galleryIndex'])->name('gallery.index');
-Route::get('/galeri/{gallery}', [PublicController::class, 'galleryShow'])->name('gallery.show');
-Route::get('/kontak', [PublicController::class, 'contact'])->name('contact');
-Route::get('/surat-masuk', function () {
-    return view('public.surat-masuk');
-})->name('surat-masuk');
+Route::middleware(['maintenance'])->group(function (): void {
+    Route::get('/', [PublicController::class, 'home'])->name('home');
+    Route::redirect('/home', '/');
+    Route::get('/tentang-kami', [PublicController::class, 'about'])->name('about');
+    Route::get('/sejarah', [PublicController::class, 'history'])->name('history');
+    Route::get('/visi-misi', [PublicController::class, 'visionMission'])->name('vision-mission');
+    Route::get('/struktur-organisasi', [PublicController::class, 'structure'])->name('structure');
+    Route::get('/berita', [PublicController::class, 'newsIndex'])->name('news.index');
+    Route::get('/berita/{slug}', [PublicController::class, 'newsShow'])->name('news.show');
+    Route::get('/agenda', [PublicController::class, 'agendaIndex'])->name('agenda.index');
+    Route::get('/agenda/{eventAgenda}', [PublicController::class, 'agendaShow'])->name('agenda.show');
+    Route::get('/galeri', [PublicController::class, 'galleryIndex'])->name('gallery.index');
+    Route::get('/galeri/{gallery}', [PublicController::class, 'galleryShow'])->name('gallery.show');
+    Route::get('/kontak', [PublicController::class, 'contact'])->name('contact');
+    Route::get('/surat-masuk', function () {
+        return view('public.surat-masuk');
+    })->name('surat-masuk');
+});
 
 // Incoming letters are managed by Filament resource pages. Add a compatibility
 // redirect so legacy links to `/admin/surat-masuk` open the Filament CRUD index.

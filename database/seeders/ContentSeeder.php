@@ -28,6 +28,9 @@ class ContentSeeder extends Seeder
             ['setting_key' => 'hero_subtitle', 'setting_group' => 'home', 'label' => 'Subjudul Hero', 'setting_type' => 'textarea', 'setting_value' => 'Wadah pembinaan karakter, kepemimpinan, dan pengabdian di lingkungan Universitas Sumatera Utara.', 'is_public' => true],
             ['setting_key' => 'contact_email', 'setting_group' => 'contact', 'label' => 'Email Kontak', 'setting_type' => 'text', 'setting_value' => 'pramuka@usu.ac.id', 'is_public' => true],
             ['setting_key' => 'contact_phone', 'setting_group' => 'contact', 'label' => 'Telepon Kontak', 'setting_type' => 'text', 'setting_value' => '+62 61 12345678', 'is_public' => true],
+            ['setting_key' => 'home_background_image', 'setting_group' => 'home', 'label' => 'Gambar Latar Beranda', 'setting_type' => 'image', 'setting_value' => '/storage/beranda/Beranda.png', 'is_public' => true],
+            ['setting_key' => 'intro_video', 'setting_group' => 'home', 'label' => 'Video Intro Beranda', 'setting_type' => 'video', 'setting_value' => '/storage/beranda/Intro.mp4', 'is_public' => true],
+            ['setting_key' => 'maintenance_mode', 'setting_group' => 'general', 'label' => 'Mode Pemeliharaan', 'setting_type' => 'toggle', 'setting_value' => false, 'is_public' => false],
         ];
 
         foreach ($settings as $setting) {

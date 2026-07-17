@@ -31,6 +31,8 @@ class PublicController extends Controller
 
         return view('public.home', [
             'siteName' => $this->siteName(),
+            'backgroundImage' => $this->settingValue('home_background_image', asset('storage/beranda/Beranda.png')),
+            'videoIntro' => $this->settingValue('intro_video', asset('storage/beranda/Intro.mp4')),
             ...$homeData,
         ]);
     }
