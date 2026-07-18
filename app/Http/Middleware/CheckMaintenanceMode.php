@@ -6,10 +6,11 @@ use App\Models\SiteSetting;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Http\RedirectResponse;
 
 class CheckMaintenanceMode
 {
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next): Response|RedirectResponse
     {
         $setting = SiteSetting::query()
             ->where('setting_key', 'maintenance_mode')

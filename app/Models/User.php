@@ -225,20 +225,14 @@ class User extends Authenticatable implements FilamentUser
             return false;
         }
 
-        $email = strtolower((string) $this->email);
-        $isAdminEmail = in_array($email, ['pramuka@usu.ac.id', 'admin@pramuka-usu.local'], true);
-        $hasAdminRole = method_exists($this, 'hasRole') && $this->hasRole('Admin');
-        $hasUserRole = method_exists($this, 'hasRole') && $this->hasRole('User');
+        $hasAdminRole = method_exists($this, 'hasRole') && $this->hasRole(RoleName::Admin->value);
+        $hasUserRole = method_exists($this, 'hasRole') && $this->hasRole(RoleName::User->value);
 
-        if ($panel->getId() === 'admin') {
-            return $hasAdminRole || $hasUserRole || $isAdminEmail;
-        }
-
-        if ($panel->getId() === 'user') {
-            return $hasUserRole || $hasAdminRole || $isAdminEmail;
-        }
-
-        return false;
+        return match ($panel->getId()) {
+            'admin' => $hasAdminRole,
+            'user' => $hasUserRole && ! $hasAdminRole,
+            default => false,
+        };
     }
 
     protected function email(): Attribute

@@ -23,7 +23,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('access-user-dashboard', static function (User $user): bool {
-            return $user->hasRole('User');
+            return $user->hasRole('User') && ! $user->hasRole('Admin');
         });
     }
 }

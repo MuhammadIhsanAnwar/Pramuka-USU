@@ -20,6 +20,9 @@ class UserDashboardSummaryWidget extends Widget
 
         return [
             'user' => $user,
+            'attendanceCount' => Attendance::query()
+                ->where('user_id', $user->id)
+                ->count(),
             'attendanceHistory' => Attendance::query()
                 ->with('agenda')
                 ->where('user_id', $user->id)
@@ -31,6 +34,13 @@ class UserDashboardSummaryWidget extends Widget
                 ->latest()
                 ->take(5)
                 ->get(),
+            'newsCount' => NewsPost::query()
+                ->where('author_id', $user->id)
+                ->count(),
+            'upcomingAgendaCount' => EventAgenda::query()
+                ->published()
+                ->upcoming()
+                ->count(),
             'upcomingAgendas' => EventAgenda::query()
                 ->published()
                 ->upcoming()

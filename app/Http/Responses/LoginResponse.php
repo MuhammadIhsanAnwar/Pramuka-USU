@@ -29,7 +29,7 @@ class LoginResponse implements LoginResponseContract
         $user = Auth::user();
 
         if ($user instanceof User && $user->needsProfileCompletion()) {
-            return redirect()->intended(url('/dashboard/profile'));
+            return redirect()->intended(url('/dashboard'));
         }
 
         if ($user instanceof User && $user->hasRole(RoleName::Admin->value)) {
