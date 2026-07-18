@@ -102,17 +102,17 @@ class UserResource extends Resource
                     ->badge(),
                 ToggleColumn::make('is_active')
                     ->label('Aktif')
-                    ->hidden(fn (?User $record): bool => Filament::auth()->id() !== null && Filament::auth()->id() === $record?->id),
+                    ->disabled(fn (?User $record): bool => Filament::auth()->id() !== null && Filament::auth()->id() === $record?->id),
                 TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->dateTime()
                     ->sortable(),
             ])
             ->actions([
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn (User $record): bool => Filament::auth()->id() !== $record->id),
                 DeleteAction::make()
-                    ->visible(fn (User $record): bool => Filament::auth()->id() !== $record->id)
-                    ->disabled(fn (User $record): bool => Filament::auth()->id() === $record->id),
+                    ->visible(fn (User $record): bool => Filament::auth()->id() !== $record->id),
             ])
             ->bulkActions([]);
     }

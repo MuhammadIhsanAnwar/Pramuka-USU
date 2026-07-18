@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\User\Pages\EditProfile;
+use Filament\Enums\UserMenuPosition;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -21,19 +22,20 @@ class UserPanelProvider extends PanelProvider
         return $panel
             ->id('user')
             ->path('user')
-            ->profile()
+            ->profile(EditProfile::class, false)
+            ->topbar(true)
+            ->userMenu(true, UserMenuPosition::Topbar)
             ->darkMode(false)
             ->middleware(['maintenance'])
             ->renderHook('panels::topbar.start', fn() => view('filament.user.topbar-brand'))
-                ->renderHook('panels::styles.after', fn() => view('filament.overrides'))
-                ->renderHook('panels::scripts.after', fn() => view('filament.overrides-js'))
+            ->renderHook('panels::styles.after', fn() => view('filament.overrides'))
+            ->renderHook('panels::scripts.after', fn() => view('filament.overrides-js'))
             ->colors([
                 'primary' => Color::hex('#3E271A'),
                 'warning' => Color::hex('#C9A227'),
                 'gray' => Color::Neutral,
             ])
             ->font('Inter')
-            ->profile(EditProfile::class, false)
             ->discoverPages(in: app_path('Filament/User/Pages'), for: 'App\\Filament\\User\\Pages')
             ->discoverWidgets(in: app_path('Filament/User/Widgets'), for: 'App\\Filament\\User\\Widgets')
             ->authMiddleware([
