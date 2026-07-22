@@ -22,6 +22,7 @@ class NewsPost extends Model
         'title',
         'slug',
         'thumbnail_path',
+        'image_paths',
         'excerpt',
         'content',
         'status',
@@ -32,6 +33,7 @@ class NewsPost extends Model
     protected $casts = [
         'published_at' => 'datetime',
         'viewer_count' => 'integer',
+        'image_paths' => 'array',
     ];
 
     public function category(): BelongsTo
@@ -47,7 +49,8 @@ class NewsPost extends Model
     public function scopePublished($query)
     {
         return $query->where('status', 'publish')
-            ->whereNotNull('published_at');
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now());
     }
 
     public function scopeDraft($query)
@@ -58,10 +61,24 @@ class NewsPost extends Model
     protected function thumbnailUrl(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value, array $attributes): string => blank($attributes['thumbnail_path'] ?? null)
-                ? asset('images/news-placeholder.jpg')
-                : asset('storage/'.$attributes['thumbnail_path']),
+            get: fn (mixed $value, array $attributes): string => filled($attributes['thumbnail_path'] ?? null)
+                ? asset('storage/'.$attributes['thumbnail_path'])
+                : (filled($attributes['image_paths'] ?? null) && filled($first = data_get(json_decode($attributes['image_paths'], true), '0'))
+                    ? asset('storage/'.$first)
+                    : asset('images/news-placeholder.jpg')),
         );
+    }
+
+    public function getAllImageUrlsAttribute(): array
+    {
+        $paths = array_filter(array_merge([
+            $this->thumbnail_path,
+        ], $this->image_paths ?? []));
+
+        return array_values(array_unique(array_map(
+            fn (?string $path): string => asset('storage/'.$path),
+            $paths,
+        )));
     }
 
     protected function excerpt(): Attribute

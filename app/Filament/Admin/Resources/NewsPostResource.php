@@ -69,9 +69,23 @@ class NewsPostResource extends Resource
                     ->directory('berita')
                     ->disk('public')
                     ->visibility('public')
-                    ->maxSize(4096),
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->maxSize(10240)
+                    ->required(),
+                FileUpload::make('image_paths')
+                    ->label('Foto Tambahan')
+                    ->image()
+                    ->multiple()
+                    ->maxFiles(4)
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->directory('berita')
+                    ->disk('public')
+                    ->visibility('public')
+                    ->maxSize(10240)
+                    ->helperText('Upload sampai 4 foto tambahan. Total maksimal 5 foto termasuk thumbnail.'),
                 DateTimePicker::make('published_at')
-                    ->label('Tanggal Publish'),
+                    ->label('Tanggal Publish')
+                    ->timezone('Asia/Jakarta'),
                 TextInput::make('excerpt')
                     ->label('Ringkasan')
                     ->columnSpanFull()
@@ -111,8 +125,7 @@ class NewsPostResource extends Resource
                         default => $state,
                     }),
                 TextColumn::make('author.name')
-                    ->label('Penulis')
-                    ->toggleable(),
+                    ->label('Penulis'),
                 TextColumn::make('published_at')
                     ->label('Tanggal Terbit')
                     ->dateTime()
@@ -121,6 +134,7 @@ class NewsPostResource extends Resource
                     ->label('Jumlah Pengunjung')
                     ->sortable(),
             ])
+            ->columnManager(false)
             ->actions([
                 EditAction::make(),
                 DeleteAction::make(),

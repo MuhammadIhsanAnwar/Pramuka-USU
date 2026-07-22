@@ -15,18 +15,42 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
+use Filament\Notifications\Notification;
 
 class EditProfile extends BaseEditProfile
 {
     protected static ?string $title = 'Lengkapi Profil';
+
+    /**
+     * Use our custom view so the header buttons appear.
+     */
+    protected string $view = 'filament.user.pages.edit-profile';
+
+    public int $activeTab = 1;
+
+    protected array $sectionNames = [
+        'Biodata',
+        'Alamat',
+        'Riwayat Pendidikan',
+        'Orang Tua',
+        'Data Pramuka',
+        'Akun',
+    ];
 
     public function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 Tabs::make('profile_tabs')
+                    ->activeTab(1)
+                    ->livewireProperty('activeTab')
+                    ->persistTabInQueryString(null)
                     ->tabs([
                         Tab::make('Biodata')
+                            ->key('Biodata')
                             ->schema([
                                 Section::make('Data Diri')
                                     ->schema([
@@ -118,6 +142,7 @@ class EditProfile extends BaseEditProfile
                                     ]),
                             ]),
                         Tab::make('Alamat')
+                            ->key('Alamat')
                             ->schema([
                                 Section::make('Domisili')
                                     ->schema([
@@ -221,6 +246,7 @@ class EditProfile extends BaseEditProfile
                                     ]),
                             ]),
                         Tab::make('Riwayat Pendidikan')
+                            ->key('Riwayat Pendidikan')
                             ->schema([
                                 Section::make('Pendidikan')
                                     ->schema([
@@ -320,6 +346,7 @@ class EditProfile extends BaseEditProfile
                                     ]),
                             ]),
                         Tab::make('Data Pramuka')
+                            ->key('Data Pramuka')
                             ->schema([
                                 Section::make('Pramuka')
                                     ->schema([
@@ -376,6 +403,7 @@ class EditProfile extends BaseEditProfile
                                     ]),
                             ]),
                         Tab::make('Akun')
+                            ->key('Akun')
                             ->schema([
                                 Section::make('Ubah Password')
                                     ->schema([
@@ -386,6 +414,128 @@ class EditProfile extends BaseEditProfile
                             ]),
                     ]),
             ]);
+    }
+
+    public function saveSection(int|string|null $section = null): void
+    {
+        if ($section === null) {
+            $section = $this->activeTab;
+        }
+
+        if (is_numeric($section)) {
+            $sectionIndex = (int) $section;
+            $section = $this->sectionNames[$sectionIndex - 1] ?? null;
+        }
+
+        if (! is_string($section)) {
+            Notification::make()->title('Bagian tidak dikenali')->danger()->send();
+
+            return;
+        }
+
+        $rawState = data_get($this->data, 'data', []);
+        $state = $this->form->getState();
+
+        // The form state may be stored under a top-level 'data' key.
+        $password = data_get($rawState, 'password');
+        $passwordConfirmation = data_get($rawState, 'passwordConfirmation');
+        $currentPassword = data_get($rawState, 'currentPassword');
+
+        if ($password === null && array_key_exists('data', $state)) {
+            $password = data_get($state, 'data.password');
+            $passwordConfirmation = data_get($state, 'data.passwordConfirmation');
+            $currentPassword = data_get($state, 'data.currentPassword');
+        }
+
+        // Handle account/password changes separately so we don't validate other tabs
+        if ($section === 'Akun') {
+            if (! filled($password)) {
+                Notification::make()->title('Tidak ada perubahan password')->warning()->send();
+                return;
+            }
+
+            if (! filled($passwordConfirmation)) {
+                Notification::make()->title('Konfirmasi kata sandi harus diisi')->danger()->send();
+                return;
+            }
+
+            if ($password !== $passwordConfirmation) {
+                Notification::make()->title('Konfirmasi kata sandi tidak cocok')->danger()->send();
+                return;
+            }
+
+            if (! filled($currentPassword)) {
+                Notification::make()->title('Kata sandi saat ini harus diisi')->danger()->send();
+                return;
+            }
+
+            $user = Auth::user();
+
+            if (! Hash::check($currentPassword, $user->getAuthPassword())) {
+                Notification::make()->title('Kata sandi saat ini salah')->danger()->send();
+                return;
+            }
+
+            $user->password = Hash::make($password);
+            $user->save();
+
+            // Clear password fields in the Livewire state
+            if (is_array($this->data)) {
+                unset($this->data['password'], $this->data['passwordConfirmation'], $this->data['currentPassword']);
+
+                if (isset($this->data['data']) && is_array($this->data['data'])) {
+                    unset($this->data['data']['password'], $this->data['data']['passwordConfirmation'], $this->data['data']['currentPassword']);
+                }
+            }
+
+            Notification::make()->title('Kata sandi berhasil diperbarui')->success()->send();
+            return;
+        }
+
+        // Normalize after-mutate logic
+        $data = $this->mutateFormDataBeforeSave($state);
+
+        $map = [
+            'Biodata' => [
+                'name','email','birth_place','birth_date','gender','religion','blood_type','hobby','siblings_count','whatsapp_number','marital_status','job','avatar_path',
+            ],
+            'Alamat' => [
+                'domisili_country','domisili_province','domisili_city','domisili_district','domisili_village','domisili_rt','domisili_rw','domisili_postal_code','domisili_street',
+                'asal_country','asal_province','asal_city','asal_district','asal_village','asal_rt','asal_rw','asal_postal_code','asal_street','same_as_domisili',
+            ],
+            'Riwayat Pendidikan' => [
+                'education_status','nim','kampus','fakultas','program_studi',
+            ],
+            'Orang Tua' => [
+                'father_name','father_status','father_address','father_phone',
+                'mother_name','mother_status','mother_address','mother_phone',
+                'guardian_name','guardian_status','guardian_address','guardian_phone',
+            ],
+            'Data Pramuka' => [
+                'satuan','jabatan','nta','tahun_masuk_pramuka_usu','nama_omantaru','golongan','tingkatan',
+            ],
+            'Akun' => [],
+        ];
+
+        if (! isset($map[$section])) {
+            Notification::make()->title('Bagian tidak dikenali')->danger()->send();
+            return;
+        }
+
+        $allowed = $map[$section];
+
+        $toSave = array_intersect_key($data, array_flip($allowed));
+
+        if (empty($toSave)) {
+            Notification::make()->title('Tidak ada data untuk disimpan')->warning()->send();
+            return;
+        }
+
+        $user = Auth::user();
+        $user->fill($toSave);
+        $user->save();
+
+        Notification::make()->title('Berhasil disimpan')->success()->send();
     }
 
     protected function mutateFormDataBeforeFill(array $data): array
@@ -425,5 +575,17 @@ class EditProfile extends BaseEditProfile
     protected function getRedirectUrl(): ?string
     {
         return url('/dashboard');
+    }
+
+    /**
+     * Remove the default global Save action so users use per-section save buttons.
+     *
+     * @return array
+     */
+    protected function getFormActions(): array
+    {
+        return [
+            $this->getCancelFormAction(),
+        ];
     }
 }

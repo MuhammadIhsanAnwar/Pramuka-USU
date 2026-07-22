@@ -60,9 +60,23 @@ class NewsPosts extends Page
                     ->directory('berita')
                     ->disk('public')
                     ->visibility('public')
-                    ->maxSize(4096),
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->maxSize(10240)
+                    ->required(),
+                FileUpload::make('image_paths')
+                    ->label('Foto Tambahan')
+                    ->image()
+                    ->multiple()
+                    ->maxFiles(4)
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->directory('berita')
+                    ->disk('public')
+                    ->visibility('public')
+                    ->maxSize(10240)
+                    ->helperText('Upload sampai 4 foto tambahan. Total maksimal 5 foto termasuk thumbnail.'),
                 DateTimePicker::make('published_at')
-                    ->label('Tanggal Publish'),
+                    ->label('Tanggal Publish')
+                    ->timezone('Asia/Jakarta'),
                 Select::make('status')
                     ->label('Status')
                     ->options([

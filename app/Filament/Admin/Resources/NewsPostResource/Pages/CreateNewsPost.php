@@ -11,6 +11,8 @@ class CreateNewsPost extends CreateRecord
 {
     protected static string $resource = NewsPostResource::class;
 
+    protected static bool $canCreateAnother = false;
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['author_id'] = Auth::id();
@@ -21,5 +23,10 @@ class CreateNewsPost extends CreateRecord
     protected function handleRecordCreation(array $data): Model
     {
         return parent::handleRecordCreation($data);
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResourceUrl('index');
     }
 }
