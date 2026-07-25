@@ -15,56 +15,227 @@
 </head>
 <body class="font-sans">
     @if (request()->routeIs('home'))
-        <div id="homepage-loader" role="status" aria-live="polite" aria-label="Memuat halaman"
-             style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,244,234,0.95));z-index:99999;transition:opacity 420ms ease,visibility 420ms ease;backdrop-filter:blur(3px)">
-            <div class="loader-inner" style="display:flex;flex-direction:column;align-items:center;gap:10px">
-                <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Pramuka USU" style="width:96px;height:96px;object-fit:contain" />
-                <div class="brand-text" style="font-weight:700;color:#5D4037;font-size:16px">Pramuka USU</div>
-                <div class="loader-progress" aria-hidden="true" style="width:220px;height:8px;border-radius:999px;background:rgba(0,0,0,0.06);overflow:hidden;margin-top:12px">
-                    <div class="loader-progress-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#5D4037 0%,#C9A227 60%);transition:width 180ms linear"></div>
+        <div id="homepage-loader" class="homepage-loader" aria-busy="true" aria-label="Memuat beranda Pramuka USU">
+            <div class="homepage-loader__glow homepage-loader__glow--one" aria-hidden="true"></div>
+            <div class="homepage-loader__glow homepage-loader__glow--two" aria-hidden="true"></div>
+
+            <div class="homepage-loader__content">
+                <div class="homepage-loader__emblem" aria-hidden="true">
+                    <span class="homepage-loader__orbit homepage-loader__orbit--outer"></span>
+                    <span class="homepage-loader__orbit homepage-loader__orbit--inner"></span>
+                    <span class="homepage-loader__spark homepage-loader__spark--top">✦</span>
+                    <span class="homepage-loader__spark homepage-loader__spark--bottom">✦</span>
+                    <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="" class="homepage-loader__logo" />
+                </div>
+
+                <div class="homepage-loader__heading">
+                    <p class="homepage-loader__eyebrow">Gerakan Pramuka Universitas Sumatera Utara</p>
+                    <p class="homepage-loader__title">Pramuka USU</p>
+                    <p class="homepage-loader__message" data-loader-message role="status">Menyiapkan pengalaman terbaik untuk Anda</p>
+                </div>
+
+                <div class="homepage-loader__progress-group">
+                    <div class="homepage-loader__status-row">
+                        <span class="homepage-loader__network">
+                            <span class="homepage-loader__network-dot" aria-hidden="true"></span>
+                            <span data-loader-network>Mengecek koneksi</span>
+                        </span>
+                        <span class="homepage-loader__percentage" data-loader-percentage>5%</span>
+                    </div>
+
+                    <div class="homepage-loader__track" role="progressbar" aria-label="Progres memuat beranda" aria-valuemin="0" aria-valuemax="100" aria-valuenow="5">
+                        <div class="homepage-loader__bar" data-loader-bar></div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        {{-- Inline fallback script: network-aware progress and auto-hide when compiled assets are missing or slow --}}
+        <noscript><style>#homepage-loader { display: none !important; }</style></noscript>
+
+        {{-- Runs before the Vite bundle so the loading state is available on slower connections. --}}
         <script>
-            if (!window.__homepage_loader_inline) {
-                window.__homepage_loader_inline = true;
-                (function(){
-                    var loader = document.getElementById('homepage-loader');
-                    if (!loader) return;
-                    var progressBar = loader.querySelector('.loader-progress-bar');
-                    var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || null;
-                    var estimateMs = 2000;
-                    if (conn) {
-                        var t = (conn.effectiveType || '').toLowerCase();
-                        var downlink = conn.downlink || 10;
-                        if (t.indexOf('slow-2g') !== -1) estimateMs = 12000;
-                        else if (t.indexOf('2g') !== -1) estimateMs = 9000;
-                        else if (t.indexOf('3g') !== -1) estimateMs = 5000;
-                        else if (t.indexOf('4g') !== -1) estimateMs = 1500;
-                        estimateMs = Math.max(1000, Math.round(estimateMs * (1 / Math.max(0.3, Math.min(downlink / 10, 2)))));
+            (function () {
+                var loader = document.getElementById('homepage-loader');
+
+                if (!loader || loader.dataset.initialized === 'true') {
+                    return;
+                }
+
+                loader.dataset.initialized = 'true';
+
+                var bar = loader.querySelector('[data-loader-bar]');
+                var progressElement = loader.querySelector('[role="progressbar"]');
+                var percentage = loader.querySelector('[data-loader-percentage]');
+                var message = loader.querySelector('[data-loader-message]');
+                var networkLabel = loader.querySelector('[data-loader-network]');
+                var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                var startedAt = Date.now();
+                var progress = 5;
+                var isComplete = false;
+                var animationFrame;
+
+                function getNetworkProfile() {
+                    var type = connection && connection.effectiveType ? connection.effectiveType.toLowerCase() : '';
+                    var downlink = connection && Number(connection.downlink) ? Number(connection.downlink) : null;
+                    var rtt = connection && Number(connection.rtt) ? Number(connection.rtt) : null;
+                    var saveData = Boolean(connection && connection.saveData);
+
+                    if (!connection) {
+                        return { key: 'standard', label: 'Menyiapkan konten', message: 'Memuat aset penting untuk beranda', duration: 2600, cap: 88, timeout: 16000 };
                     }
-                    var percent = 4;
-                    if (progressBar) progressBar.style.width = percent + '%';
-                    var start = Date.now();
-                    var intervalId = setInterval(function(){
-                        var elapsed = Date.now() - start;
-                        var target = Math.min(99, Math.round((elapsed / estimateMs) * 100));
-                        if (target > percent) percent = target; else percent = Math.min(99, percent + Math.random() * 3);
-                        if (progressBar) progressBar.style.width = percent + '%';
-                    }, 200);
-                    var finished = false;
-                    var finish = function(){
-                        if (finished) return; finished = true;
-                        clearInterval(intervalId);
-                        if (progressBar) progressBar.style.width = '100%';
-                        setTimeout(function(){ loader.style.opacity = 0; loader.style.visibility = 'hidden'; setTimeout(function(){ if (loader.parentNode) loader.remove(); }, 480); }, 160);
+
+                    if (saveData) {
+                        return { key: 'data-saver', label: 'Mode hemat data', message: 'Memuat aset penting terlebih dahulu', duration: 7000, cap: 78, timeout: 30000 };
+                    }
+
+                    if (type === 'slow-2g' || (downlink !== null && downlink < 0.5)) {
+                        return { key: 'slow', label: 'Koneksi sangat lambat', message: 'Koneksi lambat terdeteksi, mohon tunggu sebentar', duration: 10000, cap: 74, timeout: 30000 };
+                    }
+
+                    if (type === '2g' || (downlink !== null && downlink < 1.5)) {
+                        return { key: 'slow', label: 'Koneksi lambat', message: 'Memuat konten secara bertahap', duration: 7600, cap: 80, timeout: 26000 };
+                    }
+
+                    if (type === '3g' || (rtt !== null && rtt > 400) || (downlink !== null && downlink < 5)) {
+                        return { key: 'moderate', label: 'Koneksi sedang', message: 'Menyiapkan gambar dan konten beranda', duration: 4200, cap: 87, timeout: 20000 };
+                    }
+
+                    return { key: 'fast', label: 'Koneksi optimal', message: 'Menyiapkan pengalaman terbaik untuk Anda', duration: 1600, cap: 92, timeout: 12000 };
+                }
+
+                var profile = getNetworkProfile();
+
+                function updateProfile() {
+                    profile = getNetworkProfile();
+                    loader.dataset.network = profile.key;
+
+                    if (networkLabel) {
+                        networkLabel.textContent = profile.label;
+                    }
+
+                    if (message && progress < 55) {
+                        message.textContent = profile.message;
+                    }
+                }
+
+                function setProgress(value) {
+                    progress = Math.min(100, Math.max(progress, Math.round(value)));
+
+                    if (bar) {
+                        bar.style.setProperty('--loader-progress', progress + '%');
+                    }
+
+                    if (percentage) {
+                        percentage.textContent = progress + '%';
+                    }
+
+                    if (progressElement) {
+                        progressElement.setAttribute('aria-valuenow', String(progress));
+                    }
+                }
+
+                function advanceProgress() {
+                    if (isComplete) {
+                        return;
+                    }
+
+                    var elapsed = Date.now() - startedAt;
+                    var predicted = profile.cap * (1 - Math.exp(-elapsed / profile.duration));
+                    setProgress(predicted);
+                    animationFrame = window.requestAnimationFrame(advanceProgress);
+                }
+
+                function observePageAssets() {
+                    var assets = Array.prototype.slice.call(document.images).filter(function (image) {
+                        return !loader.contains(image);
+                    });
+
+                    if (assets.length === 0) {
+                        setProgress(70);
+                        return;
+                    }
+
+                    var loadedAssets = 0;
+                    var updateAssetProgress = function () {
+                        loadedAssets += 1;
+                        setProgress(36 + ((loadedAssets / assets.length) * 54));
+
+                        if (loadedAssets === assets.length && message) {
+                            message.textContent = 'Sentuhan akhir sedang disiapkan';
+                        }
                     };
-                    window.addEventListener('load', finish);
-                    setTimeout(function(){ if (document.body.contains(loader)) finish(); }, Math.min(20000, Math.max(8000, estimateMs * 3)));
-                })();
-            }
+
+                    assets.forEach(function (image) {
+                        if (image.complete) {
+                            updateAssetProgress();
+                            return;
+                        }
+
+                        image.addEventListener('load', updateAssetProgress, { once: true });
+                        image.addEventListener('error', updateAssetProgress, { once: true });
+                    });
+                }
+
+                function finishLoading(isSafetyTimeout) {
+                    if (isComplete) {
+                        return;
+                    }
+
+                    isComplete = true;
+                    window.cancelAnimationFrame(animationFrame);
+                    setProgress(100);
+                    loader.setAttribute('aria-busy', 'false');
+
+                    if (message) {
+                        message.textContent = isSafetyTimeout
+                            ? 'Halaman siap digunakan'
+                            : 'Beranda siap, selamat datang';
+                    }
+
+                    var elapsed = Date.now() - startedAt;
+                    var minimumDisplay = prefersReducedMotion ? 0 : Math.min(650, Math.max(280, profile.duration / 3));
+                    var leaveAfter = Math.max(0, minimumDisplay - elapsed) + (prefersReducedMotion ? 0 : 180);
+
+                    window.setTimeout(function () {
+                        loader.classList.add('is-leaving');
+                        window.setTimeout(function () {
+                            loader.remove();
+                        }, prefersReducedMotion ? 0 : 500);
+                    }, leaveAfter);
+                }
+
+                updateProfile();
+                setProgress(progress);
+                advanceProgress();
+
+                document.addEventListener('DOMContentLoaded', function () {
+                    setProgress(30);
+                    observePageAssets();
+
+                    if (document.fonts && document.fonts.ready) {
+                        document.fonts.ready.then(function () {
+                            setProgress(65);
+                        });
+                    }
+                }, { once: true });
+
+                window.addEventListener('load', function () {
+                    finishLoading(false);
+                }, { once: true });
+
+                if (connection && connection.addEventListener) {
+                    connection.addEventListener('change', updateProfile);
+                }
+
+                window.setTimeout(function () {
+                    finishLoading(true);
+                }, profile.timeout);
+
+                if (document.readyState === 'complete') {
+                    finishLoading(false);
+                }
+            })();
         </script>
     @endif
     <div class="relative min-h-screen overflow-hidden">

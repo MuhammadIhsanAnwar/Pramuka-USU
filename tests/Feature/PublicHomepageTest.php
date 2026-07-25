@@ -15,5 +15,8 @@ class PublicHomepageTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Pramuka USU', false);
+        $response->assertSee('id="homepage-loader"', false);
+        $response->assertSee('data-loader-network', false);
+        $response->assertSee('navigator.connection', false);
     }
 }

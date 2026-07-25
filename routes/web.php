@@ -5,6 +5,9 @@ use App\Http\Controllers\IncomingLetterController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
+use Laravel\Fortify\Http\Controllers\NewPasswordController;
+use Laravel\Fortify\Http\Controllers\PasswordResetLinkController;
 
 Route::middleware(['maintenance'])->group(function (): void {
     Route::get('/', [PublicController::class, 'home'])->name('home');
@@ -40,8 +43,24 @@ Route::get('/dashboard', static function () {
 
 // (Removed compatibility route to avoid duplicate route name with Filament.)
 
-// Authentication and password-reset routes are provided by Laravel Fortify.
-// The custom views for those routes are registered in AppServiceProvider.
+// Fortify registers these routes automatically when its views are enabled.
+// Keeping the public endpoints here ensures their names remain available when a
+// production configuration cache disables those automatic view routes.
+Route::middleware('guest:web')->group(function (): void {
+    Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
+    Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+        ->middleware('throttle:login')
+        ->name('login.store');
+
+    Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
+    Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
+    Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+    Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.update');
+});
+
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth:web')
+    ->name('logout');
 
 Route::middleware('auth')->group(function (): void {
 	Route::get('/presensi/{eventAgenda}/{token}', [AttendanceController::class, 'scan'])->name('attendance.scan');
