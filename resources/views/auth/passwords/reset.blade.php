@@ -8,11 +8,11 @@
 
             <form method="POST" action="{{ route('password.update') }}" class="mt-8 space-y-6">
                 @csrf
-                <input type="hidden" name="token" value="{{ $request->route('token') }}">
+                <input type="hidden" name="token" value="{{ $token ?? $request->route('token') }}">
 
                 <div>
                     <label for="email" class="text-sm font-semibold text-slate-700">Email</label>
-                    <input id="email" name="email" type="email" value="{{ old('email', $request->email) }}" required autofocus class="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-3 text-sm text-slate-900 shadow-sm outline-none transition duration-200 focus:border-[#5D4037] focus:bg-white focus:ring-2 focus:ring-[#5D4037]/20" />
+                    <input id="email" name="email" type="email" value="{{ old('email', $request->email ?? $email ?? '') }}" required autofocus class="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-3 text-sm text-slate-900 shadow-sm outline-none transition duration-200 focus:border-[#5D4037] focus:bg-white focus:ring-2 focus:ring-[#5D4037]/20" />
                     @error('email')
                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror

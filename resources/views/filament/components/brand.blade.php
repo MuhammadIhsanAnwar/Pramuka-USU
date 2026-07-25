@@ -10,7 +10,7 @@
         </span>
 
         <span class="mt-1 text-xs text-slate-500 leading-4">
-            Sistem Informasi Pramuka Universitas Sumatera Utara
+            Gugus Depan Gerakan Pramuka Kota Medan 08-137 dan 08-138
         </span>
     </div>
 </a>

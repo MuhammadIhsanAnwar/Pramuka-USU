@@ -6,3 +6,11 @@
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
 
+# If the project is deployed in a subfolder, adjust the RewriteRule above.
+# Example for subfolder deployment:
+# RewriteRule ^(.*)$ /subfolder-name/public/$1 [L]
+
+# Security: Deny access to sensitive files
+<FilesMatch "^\.env|composer\.(json|lock|phar)$|artisan$|package(-lock)?\.json$">
+    Require all denied
+</FilesMatch>

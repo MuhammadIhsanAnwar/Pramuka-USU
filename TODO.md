@@ -1,19 +1,20 @@
-# Perbaikan Deploy 404 - Pramuka USU ✅ Selesai
+# Tugas Lengkap - Perbaikan Pramuka USU
 
-## Langkah-langkah perbaikan:
+## Task 1: Route Dashboard Admin/User 404 saat deploy
+- [ ] Fix root `.htaccess` untuk handle subfolder deployment
+- [ ] Tambah dokumentasi/note tentang APP_URL di .env
+- [ ] Jalankan route:cache untuk verifikasi
 
-### 1. ✅ Convert closure routes ke controller methods
-- [x] Tambah method `suratMasuk()` ke `PublicController.php`
-- [x] Buat `RouteController.php` untuk redirect routes (/dashboard, /admin/surat-masuk)
-- [x] Update `routes/web.php` ganti closure dengan controller methods
+## Task 2: Ubah teks header & footer
+- [ ] `resources/views/layouts/public.blade.php` - Ubah teks header & footer
+- [ ] `resources/views/filament/components/brand.blade.php` - Ubah teks brand
 
-### 2. ✅ Matikan Fortify auto views
-- [x] Set `'views' => false` di `config/fortify.php`
+## Task 3: Link reset password
+- [ ] Perbaiki `resources/views/auth/passwords/reset.blade.php` - pastikan token & email benar
+- [ ] Pastikan `APP_URL` dipakai untuk generate reset link
 
-### 3. ✅ Buat root `.htaccess` untuk shared hosting
-- [x] Buat `.htaccess` di root project untuk rewrite ke `public/`
+## Task 4: Header sticky (selalu tampil saat scroll)
+- [ ] Header sudah `sticky top-0 z-50`, pastikan tidak ada yang override
 
-### 4. ✅ Testing
-- [x] Jalankan `php artisan route:list` - semua route terdaftar dengan benar
-- [x] Jalankan `php artisan route:cache` - ✅ Route cache berhasil!
-
+## Task 5: Copyright footer
+- [ ] Tambah copyright dinamis di `resources/views/layouts/public.blade.php`
