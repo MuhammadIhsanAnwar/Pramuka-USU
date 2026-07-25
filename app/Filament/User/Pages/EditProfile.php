@@ -574,7 +574,7 @@ class EditProfile extends BaseEditProfile
 
     protected function getRedirectUrl(): ?string
     {
-        return url('/dashboard');
+        return route('filament.user.pages.dashboard');
     }
 
     /**

@@ -24,6 +24,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->login()
             ->profile(EditProfile::class)
             ->topbar(true)
             ->userMenu(true, UserMenuPosition::Topbar)

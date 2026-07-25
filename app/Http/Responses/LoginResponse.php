@@ -6,10 +6,8 @@ use App\Enums\RoleName;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
-use Laravel\Fortify\Fortify;
 
 class LoginResponse implements LoginResponseContract
 {
@@ -29,13 +27,13 @@ class LoginResponse implements LoginResponseContract
         $user = Auth::user();
 
         if ($user instanceof User && $user->needsProfileCompletion()) {
-            return redirect()->intended(url('/dashboard'));
+            return redirect()->intended(route('filament.user.pages.dashboard'));
         }
 
         if ($user instanceof User && $user->hasRole(RoleName::Admin->value)) {
-            return redirect()->intended(url('/admin'));
+            return redirect()->intended(route('filament.admin.pages.dashboard'));
         }
 
-        return redirect()->intended(Fortify::redirects('login'));
+        return redirect()->intended(route('filament.user.pages.dashboard'));
     }
 }

@@ -5,8 +5,6 @@ use App\Http\Controllers\IncomingLetterController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
 Route::middleware(['maintenance'])->group(function (): void {
     Route::get('/', [PublicController::class, 'home'])->name('home');
@@ -36,25 +34,14 @@ Route::middleware(['auth', 'role:Admin'])->group(function (): void {
 });
 
 // Legacy redirect: keep `/dashboard` pointing to the user panel at `/user`.
-Route::redirect('/dashboard', '/user');
+Route::get('/dashboard', static function () {
+    return redirect()->route('filament.user.pages.dashboard');
+});
 
 // (Removed compatibility route to avoid duplicate route name with Filament.)
 
-// Fortify login routes fallback if package routes are unavailable
-Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
-Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
-Route::get('/forgot-password', function () {
-    return view('auth.passwords.email');
-})->middleware('guest')->name('password.request');
-Route::post('/forgot-password', function (Illuminate\Http\Request $request) {
-    $request->validate(['email' => ['required', 'email']]);
-
-    return back()->with('status', 'Jika email terdaftar, kami akan mengirim tautan reset password.');
-})->middleware('guest')->name('password.email');
-Route::get('/reset-password/{token}', function (string $token) {
-    return view('auth.passwords.reset', ['token' => $token]);
-})->middleware('guest')->name('password.reset');
+// Authentication and password-reset routes are provided by Laravel Fortify.
+// The custom views for those routes are registered in AppServiceProvider.
 
 Route::middleware('auth')->group(function (): void {
 	Route::get('/presensi/{eventAgenda}/{token}', [AttendanceController::class, 'scan'])->name('attendance.scan');
