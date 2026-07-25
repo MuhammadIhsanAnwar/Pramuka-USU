@@ -39,11 +39,13 @@
                         <span class="homepage-loader__network">
                             <span class="homepage-loader__network-dot" aria-hidden="true"></span>
                             <span data-loader-network>Mengecek koneksi</span>
+                        </span>
                         <span class="homepage-loader__percentage" data-loader-percentage>5%</span>
                     </div>
 
                     <div class="homepage-loader__track" role="progressbar" aria-label="Progres memuat beranda" aria-valuemin="0" aria-valuemax="100" aria-valuenow="5">
                         <div class="homepage-loader__bar" data-loader-bar></div>
+                    </div>
                 </div>
 
             <noscript><style>#homepage-loader { display: none !important; }</style></noscript>
@@ -161,6 +163,7 @@
                     <div>
                         <div class="text-sm font-bold tracking-wide text-[#5D4037]">Pramuka USU</div>
                         <div class="text-xs text-slate-500">Gugus Depan Gerakan Pramuka Kota Medan 08-137 dan 08-138</div>
+                    </div>
                 </a>
 
                 <nav class="hidden items-center gap-6 text-sm font-medium text-slate-700 md:flex">
@@ -232,6 +235,7 @@
                         <a href="{{ route('agenda.index') }}">Agenda</a>
                         <a href="{{ route('surat-masuk') }}">Surat Masuk</a>
                     </div>
+                </div>
                 <div>
                     <div class="text-sm font-semibold uppercase tracking-[0.2em] text-[#5D4037]">Kontak</div>
                     <p class="mt-4 text-sm text-slate-600">Email: pramuka@usu.ac.id</p>
@@ -255,6 +259,7 @@
                             <img src="{{ asset('storage/ikon/Youtube copy.png') }}" alt="YouTube" class="h-6 w-6 object-contain" />
                         </a>
                     </div>
+                </div>
             </div>
 
             {{-- Copyright bar with dynamic year --}}
@@ -262,6 +267,7 @@
                 <div class="mx-auto max-w-7xl text-center text-sm text-slate-600">
                     &copy; {{ date('Y') }} Pramuka USU. Created by Muhammad Ihsan Anwar - 251402044. All Right Reserved.
                 </div>
+            </div>
         </footer>
     </div>
 </body>
