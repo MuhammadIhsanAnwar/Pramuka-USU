@@ -28,7 +28,7 @@ return [
         'passkeys' => 'passkeys',
     ],
 
-    'views' => true,
+    'views' => false,
 
     'passkeys' => [
         'relying_party_id' => parse_url(config('app.url'), PHP_URL_HOST),

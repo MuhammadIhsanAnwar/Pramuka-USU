@@ -4,6 +4,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\IncomingLetterController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RouteController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use Laravel\Fortify\Http\Controllers\NewPasswordController;
@@ -23,23 +24,17 @@ Route::middleware(['maintenance'])->group(function (): void {
     Route::get('/galeri', [PublicController::class, 'galleryIndex'])->name('gallery.index');
     Route::get('/galeri/{gallery}', [PublicController::class, 'galleryShow'])->name('gallery.show');
     Route::get('/kontak', [PublicController::class, 'contact'])->name('contact');
-    Route::get('/surat-masuk', function () {
-        return view('public.surat-masuk');
-    })->name('surat-masuk');
+    Route::get('/surat-masuk', [PublicController::class, 'suratMasuk'])->name('surat-masuk');
 });
 
 // Incoming letters are managed by Filament resource pages. Add a compatibility
 // redirect so legacy links to `/admin/surat-masuk` open the Filament CRUD index.
 Route::middleware(['auth', 'role:Admin'])->group(function (): void {
-	Route::get('/admin/surat-masuk', function () {
-		return redirect()->route('filament.admin.resources.incoming-letters.index');
-	});
+	Route::get('/admin/surat-masuk', [RouteController::class, 'redirectAdminSuratMasuk']);
 });
 
 // Legacy redirect: keep `/dashboard` pointing to the user panel at `/user`.
-Route::get('/dashboard', static function () {
-    return redirect()->to(url('/user'));
-});
+Route::get('/dashboard', [RouteController::class, 'redirectDashboard']);
 
 // (Removed compatibility route to avoid duplicate route name with Filament.)
 

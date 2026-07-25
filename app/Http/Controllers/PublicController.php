@@ -260,6 +260,11 @@ class PublicController extends Controller
         ]);
     }
 
+    public function suratMasuk(): View
+    {
+        return view('public.surat-masuk');
+    }
+
     private function pageView(string $title, string $lead, array $points): View
     {
         return view('public.page', [
