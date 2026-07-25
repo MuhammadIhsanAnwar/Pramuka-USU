@@ -38,7 +38,7 @@ Route::middleware(['auth', 'role:Admin'])->group(function (): void {
 
 // Legacy redirect: keep `/dashboard` pointing to the user panel at `/user`.
 Route::get('/dashboard', static function () {
-    return redirect()->route('filament.user.pages.dashboard');
+    return redirect()->to(url('/user'));
 });
 
 // (Removed compatibility route to avoid duplicate route name with Filament.)

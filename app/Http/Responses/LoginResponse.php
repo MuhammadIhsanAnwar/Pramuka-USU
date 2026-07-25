@@ -27,13 +27,13 @@ class LoginResponse implements LoginResponseContract
         $user = Auth::user();
 
         if ($user instanceof User && $user->needsProfileCompletion()) {
-            return redirect()->intended(route('filament.user.pages.dashboard'));
+            return redirect()->intended(url('/user'));
         }
 
         if ($user instanceof User && $user->hasRole(RoleName::Admin->value)) {
-            return redirect()->intended(route('filament.admin.pages.dashboard'));
+            return redirect()->intended(url('/admin'));
         }
 
-        return redirect()->intended(route('filament.user.pages.dashboard'));
+        return redirect()->intended(url('/user'));
     }
 }
