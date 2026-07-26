@@ -12,6 +12,31 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    @if (request()->routeIs('home'))
+    <style>
+        /* Critical inline styles for homepage loader — ensures full-screen coverage even if external CSS fails to load */
+        #homepage-loader {
+            position: fixed !important;
+            inset: 0 !important;
+            z-index: 99999 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            isolation: isolate !important;
+            overflow: hidden !important;
+            padding: 1.5rem !important;
+            background: radial-gradient(circle at 50% 24%, rgba(201,162,39,0.2), transparent 26rem), radial-gradient(circle at 12% 88%, rgba(93,64,55,0.12), transparent 24rem), linear-gradient(145deg, #fffdf8 0%, #f8f1e2 52%, #eee1c7 100%) !important;
+            transition: opacity 0.42s ease, visibility 0.42s ease, transform 0.42s ease !important;
+        }
+        #homepage-loader.is-leaving {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: scale(1.015) !important;
+            pointer-events: none !important;
+        }
+    </style>
+    @endif
 </head>
 <body class="font-sans">
     @if (request()->routeIs('home'))
@@ -47,6 +72,7 @@
                         <div class="homepage-loader__bar" data-loader-bar></div>
                     </div>
                 </div>
+            </div>
 
             <noscript><style>#homepage-loader { display: none !important; }</style></noscript>
 

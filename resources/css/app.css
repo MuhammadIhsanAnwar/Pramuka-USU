@@ -66,14 +66,14 @@
     }
 }
 
-/* Page transitions and homepage loader */
+
 @layer utilities {
     .page-transition-enter {
-        animation: pageFadeIn 360ms ease both;
+        animation: pageFadeIn 360ms ease forwards;
     }
 
     .page-transition-exit {
-        animation: pageFadeOut 320ms ease both;
+        animation: pageFadeOut 320ms ease forwards;
     }
 
     @keyframes pageFadeIn {

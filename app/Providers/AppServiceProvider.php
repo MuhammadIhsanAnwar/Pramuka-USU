@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Actions\Fortify\ResetUserPassword;
 use App\Models\EventAgenda;
 use App\Models\Gallery;
 use App\Models\NewsPost;
@@ -48,6 +49,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::loginView('auth.login');
         Fortify::requestPasswordResetLinkView('auth.passwords.email');
         Fortify::resetPasswordView('auth.passwords.reset');

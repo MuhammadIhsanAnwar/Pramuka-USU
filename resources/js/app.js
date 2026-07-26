@@ -1,34 +1,43 @@
 // Global UI enhancements: smooth page transitions.
+// NOTE: page-transition-enter is intentionally NOT applied on the homepage
+// because the homepage-loader overlay manages its own show/hide flow.
+// Applying page-transition-enter on <html> would set opacity:0 on the
+// entire page once the animation ends (animation-fill-mode: both),
+// making all homepage content vanish after the loader disappears.
 document.addEventListener('DOMContentLoaded', function () {
-	// Page enter animation
-	document.documentElement.classList.add('page-transition-enter');
-	requestAnimationFrame(() => {
-		setTimeout(() => document.documentElement.classList.remove('page-transition-enter'), 350);
-	});
+    var isHomepage = !!document.getElementById('homepage-loader');
 
-	// Intercept same-origin link clicks to add a small exit animation
-	document.addEventListener('click', function (e) {
-		const a = e.target.closest('a');
-		if (!a) return;
-		const href = a.getAttribute('href');
-		const target = a.getAttribute('target');
-		const download = a.hasAttribute('download');
-		if (!href || href.startsWith('#') || target === '_blank' || download) return;
+    if (!isHomepage) {
+        document.documentElement.classList.add('page-transition-enter');
+        requestAnimationFrame(function () {
+            setTimeout(function () {
+                document.documentElement.classList.remove('page-transition-enter');
+            }, 350);
+        });
+    }
 
-		try {
-			const url = new URL(href, window.location.href);
-			if (url.origin !== window.location.origin) return; // external
-		} catch (err) {
-			return; // malformed
-		}
+    // Intercept same-origin link clicks to add a small exit animation
+    document.addEventListener('click', function (e) {
+        var a = e.target.closest('a');
+        if (!a) return;
+        var href = a.getAttribute('href');
+        var target = a.getAttribute('target');
+        var download = a.hasAttribute('download');
+        if (!href || href.startsWith('#') || target === '_blank' || download) return;
 
-		// Allow links that opt-out
-		if (a.dataset && a.dataset.noTransition === 'true') return;
+        try {
+            var url = new URL(href, window.location.href);
+            if (url.origin !== window.location.origin) return;
+        } catch (err) {
+            return;
+        }
 
-		e.preventDefault();
-		document.documentElement.classList.add('page-transition-exit');
-		setTimeout(() => {
-			window.location.href = href;
-		}, 300);
-	});
+        if (a.dataset && a.dataset.noTransition === 'true') return;
+
+        e.preventDefault();
+        document.documentElement.classList.add('page-transition-exit');
+        setTimeout(function () {
+            window.location.href = href;
+        }, 320);
+    });
 });
