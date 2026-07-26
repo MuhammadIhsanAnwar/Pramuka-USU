@@ -69,7 +69,10 @@ class AuthenticationRoutingTest extends TestCase
             'email' => $user->email,
             'password' => $newPassword,
             'password_confirmation' => $newPassword,
-        ])->assertRedirect('/');
+        ])
+            ->assertOk()
+            ->assertSee('Password berhasil diubah')
+            ->assertSee('Ke halaman login');
 
         $this->assertTrue(Hash::check($newPassword, $user->fresh()->password));
         $this->get($resetLink)

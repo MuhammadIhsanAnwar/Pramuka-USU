@@ -1,0 +1,11 @@
+diff --git a/composer.json b/composer.json
+--- a/composer.json
++++ b/composer.json
+@@ -46,7 +46,8 @@
+         "post-autoload-dump": [
+             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+-            "@php artisan package:discover --ansi"
++            "@php artisan package:discover --ansi",
++            "@php artisan optimize:clear --ansi"
+         ],
+         "post-update-cmd": [
