@@ -3,3 +3,59 @@ html.fi .btn-primary{color:#fff!important;background-color:#3E271A!important;bor
 html.fi .btn-secondary{color:#3E271A!important;border-color:rgba(62,39,26,0.2)!important}
 html.fi .fi-logo .brand-text{color:#3E271A!important}
 :root{--fi-color-primary:#3E271A;--fi-color-warning:#C9A227}
+
+/* Navigation / sidebar active vs inactive */
+.filament-sidebar a[aria-current="page"],
+.filament-navigation a[aria-current="page"],
+.filament-panels nav a[aria-current="page"] {
+	background-color: var(--fi-color-primary) !important;
+	color: #fff !important;
+	box-shadow: none !important;
+	border-radius: 0.5rem !important;
+}
+
+.filament-sidebar a,
+.filament-navigation a,
+.filament-panels nav a {
+	color: rgba(0,0,0,0.85);
+}
+
+/* Hover / focus for non-active items */
+.filament-sidebar a:not([aria-current="page"]):hover,
+.filament-navigation a:not([aria-current="page"]):hover,
+.filament-panels nav a:not([aria-current="page"]):hover {
+	background-color: rgba(62,39,26,0.06);
+	color: var(--fi-color-primary);
+}
+
+/* Make sure icon + label contrast when active */
+.filament-sidebar a[aria-current="page"] .fi-icon,
+.filament-navigation a[aria-current="page"] .fi-icon,
+.filament-panels nav a[aria-current="page"] .fi-icon {
+	color: #fff !important;
+}
+
+/* Checkbox / toggle labels: inactive = cream, active = brown */
+.filament-forms-field-wrapper input[type="checkbox"] + label,
+.filament-forms-field-wrapper input[type="checkbox"] ~ label {
+	background-color: #FAF3EB; /* cream */
+	color: rgba(0,0,0,0.85);
+	padding: .35rem .6rem;
+	border-radius: .5rem;
+	border: 1px solid rgba(62,39,26,0.08);
+}
+
+.filament-forms-field-wrapper input[type="checkbox"]:checked + label,
+.filament-forms-field-wrapper input[type="checkbox"]:checked ~ label {
+	background-color: var(--fi-color-primary) !important; /* brown */
+	color: #fff !important;
+	border-color: transparent;
+}
+
+/* Ensure small checkbox labels look like buttons */
+.filament-forms-field-wrapper input[type="checkbox"] + label,
+.filament-forms-field-wrapper input[type="checkbox"] ~ label {
+	display: inline-flex;
+	align-items: center;
+	gap: .35rem;
+}
