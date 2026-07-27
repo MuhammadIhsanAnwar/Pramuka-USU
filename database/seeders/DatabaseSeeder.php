@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ContentSeeder::class,
             StudentUsersSeeder::class,
+            TamuUsersSeeder::class,
         ]);
     }
 }

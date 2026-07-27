@@ -68,6 +68,8 @@ class UserResource extends Resource
                     ->options([
                         'pembina' => 'Pembina',
                         'peserta_didik' => 'Peserta Didik',
+                        'purna' => 'Purna',
+                        'tamu' => 'Tamu',
                     ])
                     ->required(fn (callable $get): bool => $get('role_name') !== RoleName::Admin->value)
                     ->hidden(fn (callable $get): bool => $get('role_name') === RoleName::Admin->value),
@@ -100,7 +102,8 @@ class UserResource extends Resource
                     ->badge(),
                 TextColumn::make('jenis_user')
                     ->label('Jenis Pengguna')
-                    ->badge(),
+                    ->badge()
+                    ->formatStateUsing(fn ($state): ?string => $state ? ucwords(str_replace('_', ' ', is_string($state) ? $state : $state->value)) : null),
                 ToggleColumn::make('is_active')
                     ->label('Aktif')
                     ->disabled(fn (?User $record): bool => $record?->hasRole(RoleName::Admin->value)),

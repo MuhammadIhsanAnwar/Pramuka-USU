@@ -59,44 +59,29 @@ class SiteSettingResource extends Resource
                     ->label('Label')
                     ->required()
                     ->maxLength(255),
-                TextInput::make('setting_group')
-                    ->label('Grup')
-                    ->maxLength(255),
-                Select::make('setting_type')
-                    ->label('Tipe')
-                    ->options([
-                        'text' => 'Teks',
-                        'textarea' => 'Textarea',
-                        'image' => 'Gambar',
-                        'video' => 'Video',
-                        'number' => 'Angka',
-                        'toggle' => 'Tombol',
-                    ])
-                    ->required()
-                    ->default('text'),
                 TextInput::make('setting_value')
-                    ->label('Nilai')
-                    ->visible(fn (callable $get): bool => $get('setting_type') === 'text' || $get('setting_type') === 'number')
+                    ->label('Upload')
+                    ->visible(fn (callable $get, ?SiteSetting $record): bool => ($get('setting_type') === 'text' || $get('setting_type') === 'number') && ($record?->setting_key !== 'maintenance_mode'))
                     ->columnSpanFull(),
                 Textarea::make('setting_value')
-                    ->label('Nilai')
-                    ->visible(fn (callable $get): bool => $get('setting_type') === 'textarea')
+                    ->label('Upload')
+                    ->visible(fn (callable $get, ?SiteSetting $record): bool => $get('setting_type') === 'textarea' && ($record?->setting_key !== 'maintenance_mode'))
                     ->columnSpanFull()
                     ->rows(4),
                 FileUpload::make('setting_value')
-                    ->label('Nilai')
+                    ->label('Upload')
                     ->directory('beranda')
                     ->disk('public')
                     ->visibility('public')
                     ->acceptedFileTypes(fn (callable $get): array => $get('setting_type') === 'video'
                         ? ['video/mp4', 'video/webm', 'video/ogg']
                         : ['image/jpeg', 'image/png', 'image/webp'])
-                    ->visible(fn (callable $get): bool => in_array($get('setting_type'), ['image', 'video'], true))
+                    ->visible(fn (callable $get, ?SiteSetting $record): bool => in_array($get('setting_type'), ['image', 'video'], true) && ($record?->setting_key !== 'maintenance_mode'))
                     ->columnSpanFull()
                     ->maxSize(10240),
                 Toggle::make('setting_value')
-                    ->label('Nilai')
-                    ->visible(fn (callable $get): bool => $get('setting_type') === 'toggle')
+                    ->label('Upload')
+                    ->visible(fn (callable $get, ?SiteSetting $record): bool => $get('setting_type') === 'toggle' && ($record?->setting_key !== 'maintenance_mode'))
                     ->columnSpanFull(),
             ]);
     }
@@ -108,41 +93,37 @@ class SiteSettingResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('label')->searchable(),
-                TextColumn::make('setting_group')->label('Grup')->badge()->toggleable(),
-                TextColumn::make('setting_type')
-                    ->label('Tipe')
-                    ->badge()
-                    ->colors([
-                        'gray' => 'text',
-                        'info' => 'textarea',
-                        'success' => 'image',
-                        'warning' => 'number',
-                        'primary' => 'toggle',
-                    ])
-                    ->formatStateUsing(fn (?string $state): ?string => match ($state) {
-                        'text' => 'Teks',
-                        'textarea' => 'Textarea',
-                        'image' => 'Gambar',
-                        'number' => 'Angka',
-                        'toggle' => 'Tombol',
-                        default => $state,
-                    }),
+                ToggleColumn::make('active')
+                    ->label('Aktif')
+                    ->getStateUsing(fn ($record): bool =>
+                        $record->setting_key === 'maintenance_mode'
+                            ? (bool) ($record->setting_value[0] ?? $record->setting_value)
+                            : (bool) $record->is_public
+                    )
+                    ->updateStateUsing(function ($state, ToggleColumn $column) {
+                        $record = $column->getRecord();
 
+                        if ($record->setting_key === 'maintenance_mode') {
+                            $record->setting_value = [$state];
+                        } else {
+                            $record->is_public = (bool) $state;
+                        }
+
+                        $record->save();
+
+                        return $state;
+                    }),
             ])
             ->actions([
                 EditAction::make(),
-                DeleteAction::make(),
             ])
-            ->bulkActions([
-                DeleteBulkAction::make(),
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListSiteSettings::route('/'),
-            'create' => Pages\CreateSiteSetting::route('/create'),
             'edit' => Pages\EditSiteSetting::route('/{record}/edit'),
         ];
     }

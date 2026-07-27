@@ -3,9 +3,12 @@
 namespace App\Providers;
 
 use App\Actions\Fortify\ResetUserPassword;
+use App\Enums\RoleName;
 use App\Models\EventAgenda;
 use App\Models\Gallery;
 use App\Models\NewsPost;
+use App\Models\SiteSetting;
+use App\Models\User;
 use App\Observers\EventAgendaObserver;
 use App\Observers\GalleryObserver;
 use App\Observers\NewsPostObserver;
@@ -13,9 +16,13 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
@@ -54,6 +61,37 @@ class AppServiceProvider extends ServiceProvider
     {
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::loginView('auth.login');
+        Fortify::authenticateUsing(function (Request $request) {
+            $user = User::where('email', $request->email)->first();
+
+            if (! $user || ! Hash::check($request->password, $user->password)) {
+                return null;
+            }
+
+            $setting = SiteSetting::query()
+                ->where('setting_key', 'maintenance_mode')
+                ->first();
+
+            $maintenanceMode = false;
+
+            if ($setting !== null) {
+                $value = $setting->value;
+
+                if (is_array($value)) {
+                    $maintenanceMode = filter_var($value[0] ?? false, FILTER_VALIDATE_BOOLEAN);
+                } else {
+                    $maintenanceMode = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                }
+            }
+
+            if ($maintenanceMode && ! $user->hasRole(RoleName::Admin->value)) {
+                throw ValidationException::withMessages([
+                    Fortify::username() => ['Website sedang pemeliharaan. Hanya administrator yang dapat masuk saat ini.'],
+                ]);
+            }
+
+            return $user;
+        });
         Fortify::requestPasswordResetLinkView('auth.passwords.email');
         Fortify::resetPasswordView('auth.passwords.reset');
 

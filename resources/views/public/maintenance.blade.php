@@ -6,8 +6,9 @@
             <span class="text-sm font-semibold uppercase tracking-[0.24em] text-[#5D4037]">Pemeliharaan</span>
             <h1 class="mt-6 text-4xl font-extrabold text-slate-900">Website sedang dalam pemeliharaan</h1>
             <p class="mx-auto mt-4 max-w-2xl text-lg leading-8 text-slate-600">Maaf, sementara ini akses ditutup untuk pengguna. Silakan coba kembali nanti.</p>
-            <div class="mt-8 flex justify-center gap-3">
+            <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <a href="{{ route('home') }}" class="rounded-full bg-[#5D4037] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#452a13]">Kembali ke Beranda</a>
+                <a href="{{ route('login') }}" class="rounded-full border border-[#5D4037] bg-white px-6 py-3 text-sm font-semibold text-[#5D4037] transition hover:bg-[#F8F4EF]">Login Administrator</a>
             </div>
         </div>
     </section>
