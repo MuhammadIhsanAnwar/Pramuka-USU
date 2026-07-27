@@ -362,3 +362,33 @@ html.fi .fi-page-content .fi-tabs-item svg circle {
   color: rgba(0,0,0,0.85) !important;
 }
 </style>
+<style>
+/* Strong overrides for checkbox inputs rendered by Filament forms
+   Targets inputs with class .fi-checkbox-input (e.g. Samakan dengan Domisili) */
+input.fi-checkbox-input {
+  background-color: #FAF3EB !important; /* cream */
+  background-image: none !important;
+  border: 1px solid rgba(62,39,26,0.08) !important;
+  box-shadow: none !important;
+  width: calc(var(--spacing) * 4) !important;
+  height: calc(var(--spacing) * 4) !important;
+  appearance: none !important;
+  border-radius: .5rem !important;
+}
+
+/* Checked / active */
+input.fi-checkbox-input:checked,
+input.fi-checkbox-input:indeterminate {
+  background-color: #3E271A !important; /* brown */
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 16 16' fill='%23fff' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  border-color: transparent !important;
+}
+
+/* Ensure disabled state remains visible */
+input.fi-checkbox-input:disabled {
+  background-color: #F3EDE6 !important;
+  opacity: 0.95 !important;
+}
+</style>
