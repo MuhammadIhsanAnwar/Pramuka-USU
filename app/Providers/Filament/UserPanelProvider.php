@@ -23,7 +23,7 @@ class UserPanelProvider extends PanelProvider
         return $panel
             ->id('user')
             ->path('user')
-            ->login()
+
             ->profile(EditProfile::class, false)
             ->topbar(true)
             ->userMenu(true, UserMenuPosition::Topbar)

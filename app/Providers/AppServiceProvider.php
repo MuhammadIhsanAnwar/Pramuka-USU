@@ -19,12 +19,12 @@ use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
-use Laravel\Fortify\Contracts\PasswordResetResponse as PasswordResetResponseContract;
 use Laravel\Fortify\Contracts\RedirectsIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Contracts\PasswordResetResponse as PasswordResetResponseContract;
+use App\Http\Responses\PasswordResetResponse as AppPasswordResetResponse;
 use App\Http\Responses\LoginResponse as AppLoginResponse;
 use App\Http\Responses\LogoutResponse as AppLogoutResponse;
-use App\Http\Responses\PasswordResetResponse as AppPasswordResetResponse;
 use Filament\Auth\Http\Responses\Contracts\LogoutResponse as FilamentLogoutResponseContract;
 use App\Http\Responses\FilamentLogoutResponse;
 
@@ -41,10 +41,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(LoginResponseContract::class, AppLoginResponse::class);
         $this->app->singleton(LogoutResponseContract::class, AppLogoutResponse::class);
-        $this->app->singleton(PasswordResetResponseContract::class, AppPasswordResetResponse::class);
         // Override Filament logout response to redirect to public homepage
         $this->app->singleton(FilamentLogoutResponseContract::class, FilamentLogoutResponse::class);
         $this->app->singleton(RedirectsIfTwoFactorAuthenticatable::class, RedirectIfTwoFactorAuthenticatable::class);
+        $this->app->singleton(PasswordResetResponseContract::class, AppPasswordResetResponse::class);
     }
 
     /**
@@ -58,7 +58,7 @@ class AppServiceProvider extends ServiceProvider
         Fortify::resetPasswordView('auth.passwords.reset');
 
         RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::lower($request->input(Fortify::username()).'|'.$request->ip());
+            $throttleKey = Str::lower($request->input(Fortify::username()) . '|' . $request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);
         });

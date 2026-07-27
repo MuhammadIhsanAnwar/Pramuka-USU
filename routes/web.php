@@ -6,10 +6,14 @@ use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RouteController;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use Laravel\Fortify\Http\Controllers\NewPasswordController;
 use Laravel\Fortify\Http\Controllers\PasswordResetLinkController;
+
+// Redirect /user/login (Filament user panel login) to /login when session expires
+Route::redirect('/user/login', '/login')->name('user.login.redirect');
 
 Route::middleware(['maintenance'])->group(function (): void {
     Route::get('/', [PublicController::class, 'home'])->name('home');
