@@ -335,3 +335,30 @@ html.fi .fi-page-content .fi-tabs-item svg circle {
     border-color: transparent !important;
 }
 </style>
+<style>
+/* More specific overrides for Filament toggle button classes to ensure
+   cream when off and brown when on, overriding color utility classes. */
+.fi-toggle,
+.fi-toggle * {
+  background-color: #FAF3EB !important; /* cream */
+  color: rgba(0,0,0,0.85) !important;
+}
+
+/* Active/on state */
+.fi-toggle.fi-toggle-on,
+.fi-toggle.fi-toggle-on *,
+.fi-toggle.fi-toggle-on svg,
+.fi-toggle.fi-toggle-on path {
+  background-color: #3E271A !important; /* brown */
+  color: #fff !important;
+  fill: #fff !important;
+  stroke: #fff !important;
+}
+
+/* Off state explicitly */
+.fi-toggle.fi-toggle-off,
+.fi-toggle.fi-toggle-off * {
+  background-color: #FAF3EB !important;
+  color: rgba(0,0,0,0.85) !important;
+}
+</style>
