@@ -3,9 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Admin\Pages\EditProfile;
-use Filament\Enums\UserMenuPosition;
 use App\Http\Middleware\RedirectFilamentToLogin;
-use App\Filament\Admin\Pages\EditProfile;
 use Filament\Enums\UserMenuPosition;
 use Filament\Panel;
 use Filament\PanelProvider;
