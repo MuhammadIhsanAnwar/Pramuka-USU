@@ -183,9 +183,9 @@
 
         {{-- HEADER: Fixed positioning so it's always visible on scroll --}}
         <header class="fixed top-0 left-0 right-0 z-50 border-b border-[#5D4037]/10 bg-white/95 backdrop-blur-md shadow-sm">
-            <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+            <div class="mx-auto flex max-w-8xl items-center justify-between gap-4 px-4 py-2 sm:px-6 lg:px-8">
                 <a href="{{ route('home') }}" class="flex items-center gap-3">
-                    <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Logo Pramuka USU" class="h-11 w-11 object-contain" />
+                    <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Logo Pramuka USU" class="h-10 w-10 object-contain" />
                     <div>
                         <div class="text-sm font-bold tracking-wide text-[#5D4037]">Pramuka USU</div>
                         <div class="text-xs text-slate-500">Gugus Depan Gerakan Pramuka Kota Medan 08-137 dan 08-138</div>
@@ -201,13 +201,32 @@
                     <a href="{{ route('surat-masuk') }}" class="transition hover:text-[#5D4037]">Surat Masuk</a>
                     <a href="{{ route('contact') }}" class="transition hover:text-[#5D4037]">Kontak</a>
                     @auth
-                        @if(auth()->user()->hasRole('Admin'))
-                            <a href="{{ url('/admin') }}" class="btn-primary">Dashboard Admin</a>
-                        @elseif(auth()->user()->hasRole('User'))
-                            <a href="{{ url('/dashboard') }}" class="btn-primary">Dashboard User</a>
-                        @else
-                            <a href="{{ route('login') }}" class="btn-primary">Masuk</a>
-                        @endif
+                        @php
+                            $dashboardUrl = auth()->user()->hasRole('Admin') ? url('/admin') : url('/dashboard');
+                            $profileUrl = auth()->user()->hasRole('Admin') ? url('/admin/profile') : url('/user/profile');
+                        @endphp
+
+                        <details class="relative">
+                            <summary class="inline-flex items-center gap-2 rounded-full border border-[#5D4037]/10 bg-white px-3 py-2 text-sm font-semibold text-[#5D4037] shadow-sm transition hover:border-[#5D4037]/20">
+                                <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="h-10 w-10 rounded-2xl object-cover" />
+                                <span class="hidden truncate md:inline-block max-w-[10rem]">{{ auth()->user()->name }}</span>
+                                <span class="text-xs">▾</span>
+                            </summary>
+
+                            <div class="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-[#5D4037]/10 bg-white text-sm shadow-xl">
+                                <div class="border-b border-[#5D4037]/10 px-4 py-3 text-left whitespace-normal break-words">
+                                    <p class="text-sm font-semibold text-slate-900 break-words">{{ auth()->user()->name }}</p>
+                                    <p class="text-xs text-slate-500 break-words">{{ auth()->user()->email }}</p>
+                                </div>
+                                <a href="{{ route('home') }}" class="block px-4 py-3 text-slate-700 transition hover:bg-[#F5F5DC]">Beranda Utama</a>
+                                <a href="{{ $dashboardUrl }}" class="block px-4 py-3 text-slate-700 transition hover:bg-[#F5F5DC]">Dashboard</a>
+                                <a href="{{ $profileUrl }}" class="block px-4 py-3 text-slate-700 transition hover:bg-[#F5F5DC]">Profil</a>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left px-4 py-3 text-slate-700 transition hover:bg-[#F5F5DC]">Keluar</button>
+                                </form>
+                            </div>
+                        </details>
                     @else
                         <a href="{{ route('login') }}" class="btn-primary">Masuk</a>
                     @endauth
@@ -224,13 +243,12 @@
                         <a href="{{ route('surat-masuk') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Surat Masuk</a>
                         <a href="{{ route('contact') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Kontak</a>
                         @auth
-                            @if(auth()->user()->hasRole('Admin'))
-                                <a href="{{ url('/admin') }}" class="mt-2 block rounded-lg bg-[#5D4037] px-3 py-2 text-center text-sm font-semibold text-white">Dashboard Admin</a>
-                            @elseif(auth()->user()->hasRole('User'))
-                                <a href="{{ url('/dashboard') }}" class="mt-2 block rounded-lg bg-[#5D4037] px-3 py-2 text-center text-sm font-semibold text-white">Dashboard User</a>
-                            @else
-                                <a href="{{ route('login') }}" class="mt-2 block rounded-lg bg-[#5D4037] px-3 py-2 text-center text-sm font-semibold text-white">Masuk</a>
-                            @endif
+                            <a href="{{ auth()->user()->hasRole('Admin') ? url('/admin') : url('/dashboard') }}" class="mt-2 block rounded-lg bg-[#5D4037] px-3 py-2 text-center text-sm font-semibold text-white">Dashboard</a>
+                            <a href="{{ auth()->user()->hasRole('Admin') ? url('/admin/profile') : url('/user/profile') }}" class="mt-2 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-[#5D4037] border border-[#5D4037]/10 hover:bg-[#F5F5DC]">Profil</a>
+                            <form method="POST" action="{{ route('logout') }}" class="mt-2">
+                                @csrf
+                                <button type="submit" class="w-full rounded-lg bg-slate-100 px-3 py-2 text-sm font-semibold text-[#3E271A] hover:bg-[#EDE9D4]">Keluar</button>
+                            </form>
                         @else
                             <a href="{{ route('login') }}" class="mt-2 block rounded-lg bg-[#5D4037] px-3 py-2 text-center text-sm font-semibold text-white">Masuk</a>
                         @endauth

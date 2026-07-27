@@ -51,7 +51,7 @@ class EditProfile extends BaseEditProfile
                                 FileUpload::make('avatar_path')
                                     ->label('Foto Profil')
                                     ->image()
-                                    ->disk('public')
+                                    ->disk('public_storage')
                                     ->directory('foto_profil')
                                     ->visibility('public')
                                     ->columnSpanFull()

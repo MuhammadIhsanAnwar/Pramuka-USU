@@ -137,6 +137,86 @@ html.fi .livewire-progress { background-color: #3E271A !important; }
     order: 0 !important;
   }
 }
+
+/* Topbar user avatar portrait ratio */
+html.fi .fi-topbar .fi-user-menu-trigger {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.5rem;
+  padding: 0.25rem 0.4rem;
+}
+
+html.fi .fi-topbar .fi-user-menu-trigger-avatar-wrapper {
+  width: 2.25rem;
+  height: 3rem;
+  min-width: 2.25rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+html.fi .fi-topbar .fi-user-menu-trigger-avatar-wrapper .fi-avatar {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 0 !important;
+  object-fit: cover !important;
+}
+
+html.fi .fi-topbar .fi-user-menu-trigger-avatar-wrapper .fi-avatar img {
+  object-fit: cover !important;
+}
+
+html.fi .fi-topbar .fi-user-menu-trigger-name {
+  color: #3E271A;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  max-width: 7rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html.fi .fi-topbar .fi-user-menu .fi-dropdown-panel {
+  min-width: 14rem;
+  width: auto;
+  background-color: #ffffff;
+  border: 1px solid rgba(93, 64, 55, 0.1);
+  border-radius: 1rem;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+  padding: 0;
+  overflow: hidden;
+}
+
+html.fi .fi-topbar .fi-user-menu .fi-dropdown-list {
+  padding: 0;
+}
+
+html.fi .fi-topbar .fi-user-menu .fi-dropdown-list-item {
+  padding: 0.75rem 1rem;
+  color: #334155;
+  border-top: 1px solid transparent;
+}
+
+html.fi .fi-topbar .fi-user-menu .fi-dropdown-list-item:hover,
+html.fi .fi-topbar .fi-user-menu .fi-dropdown-list-item:focus-visible {
+  background-color: #F5F5DC;
+}
+
+html.fi .fi-topbar .fi-user-menu .fi-dropdown-list-item-label {
+  color: #334155;
+}
+
+html.fi .fi-topbar .fi-user-menu .fi-dropdown-header {
+  padding: 1rem 1rem;
+  border-bottom: 1px solid rgba(93, 64, 55, 0.1);
+  color: #334155;
+}
+
+html.fi .fi-topbar .fi-user-menu-trigger {
+  background-color: #ffffff;
+  border: 1px solid rgba(93, 64, 55, 0.1);
+  border-radius: 9999px;
+  padding: 0.25rem 0.5rem;
+}
 </style>
 <style>
 /* Stronger overrides for active/open sidebar buttons — target labels, icons, SVG & paths */

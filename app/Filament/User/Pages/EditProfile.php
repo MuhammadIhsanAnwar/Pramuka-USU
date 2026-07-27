@@ -65,12 +65,12 @@ class EditProfile extends BaseEditProfile
                                                 TextInput::make('data.whatsapp_number')->label('Nomor WhatsApp')->tel()->maxLength(30),
                                                 Select::make('data.marital_status')->label('Status Perkawinan')->options(['Belum Kawin'=>'Belum Kawin','Kawin'=>'Kawin','Duda'=>'Duda','Janda'=>'Janda']),
                                                 TextInput::make('data.job')->label('Pekerjaan')->maxLength(255),
-                                                FileUpload::make('data.avatar_path')
+                                                FileUpload::make('avatar_path')
                                                     ->label('Upload Pas Foto')
                                                     ->helperText('Unggah pas foto ukuran 3x4 dengan latar putih, mengenakan seragam Pramuka lengkap tanpa tutup kepala. Maksimal ukuran file 5MB.')
                                                     ->image()
                                                     ->directory('foto_profil')
-                                                    ->disk('public')
+                                                    ->disk('public_storage')
                                                     ->visibility('public')
                                                     ->maxSize(5120)
                                                     ->imageCropAspectRatio('3:4')
@@ -87,16 +87,90 @@ class EditProfile extends BaseEditProfile
                                 Section::make('Domisili')
                                     ->schema([
                                         Grid::make(3)->schema([
-                                            TextInput::make('data.domisili_country')->label('Negara')->maxLength(255),
-                                            TextInput::make('data.domisili_province')->label('Provinsi')->maxLength(255),
-                                            TextInput::make('data.domisili_city')->label('Kota / Kabupaten')->placeholder('Contoh: Medan')->maxLength(255),
-                                            TextInput::make('data.domisili_district')->label('Kecamatan')->maxLength(255),
-                                            TextInput::make('data.domisili_village')->label('Kelurahan / Desa')->placeholder('Contoh: Kelurahan X')->maxLength(255),
-                                            TextInput::make('data.domisili_rt')->label('RT')->maxLength(10),
-                                            TextInput::make('data.domisili_rw')->label('RW')->maxLength(10),
-                                            TextInput::make('data.domisili_postal_code')->label('Kode Pos')->maxLength(10),
+                                            TextInput::make('data.domisili_country')
+                                                ->label('Negara')
+                                                ->maxLength(255)
+                                                ->reactive()
+                                                ->afterStateUpdated(function (callable $set, $state, callable $get) {
+                                                    if ($get('data.same_as_domisili')) {
+                                                        $set('data.asal_country', $state);
+                                                    }
+                                                }),
+                                            TextInput::make('data.domisili_province')
+                                                ->label('Provinsi')
+                                                ->maxLength(255)
+                                                ->reactive()
+                                                ->afterStateUpdated(function (callable $set, $state, callable $get) {
+                                                    if ($get('data.same_as_domisili')) {
+                                                        $set('data.asal_province', $state);
+                                                    }
+                                                }),
+                                            TextInput::make('data.domisili_city')
+                                                ->label('Kota / Kabupaten')
+                                                ->placeholder('Contoh: Medan')
+                                                ->maxLength(255)
+                                                ->reactive()
+                                                ->afterStateUpdated(function (callable $set, $state, callable $get) {
+                                                    if ($get('data.same_as_domisili')) {
+                                                        $set('data.asal_city', $state);
+                                                    }
+                                                }),
+                                            TextInput::make('data.domisili_district')
+                                                ->label('Kecamatan')
+                                                ->maxLength(255)
+                                                ->reactive()
+                                                ->afterStateUpdated(function (callable $set, $state, callable $get) {
+                                                    if ($get('data.same_as_domisili')) {
+                                                        $set('data.asal_district', $state);
+                                                    }
+                                                }),
+                                            TextInput::make('data.domisili_village')
+                                                ->label('Kelurahan / Desa')
+                                                ->placeholder('Contoh: Kelurahan X')
+                                                ->maxLength(255)
+                                                ->reactive()
+                                                ->afterStateUpdated(function (callable $set, $state, callable $get) {
+                                                    if ($get('data.same_as_domisili')) {
+                                                        $set('data.asal_village', $state);
+                                                    }
+                                                }),
+                                            TextInput::make('data.domisili_rt')
+                                                ->label('RT')
+                                                ->maxLength(10)
+                                                ->reactive()
+                                                ->afterStateUpdated(function (callable $set, $state, callable $get) {
+                                                    if ($get('data.same_as_domisili')) {
+                                                        $set('data.asal_rt', $state);
+                                                    }
+                                                }),
+                                            TextInput::make('data.domisili_rw')
+                                                ->label('RW')
+                                                ->maxLength(10)
+                                                ->reactive()
+                                                ->afterStateUpdated(function (callable $set, $state, callable $get) {
+                                                    if ($get('data.same_as_domisili')) {
+                                                        $set('data.asal_rw', $state);
+                                                    }
+                                                }),
+                                            TextInput::make('data.domisili_postal_code')
+                                                ->label('Kode Pos')
+                                                ->maxLength(10)
+                                                ->reactive()
+                                                ->afterStateUpdated(function (callable $set, $state, callable $get) {
+                                                    if ($get('data.same_as_domisili')) {
+                                                        $set('data.asal_postal_code', $state);
+                                                    }
+                                                }),
                                         ]),
-                                        TextInput::make('data.domisili_street')->label('Jalan')->maxLength(255),
+                                        TextInput::make('data.domisili_street')
+                                            ->label('Jalan')
+                                            ->maxLength(255)
+                                            ->reactive()
+                                            ->afterStateUpdated(function (callable $set, $state, callable $get) {
+                                                if ($get('data.same_as_domisili')) {
+                                                    $set('data.asal_street', $state);
+                                                }
+                                            }),
                                     ]),
                                 Section::make('Asal')
                                     ->schema([
@@ -106,22 +180,52 @@ class EditProfile extends BaseEditProfile
                                             ->extraInputAttributes(['class' => 'samakan-domisili-checkbox'])
                                             ->afterStateUpdated(function (callable $set, $state) {
                                                 if ($state) {
+                                                    $currentState = $this->form->getState();
                                                     foreach (['country','province','city','district','village','rt','rw','postal_code','street'] as $attr) {
-                                                        $set('data.asal_'.$attr, data_get($this->data, 'data.domisili_'.$attr));
+                                                        $set('data.asal_'.$attr, data_get($currentState, 'data.domisili_'.$attr));
                                                     }
                                                 }
                                             }),
                                         Grid::make(3)->schema([
-                                            TextInput::make('data.asal_country')->label('Negara')->maxLength(255),
-                                            TextInput::make('data.asal_province')->label('Provinsi')->maxLength(255),
-                                            TextInput::make('data.asal_city')->label('Kota / Kabupaten')->placeholder('Contoh: Medan')->maxLength(255),
-                                            TextInput::make('data.asal_district')->label('Kecamatan')->maxLength(255),
-                                            TextInput::make('data.asal_village')->label('Kelurahan / Desa')->placeholder('Contoh: Kelurahan X')->maxLength(255),
-                                            TextInput::make('data.asal_rt')->label('RT')->maxLength(10),
-                                            TextInput::make('data.asal_rw')->label('RW')->maxLength(10),
-                                            TextInput::make('data.asal_postal_code')->label('Kode Pos')->maxLength(10),
+                                            TextInput::make('data.asal_country')
+                                                ->label('Negara')
+                                                ->maxLength(255)
+                                                ->disabled(fn (Get $get): bool => $get('data.same_as_domisili')),
+                                            TextInput::make('data.asal_province')
+                                                ->label('Provinsi')
+                                                ->maxLength(255)
+                                                ->disabled(fn (Get $get): bool => $get('data.same_as_domisili')),
+                                            TextInput::make('data.asal_city')
+                                                ->label('Kota / Kabupaten')
+                                                ->placeholder('Contoh: Medan')
+                                                ->maxLength(255)
+                                                ->disabled(fn (Get $get): bool => $get('data.same_as_domisili')),
+                                            TextInput::make('data.asal_district')
+                                                ->label('Kecamatan')
+                                                ->maxLength(255)
+                                                ->disabled(fn (Get $get): bool => $get('data.same_as_domisili')),
+                                            TextInput::make('data.asal_village')
+                                                ->label('Kelurahan / Desa')
+                                                ->placeholder('Contoh: Kelurahan X')
+                                                ->maxLength(255)
+                                                ->disabled(fn (Get $get): bool => $get('data.same_as_domisili')),
+                                            TextInput::make('data.asal_rt')
+                                                ->label('RT')
+                                                ->maxLength(10)
+                                                ->disabled(fn (Get $get): bool => $get('data.same_as_domisili')),
+                                            TextInput::make('data.asal_rw')
+                                                ->label('RW')
+                                                ->maxLength(10)
+                                                ->disabled(fn (Get $get): bool => $get('data.same_as_domisili')),
+                                            TextInput::make('data.asal_postal_code')
+                                                ->label('Kode Pos')
+                                                ->maxLength(10)
+                                                ->disabled(fn (Get $get): bool => $get('data.same_as_domisili')),
                                         ]),
-                                        TextInput::make('data.asal_street')->label('Jalan')->maxLength(255),
+                                        TextInput::make('data.asal_street')
+                                            ->label('Jalan')
+                                            ->maxLength(255)
+                                            ->disabled(fn (Get $get): bool => $get('data.same_as_domisili')),
                                     ]),
                             ]),
                         'riwayat-pendidikan' => Tab::make('Riwayat Pendidikan')
@@ -267,7 +371,13 @@ class EditProfile extends BaseEditProfile
             return;
         }
 
-        $allData = data_get($this->data, 'data', []);
+        $state = $this->form->getState();
+        $allData = data_get($state, 'data', []);
+
+        if ($section === 'Biodata' && array_key_exists('avatar_path', $state)) {
+            $allData['avatar_path'] = $state['avatar_path'];
+        }
+
         $allowed = $map[$section];
         $sectionData = array_intersect_key($allData, array_flip($allowed));
 
@@ -399,7 +509,28 @@ class EditProfile extends BaseEditProfile
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        return ['data' => $data];
+        if (! isset($data['data']) || ! is_array($data['data'])) {
+            $fields = [
+                'name','email','birth_place','birth_date','gender','religion','blood_type',
+                'hobby','siblings_count','whatsapp_number','marital_status','job',
+                'domisili_country','domisili_province','domisili_city','domisili_district','domisili_village','domisili_rt','domisili_rw','domisili_postal_code','domisili_street',
+                'asal_country','asal_province','asal_city','asal_district','asal_village','asal_rt','asal_rw','asal_postal_code','asal_street',
+                'same_as_domisili','education_status','nim','kampus','fakultas','program_studi',
+                'father_name','father_status','father_address','father_phone',
+                'mother_name','mother_status','mother_address','mother_phone',
+                'guardian_name','guardian_status','guardian_address','guardian_phone',
+                'satuan','jabatan','nta','tahun_masuk_pramuka_usu','nama_omantaru','golongan','tingkatan',
+            ];
+
+            $data['data'] = [];
+            foreach ($fields as $field) {
+                if (array_key_exists($field, $data)) {
+                    $data['data'][$field] = $data[$field];
+                }
+            }
+        }
+
+        return $data;
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
@@ -407,6 +538,7 @@ class EditProfile extends BaseEditProfile
         if (isset($data['data'])) {
             $data = $data['data'];
         }
+
         if (! empty($data['same_as_domisili'])) {
             foreach (['country','province','city','district','village','rt','rw','postal_code','street'] as $attribute) {
                 $data['asal_'.$attribute] = $data['domisili_'.$attribute] ?? $data['asal_'.$attribute] ?? null;

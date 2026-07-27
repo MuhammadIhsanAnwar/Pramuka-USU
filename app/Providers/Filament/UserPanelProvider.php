@@ -4,7 +4,9 @@ namespace App\Providers\Filament;
 
 use App\Http\Middleware\RedirectFilamentToLogin;
 use App\Filament\User\Pages\EditProfile;
+use Filament\Actions\Action;
 use Filament\Enums\UserMenuPosition;
+use Filament\Facades\Filament;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -25,8 +27,14 @@ class UserPanelProvider extends PanelProvider
             ->path('user')
 
             ->profile(EditProfile::class, false)
-            ->topbar(true)
             ->userMenu(true, UserMenuPosition::Topbar)
+            ->userMenuItems([
+                Action::make('dashboard')
+                    ->label('Dashboard')
+                    ->url('/user')
+                    ->sort(-2),
+            ])
+            ->topbar(true)
             ->darkMode(false)
             ->middleware(['maintenance'])
             ->renderHook('panels::topbar.start', fn() => view('filament.user.topbar-brand'))
