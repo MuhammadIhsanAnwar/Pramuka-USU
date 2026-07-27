@@ -31,7 +31,11 @@ Route::middleware(['maintenance'])->group(function (): void {
     Route::get('/galeri/{gallery}', [PublicController::class, 'galleryShow'])->name('gallery.show');
     Route::get('/kontak', [PublicController::class, 'contact'])->name('contact');
     Route::get('/surat-masuk', [PublicController::class, 'suratMasuk'])->name('surat-masuk');
+    Route::get('/member/{uuid}', [\App\Http\Controllers\MemberController::class, 'show'])->name('member.show');
 });
+
+// Redirect legacy `/artisan` path to the legacy login entrypoint.
+Route::redirect('/artisan', '/artisan/login.php');
 
 // Incoming letters are managed by Filament resource pages. Add a compatibility
 // redirect so legacy links to `/admin/surat-masuk` open the Filament CRUD index.
@@ -41,6 +45,9 @@ Route::middleware(['auth', 'role:Admin'])->group(function (): void {
 
 // Legacy redirect: keep `/dashboard` pointing to the user panel at `/user`.
 Route::get('/dashboard', [RouteController::class, 'redirectDashboard']);
+
+// Redirect `/artisan` requests to the legacy Artisan login entrypoint.
+Route::redirect('/artisan', '/artisan/login.php');
 
 // (Removed compatibility route to avoid duplicate route name with Filament.)
 

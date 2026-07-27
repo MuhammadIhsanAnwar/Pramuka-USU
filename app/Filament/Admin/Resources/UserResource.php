@@ -5,6 +5,8 @@ namespace App\Filament\Admin\Resources;
 use App\Enums\RoleName;
 use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Models\User;
+use App\Services\MemberQrCodeService;
+use Filament\Actions\Action as TableAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Facades\Filament;
@@ -17,7 +19,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 use BackedEnum;
 
@@ -87,6 +88,12 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('qr_code_url')
+                    ->label('QR Code')
+                    ->height(80)
+                    ->width(80)
+                    ->toggleable(false)
+                    ->url(fn (?string $state, $record): ?string => $record?->qr_code_url),
                 ImageColumn::make('avatar_path')
                     ->label('Foto')
                     ->circular()
@@ -113,6 +120,23 @@ class UserResource extends Resource
                     ->sortable(),
             ])
             ->actions([
+                TableAction::make('generateQr')
+                    ->label('Generate QR')
+                    ->color('secondary')
+                    ->action(static function (User $record): void {
+                        app(MemberQrCodeService::class)->generateFor($record);
+                    })
+                    ->successNotificationTitle('QR Code dibuat')
+                    ->visible(fn (User $record): bool => blank($record->qr_code_path)),
+                TableAction::make('regenerateQr')
+                    ->label('Regenerate QR')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Regenerate QR Code')
+                    ->action(static function (User $record): void {
+                        app(MemberQrCodeService::class)->regenerateFor($record);
+                    })
+                    ->successNotificationTitle('QR Code berhasil digenerate ulang'),
                 EditAction::make()
                     ->visible(fn (User $record): bool => Filament::auth()->id() !== $record->id),
                 DeleteAction::make()

@@ -88,6 +88,12 @@ class User extends Authenticatable implements FilamentUser
         'golongan',
         'tingkatan',
         'is_active',
+        'uuid',
+        'qr_code_path',
+    ];
+
+    protected $appends = [
+        'qr_code_url',
     ];
 
     /**
@@ -257,4 +263,23 @@ class User extends Authenticatable implements FilamentUser
                 : asset('storage/'.$attributes['avatar_path']),
         );
     }
+
+    protected function qrCodeUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes): ?string => blank($attributes['qr_code_path'] ?? null)
+                ? null
+                : asset('storage/'.$attributes['qr_code_path']),
+        );
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (User $user): void {
+            if (blank($user->uuid)) {
+                $user->uuid = (string) Str::uuid();
+            }
+        });
+    }
 }
+

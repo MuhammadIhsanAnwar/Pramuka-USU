@@ -16,7 +16,6 @@ class ListUserData extends ListRecords
     public function getTabs(): array
     {
         return [
-            'data-akun' => Tab::make('Data Akun'),
             'biodata' => Tab::make('Biodata')->query(fn (Builder $query): Builder => $this->excludeAdminUsers($query)),
             'alamat' => Tab::make('Alamat')->query(fn (Builder $query): Builder => $this->excludeAdminUsers($query)),
             'riwayat-pendidikan' => Tab::make('Riwayat Pendidikan')->query(fn (Builder $query): Builder => $this->excludeAdminUsers($query)),

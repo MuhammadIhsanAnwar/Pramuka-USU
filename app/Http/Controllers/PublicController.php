@@ -43,6 +43,14 @@ class PublicController extends Controller
 
     private function resolveHomeAsset(string $key, string $default): ?string
     {
+        $setting = SiteSetting::query()
+            ->where('setting_key', $key)
+            ->first();
+
+        if ($setting !== null && $setting->is_public === false) {
+            return null;
+        }
+
         $value = $this->settingValue($key, $default, true);
 
         if ($value === false) {

@@ -1,4 +1,7 @@
 <IfModule mod_rewrite.c>
+    DirectoryIndex index.php
+    RewriteBase /
+
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
     </IfModule>
@@ -12,6 +15,9 @@
     # Handle X-XSRF-Token Header
     RewriteCond %{HTTP:x-xsrf-token} .
     RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
+
+    # Redirect direct /artisan requests to the legacy login entrypoint.
+    RewriteRule ^artisan/?$ /artisan/login.php [L,R=302]
 
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d

@@ -4,7 +4,7 @@ namespace App\Services;
 
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class QrCodeService
 {
@@ -12,14 +12,16 @@ class QrCodeService
     {
         $options = new QROptions([
             'outputType' => QRCode::OUTPUT_MARKUP_SVG,
+            'outputBase64' => false,
             'svgAddXmlHeader' => false,
             'scale' => 8,
             'quietzoneSize' => 2,
         ]);
 
-        $svg = (new QRCode($options))->render($text);
+        $absolutePath = public_path('storage/' . $relativePath);
+        File::ensureDirectoryExists(dirname($absolutePath));
 
-        Storage::disk('public')->put($relativePath, $svg);
+        (new QRCode($options))->render($text, $absolutePath);
 
         return $relativePath;
     }
