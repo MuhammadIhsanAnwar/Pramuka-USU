@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Widgets;
 
+use App\Enums\RoleName;
 use App\Enums\UserKind;
 use App\Models\Attendance;
 use App\Models\EventAgenda;
@@ -16,7 +17,10 @@ class AdminStatsOverview extends StatsOverviewWidget
     protected function getStats(): array
     {
         $counts = [
-            'users' => User::query()->where('is_active', true)->count(),
+            'users' => User::query()
+                ->where('is_active', true)
+                ->whereDoesntHave('roles', fn ($query) => $query->where('name', RoleName::Admin->value))
+                ->count(),
             'purna' => User::query()->where('jenis_user', UserKind::Purna->value)->count(),
             'pembina_08_137' => User::query()->where('satuan', 'Gugus Depan Gerakan Pramuka Kota Medan 08-137')->count(),
             'pembia_08_138' => User::query()->where('satuan', 'Gugus Depan Gerakan Pramuka Kota Medan 08-138')->count(),

@@ -65,7 +65,15 @@ class EditProfile extends BaseEditProfile
                                                 TextInput::make('data.whatsapp_number')->label('Nomor WhatsApp')->tel()->maxLength(30),
                                                 Select::make('data.marital_status')->label('Status Perkawinan')->options(['Belum Kawin'=>'Belum Kawin','Kawin'=>'Kawin','Duda'=>'Duda','Janda'=>'Janda']),
                                                 TextInput::make('data.job')->label('Pekerjaan')->maxLength(255),
-                                                FileUpload::make('data.avatar_path')->label('Upload Pas Foto')->image()->directory('avatars')->disk('public')->visibility('public')->maxSize(2048)->imageCropAspectRatio('3:4'),
+                                                FileUpload::make('data.avatar_path')
+                                                    ->label('Upload Pas Foto')
+                                                    ->helperText('Unggah pas foto ukuran 3x4 dengan latar putih, mengenakan seragam Pramuka lengkap tanpa tutup kepala. Maksimal ukuran file 5MB.')
+                                                    ->image()
+                                                    ->directory('avatars')
+                                                    ->disk('public')
+                                                    ->visibility('public')
+                                                    ->maxSize(5120)
+                                                    ->imageCropAspectRatio('3:4'),
                                             ]),
                                     ]),
                             ]),

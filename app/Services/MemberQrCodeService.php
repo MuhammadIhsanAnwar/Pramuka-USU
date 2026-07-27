@@ -21,11 +21,17 @@ class MemberQrCodeService
         $relativePath = $this->resolveRelativePath($member);
         $absolutePath = $this->resolveAbsolutePath($relativePath);
 
-        if ($force && filled($member->qr_code_path) && $member->qr_code_path !== $relativePath) {
-            $oldPath = $this->resolveAbsolutePath($member->qr_code_path);
+        if ($force) {
+            if (filled($member->qr_code_path) && $member->qr_code_path !== $relativePath) {
+                $oldPath = $this->resolveAbsolutePath($member->qr_code_path);
 
-            if (File::exists($oldPath)) {
-                File::delete($oldPath);
+                if (File::exists($oldPath)) {
+                    File::delete($oldPath);
+                }
+            }
+
+            if (File::exists($absolutePath)) {
+                File::delete($absolutePath);
             }
         }
 
