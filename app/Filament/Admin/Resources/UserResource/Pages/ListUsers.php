@@ -23,18 +23,18 @@ class ListUsers extends ListRecords
                 ->requiresConfirmation()
                 ->modalHeading('Generate QR Code untuk akun yang belum punya QR')
                 ->action(static function (): void {
-                    GenerateMemberQrCodesJob::dispatch();
+                    GenerateMemberQrCodesJob::dispatchSync();
                 })
-                ->successNotificationTitle('Tugas generate QR berhasil dikirim ke antrian'),
+                ->successNotificationTitle('QR Code untuk akun tanpa QR berhasil dibuat'),
             Action::make('regenerateMassQr')
                 ->label('Regenerate QR Massal')
                 ->color('danger')
                 ->requiresConfirmation()
                 ->modalHeading('Regenerate QR Code untuk akun dengan QR lama')
                 ->action(static function (): void {
-                    RegenerateMemberQrCodesJob::dispatch();
+                    RegenerateMemberQrCodesJob::dispatchSync();
                 })
-                ->successNotificationTitle('Tugas regenerate QR berhasil dikirim ke antrian'),
+                ->successNotificationTitle('QR Code untuk semua akun yang sudah punya QR berhasil digenerate ulang'),
         ];
     }
 }

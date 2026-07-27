@@ -69,11 +69,16 @@ class EditProfile extends BaseEditProfile
                                                     ->label('Upload Pas Foto')
                                                     ->helperText('Unggah pas foto ukuran 3x4 dengan latar putih, mengenakan seragam Pramuka lengkap tanpa tutup kepala. Maksimal ukuran file 5MB.')
                                                     ->image()
-                                                    ->directory('avatars')
+                                                    ->directory('foto_profil')
                                                     ->disk('public')
                                                     ->visibility('public')
                                                     ->maxSize(5120)
-                                                    ->imageCropAspectRatio('3:4'),
+                                                    ->imageCropAspectRatio('3:4')
+                                                    ->getUploadedFileNameForStorageUsing(static function (FileUpload $component, $file): string {
+                                                        $name = $component->getRecord()?->name ?? 'user';
+
+                                                        return sprintf('%s.%s', Str::slug($name), $file->getClientOriginalExtension());
+                                                    }),
                                             ]),
                                     ]),
                             ]),

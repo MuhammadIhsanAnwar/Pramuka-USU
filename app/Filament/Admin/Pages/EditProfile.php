@@ -12,6 +12,7 @@ use Filament\Schemas\Schema;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use LogicException;
 
 class EditProfile extends BaseEditProfile
@@ -51,9 +52,14 @@ class EditProfile extends BaseEditProfile
                                     ->label('Foto Profil')
                                     ->image()
                                     ->disk('public')
-                                    ->directory('avatars')
+                                    ->directory('foto_profil')
                                     ->visibility('public')
-                                    ->columnSpanFull(),
+                                    ->columnSpanFull()
+                                    ->getUploadedFileNameForStorageUsing(static function (FileUpload $component, $file): string {
+                                        $name = $component->getRecord()?->name ?? 'user';
+
+                                        return sprintf('%s.%s', Str::slug($name), $file->getClientOriginalExtension());
+                                    }),
                                 TextInput::make('name')
                                     ->label('Nama')
                                     ->required()
