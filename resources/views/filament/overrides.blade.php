@@ -300,3 +300,38 @@ html.fi .fi-page-content .fi-tabs-item svg circle {
   stroke: #ffffff !important;
 }
 </style>
+<style>
+/* Ensure the "Samakan dengan Domisili" toggle shows cream when off and brown when on.
+   Placed here so it loads after Filament CSS and other overrides. */
+.fi-fo-toggle,
+.fi-toggle,
+.filament-forms-toggle,
+.filament-toggle,
+.fi-toggle-track,
+.fi-fo-toggle .fi-toggle-track,
+.filament-toggle .fi-toggle-track,
+.filament-forms-toggle .fi-toggle-track {
+    background-color: #FAF3EB !important; /* cream */
+    color: rgba(0,0,0,0.85) !important;
+    padding: .35rem .6rem !important;
+    border-radius: .5rem !important;
+    border: 1px solid rgba(62,39,26,0.08) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: .35rem !important;
+}
+
+/* Active state */
+.fi-fo-toggle[aria-checked="true"],
+.fi-toggle[aria-checked="true"],
+.filament-forms-toggle[aria-checked="true"],
+.filament-toggle[aria-checked="true"],
+.fi-toggle-track[aria-checked="true"],
+.fi-fo-toggle[data-state="true"],
+.fi-toggle[data-state="true"],
+.filament-forms-toggle[data-state="true"] {
+    background-color: #3E271A !important; /* brown */
+    color: #fff !important;
+    border-color: transparent !important;
+}
+</style>
