@@ -61,7 +61,8 @@ class UserResource extends Resource
                     ->options(collect(RoleName::cases())->mapWithKeys(fn (RoleName $role): array => [$role->value => $role->value])->all())
                     ->default(RoleName::User->value)
                     ->required()
-                    ->reactive(),
+                    ->reactive()
+                    ->disabled(fn (callable $get): bool => $get('role_name') === RoleName::Admin->value),
                 Select::make('jenis_user')
                     ->label('Jenis Pengguna')
                     ->options([
@@ -100,10 +101,9 @@ class UserResource extends Resource
                 TextColumn::make('jenis_user')
                     ->label('Jenis Pengguna')
                     ->badge(),
-                TextColumn::make('is_active')
+                ToggleColumn::make('is_active')
                     ->label('Aktif')
-                    ->badge()
-                    ->formatStateUsing(fn (?bool $state): string => $state ? 'Aktif' : 'Nonaktif'),
+                    ->disabled(fn (?User $record): bool => $record?->hasRole(RoleName::Admin->value)),
                 TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->dateTime()

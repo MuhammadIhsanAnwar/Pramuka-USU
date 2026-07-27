@@ -30,6 +30,13 @@ class LoginResponse implements LoginResponseContract
             return redirect()->intended(url('/user'));
         }
 
+        if ($user instanceof User && ! $user->is_active) {
+            auth()->logout();
+
+            return redirect()->route('login')
+                ->withErrors(['email' => 'Akun Anda dinonaktifkan oleh admin. Silakan hubungi pihak yang berwenang.']);
+        }
+
         if ($user instanceof User && $user->hasRole(RoleName::Admin->value)) {
             return redirect()->intended(url('/admin'));
         }

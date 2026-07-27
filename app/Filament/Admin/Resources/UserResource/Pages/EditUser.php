@@ -27,6 +27,11 @@ class EditUser extends EditRecord
             unset($data['password']);
         }
 
+        if ($this->record->hasRole(RoleName::Admin->value)) {
+            // Prevent changing role for admin accounts
+            $data['role_name'] = $this->record->getRoleNames()->first() ?? RoleName::Admin->value;
+        }
+
         return $data;
     }
 
@@ -37,7 +42,10 @@ class EditUser extends EditRecord
         unset($data['role_name']);
 
         $record = parent::handleRecordUpdate($record, $data);
-        $record->syncRoles([$roleName]);
+
+        if (! $record->hasRole(RoleName::Admin->value)) {
+            $record->syncRoles([$roleName]);
+        }
 
         return $record;
     }
