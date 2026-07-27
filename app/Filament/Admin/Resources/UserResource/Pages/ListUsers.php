@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\UserResource\Pages;
 
 use App\Filament\Admin\Resources\UserResource;
 use App\Jobs\GenerateMemberQrCodesJob;
+use App\Jobs\RegenerateMemberQrCodesJob;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
@@ -20,11 +21,20 @@ class ListUsers extends ListRecords
                 ->label('Generate Massal QR')
                 ->color('success')
                 ->requiresConfirmation()
-                ->modalHeading('Generate QR Code untuk semua anggota')
+                ->modalHeading('Generate QR Code untuk akun yang belum punya QR')
                 ->action(static function (): void {
                     GenerateMemberQrCodesJob::dispatch();
                 })
                 ->successNotificationTitle('Tugas generate QR berhasil dikirim ke antrian'),
+            Action::make('regenerateMassQr')
+                ->label('Regenerate QR Massal')
+                ->color('danger')
+                ->requiresConfirmation()
+                ->modalHeading('Regenerate QR Code untuk akun dengan QR lama')
+                ->action(static function (): void {
+                    RegenerateMemberQrCodesJob::dispatch();
+                })
+                ->successNotificationTitle('Tugas regenerate QR berhasil dikirim ke antrian'),
         ];
     }
 }

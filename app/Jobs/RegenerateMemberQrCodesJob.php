@@ -6,12 +6,11 @@ use App\Models\User;
 use App\Services\MemberQrCodeService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class GenerateMemberQrCodesJob implements ShouldQueue
+class RegenerateMemberQrCodesJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -23,8 +22,8 @@ class GenerateMemberQrCodesJob implements ShouldQueue
         User::chunk(100, function ($users) use ($service): void {
             /** @var User $user */
             foreach ($users as $user) {
-                if (blank($user->qr_code_path)) {
-                    $service->generateFor($user);
+                if (filled($user->qr_code_path)) {
+                    $service->regenerateFor($user);
                 }
             }
         });
