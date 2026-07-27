@@ -9,6 +9,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
@@ -75,9 +76,9 @@ class EditProfile extends BaseEditProfile
                                         Grid::make(3)->schema([
                                             TextInput::make('data.domisili_country')->label('Negara')->maxLength(255),
                                             TextInput::make('data.domisili_province')->label('Provinsi')->maxLength(255),
-                                            TextInput::make('data.domisili_city')->label('Kota/Kabupaten')->maxLength(255),
+                                            TextInput::make('data.domisili_city')->label('Kota / Kabupaten')->placeholder('Contoh: Medan')->maxLength(255),
                                             TextInput::make('data.domisili_district')->label('Kecamatan')->maxLength(255),
-                                            TextInput::make('data.domisili_village')->label('Kelurahan/Desa')->maxLength(255),
+                                            TextInput::make('data.domisili_village')->label('Kelurahan / Desa')->placeholder('Contoh: Kelurahan X')->maxLength(255),
                                             TextInput::make('data.domisili_rt')->label('RT')->maxLength(10),
                                             TextInput::make('data.domisili_rw')->label('RW')->maxLength(10),
                                             TextInput::make('data.domisili_postal_code')->label('Kode Pos')->maxLength(10),
@@ -89,6 +90,7 @@ class EditProfile extends BaseEditProfile
                                         Checkbox::make('data.same_as_domisili')
                                             ->label('Samakan dengan Domisili')
                                             ->reactive()
+                                            ->extraInputAttributes(['class' => 'samakan-domisili-checkbox'])
                                             ->afterStateUpdated(function (callable $set, $state) {
                                                 if ($state) {
                                                     foreach (['country','province','city','district','village','rt','rw','postal_code','street'] as $attr) {
@@ -99,9 +101,9 @@ class EditProfile extends BaseEditProfile
                                         Grid::make(3)->schema([
                                             TextInput::make('data.asal_country')->label('Negara')->maxLength(255),
                                             TextInput::make('data.asal_province')->label('Provinsi')->maxLength(255),
-                                            TextInput::make('data.asal_city')->label('Kota/Kabupaten')->maxLength(255),
+                                            TextInput::make('data.asal_city')->label('Kota / Kabupaten')->placeholder('Contoh: Medan')->maxLength(255),
                                             TextInput::make('data.asal_district')->label('Kecamatan')->maxLength(255),
-                                            TextInput::make('data.asal_village')->label('Kelurahan/Desa')->maxLength(255),
+                                            TextInput::make('data.asal_village')->label('Kelurahan / Desa')->placeholder('Contoh: Kelurahan X')->maxLength(255),
                                             TextInput::make('data.asal_rt')->label('RT')->maxLength(10),
                                             TextInput::make('data.asal_rw')->label('RW')->maxLength(10),
                                             TextInput::make('data.asal_postal_code')->label('Kode Pos')->maxLength(10),
@@ -114,10 +116,10 @@ class EditProfile extends BaseEditProfile
                                 Section::make('Pendidikan')
                                     ->schema([
                                         Select::make('data.education_status')->label('Status')->options(['Mahasiswa'=>'Mahasiswa','Alumni'=>'Alumni','Bukan Mahasiswa'=>'Bukan Mahasiswa'])->reactive(),
-                                        TextInput::make('data.nim')->label('NIM')->maxLength(100),
-                                        TextInput::make('data.kampus')->label('Kampus')->maxLength(255),
-                                        TextInput::make('data.fakultas')->label('Fakultas')->maxLength(255),
-                                        TextInput::make('data.program_studi')->label('Program Studi')->maxLength(255),
+                                        TextInput::make('data.nim')->label('NIM')->maxLength(100)->disabled(fn (Get $get): bool => $get('data.education_status') === 'Bukan Mahasiswa'),
+                                        TextInput::make('data.kampus')->label('Kampus')->maxLength(255)->disabled(fn (Get $get): bool => $get('data.education_status') === 'Bukan Mahasiswa'),
+                                        TextInput::make('data.fakultas')->label('Fakultas')->maxLength(255)->disabled(fn (Get $get): bool => $get('data.education_status') === 'Bukan Mahasiswa'),
+                                        TextInput::make('data.program_studi')->label('Program Studi')->maxLength(255)->disabled(fn (Get $get): bool => $get('data.education_status') === 'Bukan Mahasiswa'),
                                     ]),
                             ]),
                         'orang-tua' => Tab::make('Orang Tua')
@@ -136,7 +138,7 @@ class EditProfile extends BaseEditProfile
                                 ]),
                                 Section::make('Wali')->schema([
                                     TextInput::make('data.guardian_name')->label('Nama')->maxLength(255),
-                                    Select::make('data.guardian_status')->label('Status')->options(['Hidup'=>'Hidup','Meninggal'=>'Meninggal']),
+                                    TextInput::make('data.guardian_status')->label('Status')->placeholder('Contoh: Kakek/Nenek')->maxLength(255),
                                     Textarea::make('data.guardian_address')->label('Alamat Lengkap')->rows(3),
                                     TextInput::make('data.guardian_phone')->label('Nomor Telepon')->tel()->maxLength(30),
                                 ]),
