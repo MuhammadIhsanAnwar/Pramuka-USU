@@ -100,9 +100,10 @@ class UserResource extends Resource
                 TextColumn::make('jenis_user')
                     ->label('Jenis Pengguna')
                     ->badge(),
-                ToggleColumn::make('is_active')
+                TextColumn::make('is_active')
                     ->label('Aktif')
-                    ->disabled(fn (?User $record): bool => Filament::auth()->id() !== null && Filament::auth()->id() === $record?->id),
+                    ->badge()
+                    ->formatStateUsing(fn (?bool $state): string => $state ? 'Aktif' : 'Nonaktif'),
                 TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->dateTime()
