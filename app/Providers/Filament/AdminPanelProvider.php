@@ -4,7 +4,9 @@ namespace App\Providers\Filament;
 
 use App\Filament\Admin\Pages\EditProfile;
 use Filament\Enums\UserMenuPosition;
-use Filament\Http\Middleware\Authenticate;
+use App\Http\Middleware\RedirectFilamentToLogin;
+use App\Filament\Admin\Pages\EditProfile;
+use Filament\Enums\UserMenuPosition;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -42,7 +44,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
             ->authMiddleware([
-                Authenticate::class,
+                RedirectFilamentToLogin::class,
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,

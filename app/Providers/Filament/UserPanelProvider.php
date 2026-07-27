@@ -2,11 +2,11 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\RedirectFilamentToLogin;
 use App\Filament\User\Pages\EditProfile;
 use Filament\Enums\UserMenuPosition;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Http\Middleware\Authenticate;
 use Filament\Support\Colors\Color;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -41,7 +41,7 @@ class UserPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/User/Pages'), for: 'App\\Filament\\User\\Pages')
             ->discoverWidgets(in: app_path('Filament/User/Widgets'), for: 'App\\Filament\\User\\Widgets')
             ->authMiddleware([
-                Authenticate::class,
+                RedirectFilamentToLogin::class,
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,

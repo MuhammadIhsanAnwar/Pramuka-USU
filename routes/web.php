@@ -12,8 +12,9 @@ use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use Laravel\Fortify\Http\Controllers\NewPasswordController;
 use Laravel\Fortify\Http\Controllers\PasswordResetLinkController;
 
-// Redirect /user/login (Filament user panel login) to /login when session expires
+// Redirect legacy Filament login URLs to the unified public login page
 Route::redirect('/user/login', '/login')->name('user.login.redirect');
+Route::redirect('/admin/login', '/login')->name('admin.login.redirect');
 
 Route::middleware(['maintenance'])->group(function (): void {
     Route::get('/', [PublicController::class, 'home'])->name('home');
