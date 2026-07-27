@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class CreateEventAgenda extends CreateRecord
 {
     protected static string $resource = EventAgendaResource::class;
+    protected static ?string $title = 'Buat Agenda';
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {

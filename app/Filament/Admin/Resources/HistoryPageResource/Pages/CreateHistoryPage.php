@@ -8,4 +8,5 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateHistoryPage extends CreateRecord
 {
     protected static string $resource = HistoryPageResource::class;
+    protected static ?string $title = 'Buat Sejarah';
 }

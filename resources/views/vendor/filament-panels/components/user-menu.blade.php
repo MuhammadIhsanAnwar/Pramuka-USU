@@ -78,68 +78,56 @@
         @endif
     </x-slot>
 
-    <div class="border-b border-slate-200 px-4 py-3 text-left whitespace-normal break-words">
-        <p class="text-sm font-semibold text-slate-900 break-words">{{ filament()->getUserName($user) }}</p>
-        <p class="text-xs text-slate-500 break-words">{{ $user->email }}</p>
+    <div class="fi-dropdown-header px-4 py-4">
+        <div class="min-w-0">
+            <p class="text-sm font-semibold text-slate-900 leading-5 break-words">{{ filament()->getUserName($user) }}</p>
+            <p class="text-xs text-slate-500 leading-4 break-words">{{ $user->email }}</p>
+        </div>
     </div>
 
-    <div class="border-b border-slate-200 px-4 py-2">
-        <a href="{{ route('home') }}" class="block rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-100">Beranda Utama</a>
-    </div>
-
-    @if ($hasProfileHeader)
-        @php
-            $item = $itemsBeforeThemeSwitcher['profile'];
-            $itemColor = $item->getColor();
-            $itemIcon = $item->getIcon();
-
-            unset($itemsBeforeThemeSwitcher['profile']);
-        @endphp
-
-        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::USER_MENU_PROFILE_BEFORE) }}
-
-        <x-filament::dropdown.header :color="$itemColor" :icon="$itemIcon">
-            {{ $item->getLabel() }}
-        </x-filament::dropdown.header>
-
-        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::USER_MENU_PROFILE_AFTER) }}
-    @endif
-
-    @if ($itemsBeforeThemeSwitcher->isNotEmpty())
-        <x-filament::dropdown.list>
-            @foreach ($itemsBeforeThemeSwitcher as $key => $item)
-                @if ($key === 'profile')
-                    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::USER_MENU_PROFILE_BEFORE) }}
-
-                    {{ $item }}
-
-                    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::USER_MENU_PROFILE_AFTER) }}
-                @else
-                    {{ $item }}
-                @endif
-            @endforeach
-        </x-filament::dropdown.list>
-    @endif
+    <x-filament::dropdown.list>
+        <x-filament::dropdown.list.item
+            tag="a"
+            href="{{ auth()->user()->hasRole('Admin') ? url('/admin') : url('/dashboard') }}"
+            :icon="\Filament\Support\Icons\Heroicon::RectangleStack"
+            icon-color="primary"
+            class="rounded-none w-full justify-start"
+        >
+            Dashboard
+        </x-filament::dropdown.list.item>
+        <x-filament::dropdown.list.item
+            tag="a"
+            href="{{ auth()->user()->hasRole('Admin') ? url('/admin/profile') : url('/user/profile') }}"
+            :icon="\Filament\Support\Icons\Heroicon::UserCircle"
+            icon-color="primary"
+            class="rounded-none w-full justify-start"
+        >
+            Profil
+        </x-filament::dropdown.list.item>
+        <x-filament::dropdown.list.item
+            tag="a"
+            href="{{ route('home') }}"
+            :icon="\Filament\Support\Icons\Heroicon::Home"
+            icon-color="primary"
+            class="rounded-none w-full justify-start"
+        >
+            Beranda Utama
+        </x-filament::dropdown.list.item>
+        <x-filament::dropdown.list.item
+            tag="form"
+            action="{{ route('logout') }}"
+            :icon="\Filament\Support\Icons\Heroicon::ArrowLeftEndOnRectangle"
+            icon-color="primary"
+            class="rounded-none w-full justify-start fi-dropdown-list-item-logout"
+        >
+            @csrf
+            Keluar
+        </x-filament::dropdown.list.item>
+    </x-filament::dropdown.list>
 
     @if (filament()->hasDarkMode() && (! filament()->hasDarkModeForced()))
         <x-filament::dropdown.list>
             <x-filament-panels::theme-switcher />
-        </x-filament::dropdown.list>
-    @endif
-
-    @if ($itemsAfterThemeSwitcher->isNotEmpty())
-        <x-filament::dropdown.list>
-            @foreach ($itemsAfterThemeSwitcher as $key => $item)
-                @if ($key === 'profile')
-                    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::USER_MENU_PROFILE_BEFORE) }}
-
-                    {{ $item }}
-
-                    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::USER_MENU_PROFILE_AFTER) }}
-                @else
-                    {{ $item }}
-                @endif
-            @endforeach
         </x-filament::dropdown.list>
     @endif
 </x-filament::dropdown>

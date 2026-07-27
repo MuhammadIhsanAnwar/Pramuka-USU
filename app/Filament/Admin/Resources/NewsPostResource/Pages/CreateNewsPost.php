@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class CreateNewsPost extends CreateRecord
 {
     protected static string $resource = NewsPostResource::class;
+    protected static ?string $title = 'Buat Berita';
 
     protected static bool $canCreateAnother = false;
 

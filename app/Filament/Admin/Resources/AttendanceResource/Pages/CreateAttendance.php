@@ -8,4 +8,5 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateAttendance extends CreateRecord
 {
     protected static string $resource = AttendanceResource::class;
+    protected static ?string $title = 'Buat Presensi';
 }

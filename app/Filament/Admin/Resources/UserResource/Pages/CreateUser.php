@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
+    protected static ?string $title = 'Buat Pengguna';
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {

@@ -8,4 +8,5 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateAboutMember extends CreateRecord
 {
     protected static string $resource = AboutMemberResource::class;
+    protected static ?string $title = 'Buat Anggota Tim';
 }

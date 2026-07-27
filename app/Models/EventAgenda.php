@@ -21,6 +21,8 @@ class EventAgenda extends Model
         'name',
         'slug',
         'location',
+        'type',
+        'organizer',
         'description',
         'poster_path',
         'qr_code_path',

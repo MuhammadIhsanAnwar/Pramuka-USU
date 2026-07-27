@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @section('content')
-<section class="w-full bg-center relative overflow-hidden" style="min-height: 420px; {{ $backgroundImage ? "background-image: url('{$backgroundImage}');" : '' }} background-size: cover; background-position: center; background-repeat: no-repeat;">
+<section class="w-full bg-top relative overflow-hidden" style="min-height: 420px; {{ $backgroundImage ? "background-image: url('{$backgroundImage}');" : '' }} background-size: cover; background-position: top center; background-repeat: no-repeat;">
     <div class="absolute inset-0 bg-gradient-to-r from-slate-950/20 via-slate-950/10 to-slate-950/20"></div>
     <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24 relative z-10">
         <div class="grid gap-12 lg:grid-cols-2 lg:items-center">

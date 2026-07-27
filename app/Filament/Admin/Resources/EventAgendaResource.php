@@ -50,15 +50,23 @@ class EventAgendaResource extends Resource
                     ->label('Nama')
                     ->required()
                     ->maxLength(255),
-                TextInput::make('slug')
-                    ->label('Slug')
-                    ->disabled()
-                    ->dehydrated(false)
-                    ->helperText('Slug dibuat otomatis dari nama.'),
                 TextInput::make('location')
                     ->label('Lokasi')
                     ->required()
                     ->maxLength(255),
+                Select::make('type')
+                    ->label('Jenis Kegiatan')
+                    ->options([
+                        'internal' => 'Internal',
+                        'external' => 'Eksternal',
+                    ])
+                    ->required()
+                    ->default('internal'),
+                TextInput::make('organizer')
+                    ->label('Penyelenggara')
+                    ->maxLength(255)
+                    ->visible(fn ($get) => $get('type') === 'external')
+                    ->required(fn ($get) => $get('type') === 'external'),
                 Select::make('status')
                     ->label('Status')
                     ->options([
@@ -73,14 +81,6 @@ class EventAgendaResource extends Resource
                     ->required(),
                 DateTimePicker::make('ends_at')
                     ->label('Selesai'),
-                FileUpload::make('poster_path')
-                    ->label('Poster')
-                    ->image()
-                    ->directory('agendas/posters')                    ->disk('public')                    ->visibility('public')
-                    ->maxSize(4096),
-                RichEditor::make('description')
-                    ->label('Deskripsi')
-                    ->columnSpanFull(),
             ]);
     }
 
@@ -88,17 +88,24 @@ class EventAgendaResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('poster_path')
-                    ->label('Poster')
-                    ->square(),
-                ImageColumn::make('qr_code_path')
-                    ->label('QR Code')
-                    ->square()
-                    ->toggleable(),
                 TextColumn::make('name')
+                    ->label('Nama')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('type')
+                    ->label('Jenis Kegiatan')
+                    ->formatStateUsing(fn (?string $state): string => match ($state) {
+                        'internal' => 'Internal',
+                        'external' => 'Eksternal',
+                        default => $state ?? '-',
+                    })
+                    ->sortable(),
+                TextColumn::make('organizer')
+                    ->label('Penyelenggara')
+                    ->searchable()
+                    ->toggleable(),
                 TextColumn::make('location')
+                    ->label('Lokasi')
                     ->searchable(),
                 BadgeColumn::make('status')
                     ->colors([
@@ -110,9 +117,6 @@ class EventAgendaResource extends Resource
                     ->label('Mulai')
                     ->dateTime()
                     ->sortable(),
-                TextColumn::make('created_by.name')
-                    ->label('Dibuat Oleh')
-                    ->toggleable(),
             ])
             ->actions([
                 EditAction::make(),

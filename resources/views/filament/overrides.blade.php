@@ -169,46 +169,95 @@ html.fi .fi-topbar .fi-user-menu-trigger-name {
   color: #3E271A;
   font-size: 0.875rem;
   font-weight: 600;
-  white-space: nowrap;
-  max-width: 7rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  max-width: 12rem;
+  overflow: visible;
+  text-overflow: unset;
+  word-break: break-word;
+  line-height: 1.15;
 }
 
-html.fi .fi-topbar .fi-user-menu .fi-dropdown-panel {
-  min-width: 14rem;
-  width: auto;
-  background-color: #ffffff;
-  border: 1px solid rgba(93, 64, 55, 0.1);
-  border-radius: 1rem;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
-  padding: 0;
-  overflow: hidden;
+html.fi .fi-topbar .fi-user-menu-trigger {
+  min-width: 10rem;
+  padding: 0.25rem 0.75rem;
 }
 
-html.fi .fi-topbar .fi-user-menu .fi-dropdown-list {
-  padding: 0;
+html.fi .fi-dropdown-panel {
+  min-width: 14rem !important;
+  width: auto !important;
+  background-color: #ffffff !important;
+  border: 1px solid rgba(93, 64, 55, 0.1) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
 }
 
-html.fi .fi-topbar .fi-user-menu .fi-dropdown-list-item {
-  padding: 0.75rem 1rem;
-  color: #334155;
-  border-top: 1px solid transparent;
+html.fi .fi-dropdown-list {
+  padding: 0 !important;
 }
 
-html.fi .fi-topbar .fi-user-menu .fi-dropdown-list-item:hover,
-html.fi .fi-topbar .fi-user-menu .fi-dropdown-list-item:focus-visible {
-  background-color: #F5F5DC;
+html.fi .fi-dropdown-list-item {
+  padding: 0.75rem 1rem !important;
+  color: #334155 !important;
+  border-top: 1px solid transparent !important;
+  background-color: transparent !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 0.75rem !important;
+  min-width: 0 !important;
+  width: 100% !important;
 }
 
-html.fi .fi-topbar .fi-user-menu .fi-dropdown-list-item-label {
-  color: #334155;
+html.fi .fi-dropdown-list-item:hover,
+html.fi .fi-dropdown-list-item:focus-visible {
+  background-color: #F5F5DC !important;
 }
 
-html.fi .fi-topbar .fi-user-menu .fi-dropdown-header {
-  padding: 1rem 1rem;
-  border-bottom: 1px solid rgba(93, 64, 55, 0.1);
-  color: #334155;
+html.fi .fi-dropdown-panel .fi-dropdown-list-item-logout:hover,
+html.fi .fi-dropdown-panel .fi-dropdown-list-item-logout:focus-visible,
+html.fi .fi-dropdown-panel .fi-dropdown-list-item-logout button:hover,
+html.fi .fi-dropdown-panel .fi-dropdown-list-item-logout button:focus-visible,
+html.fi .fi-dropdown-panel .fi-dropdown-list-item-logout:hover .fi-dropdown-list-item-label,
+html.fi .fi-dropdown-panel .fi-dropdown-list-item-logout:focus-visible .fi-dropdown-list-item-label {
+  background-color: #fee2e2 !important;
+  color: #b91c1c !important;
+  background-image: none !important;
+}
+html.fi .fi-dropdown-panel .fi-dropdown-list-item-logout button {
+  background-color: transparent !important;
+}
+
+html.fi .fi-dropdown-list-item-label {
+  color: #334155 !important;
+  display: block !important;
+  width: 100% !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
+html.fi .fi-dropdown-list-item svg {
+  flex-shrink: 0 !important;
+}
+
+html.fi .fi-dropdown-header {
+  padding: 1rem 1rem !important;
+  border-bottom: 1px solid rgba(93, 64, 55, 0.1) !important;
+  color: #334155 !important;
+  background-color: #ffffff !important;
+  white-space: normal !important;
+}
+
+html.fi .fi-dropdown-header p {
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
+html.fi .fi-dropdown-header .text-left {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.125rem !important;
 }
 
 html.fi .fi-topbar .fi-user-menu-trigger {

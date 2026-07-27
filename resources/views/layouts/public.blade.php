@@ -13,6 +13,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <style>
+        .public-navbar-logout-action:hover {
+            background-color: #fee2e2 !important;
+            color: #b91c1c !important;
+        }
+        .public-navbar-logout-action:hover .inline-flex {
+            color: #b91c1c !important;
+        }
+    </style>
+
     @if (request()->routeIs('home'))
     <style>
         /* Critical inline styles for homepage loader — ensures full-screen coverage even if external CSS fails to load */
@@ -182,7 +192,7 @@
         <div class="pointer-events-none absolute inset-x-0 top-0 -z-10" style="height:32rem; background-image: radial-gradient(circle at top, rgba(201,162,39,0.18), transparent 55%), radial-gradient(circle at 20% 20%, rgba(93,64,55,0.12), transparent 30%);"></div>
 
         {{-- HEADER: Fixed positioning so it's always visible on scroll --}}
-        <header class="fixed top-0 left-0 right-0 z-50 border-b border-[#5D4037]/10 bg-white/95 backdrop-blur-md shadow-sm">
+        <header id="site-header" class="fixed top-0 left-0 right-0 z-50 border-b border-[#5D4037]/10 bg-white/95 backdrop-blur-md shadow-sm">
             <div class="mx-auto flex max-w-8xl items-center justify-between gap-4 px-4 py-2 sm:px-6 lg:px-8">
                 <a href="{{ route('home') }}" class="flex items-center gap-3">
                     <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Logo Pramuka USU" class="h-10 w-10 object-contain" />
@@ -215,15 +225,35 @@
 
                             <div class="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-[#5D4037]/10 bg-white text-sm shadow-xl">
                                 <div class="border-b border-[#5D4037]/10 px-4 py-3 text-left whitespace-normal break-words">
-                                    <p class="text-sm font-semibold text-slate-900 break-words">{{ auth()->user()->name }}</p>
-                                    <p class="text-xs text-slate-500 break-words">{{ auth()->user()->email }}</p>
+                                    <p class="text-sm font-semibold text-slate-900 leading-5 break-words">{{ auth()->user()->name }}</p>
+                                    <p class="text-xs text-slate-500 leading-4 break-words">{{ auth()->user()->email }}</p>
                                 </div>
-                                <a href="{{ route('home') }}" class="block px-4 py-3 text-slate-700 transition hover:bg-[#F5F5DC]">Beranda Utama</a>
-                                <a href="{{ $dashboardUrl }}" class="block px-4 py-3 text-slate-700 transition hover:bg-[#F5F5DC]">Dashboard</a>
-                                <a href="{{ $profileUrl }}" class="block px-4 py-3 text-slate-700 transition hover:bg-[#F5F5DC]">Profil</a>
+                                <a href="{{ $dashboardUrl }}" class="flex items-center gap-3 px-4 py-3 text-slate-700 transition hover:bg-[#F5F5DC]">
+                                    <span class="inline-flex h-5 w-5 items-center justify-center text-[#5D4037]">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M3 13h2v7h14v-7h2"/><path d="M7 13V6h10v7"/><path d="M8 10h8"/></svg>
+                                    </span>
+                                    Dashboard
+                                </a>
+                                <a href="{{ $profileUrl }}" class="flex items-center gap-3 px-4 py-3 text-slate-700 transition hover:bg-[#F5F5DC]">
+                                    <span class="inline-flex h-5 w-5 items-center justify-center text-[#5D4037]">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    </span>
+                                    Profil
+                                </a>
+                                <a href="{{ route('home') }}" class="flex items-center gap-3 px-4 py-3 text-slate-700 transition hover:bg-[#F5F5DC]">
+                                    <span class="inline-flex h-5 w-5 items-center justify-center text-[#5D4037]">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/></svg>
+                                    </span>
+                                    Beranda Utama
+                                </a>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="w-full text-left px-4 py-3 text-slate-700 transition hover:bg-[#F5F5DC]">Keluar</button>
+                                    <button type="submit" class="public-navbar-logout-action flex w-full items-center gap-3 text-left px-4 py-3 text-slate-700 transition hover:bg-[#fee2e2] hover:text-[#b91c1c]">
+                                        <span class="inline-flex h-5 w-5 items-center justify-center text-[#5D4037]">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                                        </span>
+                                        Keluar
+                                    </button>
                                 </form>
                             </div>
                         </details>
@@ -234,20 +264,49 @@
 
                 <details class="relative md:hidden">
                     <summary class="cursor-pointer list-none rounded-full border border-[#5D4037]/10 bg-white px-4 py-2 text-sm font-semibold text-[#5D4037] shadow-sm">Menu</summary>
-                    <div class="absolute right-0 mt-3 w-56 rounded-xl border border-[#5D4037]/10 bg-white p-3 shadow-xl">
-                        <a href="{{ route('about') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Tentang</a>
-                        <a href="{{ route('history') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Sejarah</a>
-                        <a href="{{ route('news.index') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Berita</a>
-                        <a href="{{ route('agenda.index') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Agenda</a>
-                        <a href="{{ route('gallery.index') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Galeri</a>
-                        <a href="{{ route('surat-masuk') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Surat Masuk</a>
-                        <a href="{{ route('contact') }}" class="block rounded-lg px-3 py-2 text-sm hover:bg-[#F5F5DC]">Kontak</a>
+                    <div class="absolute right-0 z-50 mt-3 w-56 rounded-xl border border-[#5D4037]/10 bg-white p-3 shadow-xl"
+                         style="max-height: calc(100vh - 6rem); overflow-y: auto; overflow-x: hidden; touch-action: pan-y; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;">
                         @auth
-                            <a href="{{ auth()->user()->hasRole('Admin') ? url('/admin') : url('/dashboard') }}" class="mt-2 block rounded-lg bg-[#5D4037] px-3 py-2 text-center text-sm font-semibold text-white">Dashboard</a>
-                            <a href="{{ auth()->user()->hasRole('Admin') ? url('/admin/profile') : url('/user/profile') }}" class="mt-2 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-[#5D4037] border border-[#5D4037]/10 hover:bg-[#F5F5DC]">Profil</a>
+                            <div class="mb-3 rounded-2xl border border-[#E5E7EB] bg-slate-50 px-3 py-3 text-center">
+                                <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="mx-auto mb-3 h-10 w-10 rounded-2xl object-cover" />
+                                <p class="text-sm font-semibold text-slate-900 leading-5 break-words">{{ auth()->user()->name }}</p>
+                                <p class="mt-1 text-xs text-slate-500 leading-4 break-words">{{ auth()->user()->email }}</p>
+                            </div>
+                        @endauth
+                        <a href="{{ route('about') }}" class="mt-2 block rounded-xl px-3 py-3 text-left text-sm text-slate-700 transition hover:bg-[#F5F5DC] hover:rounded-2xl">Tentang</a>
+                        <a href="{{ route('history') }}" class="block rounded-xl px-3 py-3 text-left text-sm text-slate-700 transition hover:bg-[#F5F5DC] hover:rounded-2xl">Sejarah</a>
+                        <a href="{{ route('news.index') }}" class="block rounded-xl px-3 py-3 text-left text-sm text-slate-700 transition hover:bg-[#F5F5DC] hover:rounded-2xl">Berita</a>
+                        <a href="{{ route('agenda.index') }}" class="block rounded-xl px-3 py-3 text-left text-sm text-slate-700 transition hover:bg-[#F5F5DC] hover:rounded-2xl">Agenda</a>
+                        <a href="{{ route('gallery.index') }}" class="block rounded-xl px-3 py-3 text-left text-sm text-slate-700 transition hover:bg-[#F5F5DC] hover:rounded-2xl">Galeri</a>
+                        <a href="{{ route('surat-masuk') }}" class="block rounded-xl px-3 py-3 text-left text-sm text-slate-700 transition hover:bg-[#F5F5DC] hover:rounded-2xl">Surat Masuk</a>
+                        <a href="{{ route('contact') }}" class="block rounded-xl px-3 py-3 text-left text-sm text-slate-700 transition hover:bg-[#F5F5DC] hover:rounded-2xl">Kontak</a>
+                        @auth
+                            <a href="{{ auth()->user()->hasRole('Admin') ? url('/admin') : url('/dashboard') }}" class="mt-2 flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm text-slate-700 transition hover:bg-[#F5F5DC] hover:rounded-2xl">
+                                <span class="inline-flex h-5 w-5 items-center justify-center text-[#5D4037]">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M3 13h2v7h14v-7h2"/><path d="M7 13V6h10v7"/><path d="M8 10h8"/></svg>
+                                </span>
+                                Dashboard
+                            </a>
+                            <a href="{{ auth()->user()->hasRole('Admin') ? url('/admin/profile') : url('/user/profile') }}" class="mt-2 flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm text-slate-700 transition hover:bg-[#F5F5DC] hover:rounded-2xl">
+                                <span class="inline-flex h-5 w-5 items-center justify-center text-[#5D4037]">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                </span>
+                                Profil
+                            </a>
+                            <a href="{{ route('home') }}" class="mt-2 flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm text-slate-700 transition hover:bg-[#F5F5DC] hover:rounded-2xl">
+                                <span class="inline-flex h-5 w-5 items-center justify-center text-[#5D4037]">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/></svg>
+                                </span>
+                                Beranda Utama
+                            </a>
                             <form method="POST" action="{{ route('logout') }}" class="mt-2">
                                 @csrf
-                                <button type="submit" class="w-full rounded-lg bg-slate-100 px-3 py-2 text-sm font-semibold text-[#3E271A] hover:bg-[#EDE9D4]">Keluar</button>
+                                <button type="submit" class="public-navbar-logout-action w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-[#fee2e2] hover:text-[#b91c1c] hover:rounded-2xl">
+                                    <span class="inline-flex h-5 w-5 items-center justify-center text-[#5D4037]">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                                    </span>
+                                    Keluar
+                                </button>
                             </form>
                         @else
                             <a href="{{ route('login') }}" class="mt-2 block rounded-lg bg-[#5D4037] px-3 py-2 text-center text-sm font-semibold text-white">Masuk</a>
@@ -257,8 +316,23 @@
             </div>
         </header>
 
+        <script>
+            function updateHeaderPadding() {
+                var header = document.getElementById('site-header');
+                if (!header) { return; }
+                document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
+            }
+            window.addEventListener('load', updateHeaderPadding);
+            window.addEventListener('resize', updateHeaderPadding);
+            if (document.readyState === 'complete') {
+                updateHeaderPadding();
+            } else {
+                document.addEventListener('DOMContentLoaded', updateHeaderPadding);
+            }
+        </script>
+
         {{-- Add top padding to main content so fixed header doesn't overlap --}}
-        <main class="pt-20">
+        <main class="pt-20" style="padding-top: var(--header-height, 5rem);">
             @yield('content')
         </main>
 

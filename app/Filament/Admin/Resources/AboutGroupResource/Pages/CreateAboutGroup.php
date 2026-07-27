@@ -8,4 +8,5 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateAboutGroup extends CreateRecord
 {
     protected static string $resource = AboutGroupResource::class;
+    protected static ?string $title = 'Buat Grup Tim';
 }

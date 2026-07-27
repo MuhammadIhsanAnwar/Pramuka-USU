@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class CreateGallery extends CreateRecord
 {
     protected static string $resource = GalleryResource::class;
+    protected static ?string $title = 'Buat Galeri';
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
