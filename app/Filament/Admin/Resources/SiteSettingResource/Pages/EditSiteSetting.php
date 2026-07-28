@@ -14,11 +14,9 @@ class EditSiteSetting extends EditRecord
     protected function mutateFormDataBeforeFill(array $data): array
     {
         if (($data['setting_key'] ?? null) === 'home_brand_logos') {
-            $data['setting_value'] = \App\Filament\Admin\Resources\SiteSettingResource::normalizeHomeBrandLogosForForm($data['setting_value'] ?? []);
-
-            if (! is_array($data['setting_value'])) {
-                $data['setting_value'] = [];
-            }
+            $normalizedValue = \App\Filament\Admin\Resources\SiteSettingResource::normalizeHomeBrandLogosForForm($data['setting_value'] ?? []);
+            $data['setting_value'] = is_array($normalizedValue) ? $normalizedValue : [];
+            $data['home_brand_logos_items'] = is_array($normalizedValue) ? $normalizedValue : [];
         }
 
         return $data;
@@ -27,17 +25,26 @@ class EditSiteSetting extends EditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         if (($data['setting_key'] ?? null) === 'home_brand_logos') {
-            $data['setting_value'] = collect($data['setting_value'] ?? [])
+            $normalizedValue = $data['home_brand_logos_items'] ?? ($data['setting_value'] ?? []);
+
+            if (! is_array($normalizedValue)) {
+                $normalizedValue = [];
+            }
+
+            $data['setting_value'] = collect($normalizedValue)
+                ->values()
                 ->map(function ($item) {
                     if (is_array($item)) {
-                        return $item['path'] ?? null;
+                        return \App\Filament\Admin\Resources\SiteSettingResource::normalizeStoredLogoPath($item);
                     }
 
-                    return $item;
+                    return \App\Filament\Admin\Resources\SiteSettingResource::normalizeStoredLogoPath($item);
                 })
                 ->filter(fn ($value): bool => filled($value))
                 ->values()
                 ->all();
+
+            unset($data['home_brand_logos_items']);
         }
 
         return $data;

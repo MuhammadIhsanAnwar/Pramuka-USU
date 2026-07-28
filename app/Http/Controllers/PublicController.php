@@ -121,7 +121,35 @@ class PublicController extends Controller
             return $path;
         }
 
-        return asset(ltrim((string) $path, '/'));
+        $normalizedPath = trim((string) $path);
+
+        if ($normalizedPath === '') {
+            return null;
+        }
+
+        $normalizedPath = str_replace('\\', '/', $normalizedPath);
+        $publicRoot = str_replace('\\', '/', public_path());
+
+        if ($publicRoot !== '' && Str::startsWith($normalizedPath, $publicRoot)) {
+            $normalizedPath = substr($normalizedPath, strlen($publicRoot));
+        }
+
+        $normalizedPath = preg_replace('#^(?:public/)?storage/(?:app/public/)?#', '', $normalizedPath) ?? $normalizedPath;
+        $normalizedPath = ltrim($normalizedPath, '/');
+
+        if ($normalizedPath === '') {
+            return null;
+        }
+
+        if (Str::startsWith($normalizedPath, 'home_brand_logos/')) {
+            return asset('storage/' . $normalizedPath);
+        }
+
+        if (Str::startsWith($normalizedPath, 'beranda/') || Str::startsWith($normalizedPath, 'intro_video/')) {
+            return asset('storage/' . $normalizedPath);
+        }
+
+        return asset($normalizedPath);
     }
 
     private function buildHomeData(): array

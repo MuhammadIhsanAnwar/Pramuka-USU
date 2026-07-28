@@ -70,9 +70,10 @@ class SiteSettingResource extends Resource
                     ->visible(fn (callable $get, ?SiteSetting $record): bool => $get('setting_type') === 'textarea' && ($record?->setting_key !== 'maintenance_mode'))
                     ->columnSpanFull()
                     ->rows(4),
-                Repeater::make('setting_value')
+                Repeater::make('home_brand_logos_items')
                     ->label('Logo Beranda Bawah Video')
                     ->visible(fn (callable $get, ?SiteSetting $record): bool => $get('setting_key') === 'home_brand_logos' || $record?->setting_key === 'home_brand_logos')
+                    ->default([])
                     ->columnSpanFull()
                     ->schema([
                         FileUpload::make('path')
@@ -81,8 +82,7 @@ class SiteSettingResource extends Resource
                             ->directory('home_brand_logos')
                             ->disk('public_storage')
                             ->visibility('public')
-                            ->maxSize(5120)
-                            ->imageCropAspectRatio('1:1'),
+                            ->maxSize(5120),
                     ])
                     ->createItemButtonLabel('Tambah Logo')
                     ->columns(1)
@@ -105,40 +105,7 @@ class SiteSettingResource extends Resource
                             ->icon('heroicon-o-arrow-down')
                             ->color('gray');
                     })
-                    ->default([])
-                    ->afterStateHydrated(function (mixed $state, ?SiteSetting $record): array {
-                        if (is_bool($state) || $state === null) {
-                            return [];
-                        }
-
-                        if (is_string($state)) {
-                            $decoded = json_decode($state, true);
-
-                            if (json_last_error() === JSON_ERROR_NONE) {
-                                $state = $decoded;
-                            }
-                        }
-
-                        if (! is_array($state)) {
-                            return [];
-                        }
-
-                        return collect($state)
-                            ->map(function ($item) {
-                                if (is_array($item)) {
-                                    return $item;
-                                }
-
-                                if (is_string($item)) {
-                                    return ['path' => $item];
-                                }
-
-                                return null;
-                            })
-                            ->filter()
-                            ->values()
-                            ->all();
-                    }),
+                    ->default([]),
                 TextInput::make('setting_value')
                     ->label('Upload')
                     ->visible(fn (callable $get, ?SiteSetting $record): bool => in_array($get('setting_type'), ['image', 'video'], true) && ($record?->setting_key !== 'maintenance_mode') && ($get('setting_key') !== 'home_brand_logos' && $record?->setting_key !== 'home_brand_logos'))
@@ -208,7 +175,7 @@ class SiteSettingResource extends Resource
 
         return collect($value)
             ->map(function ($item): ?array {
-                $path = self::extractLogoPath($item);
+                $path = self::normalizeStoredLogoPath($item);
 
                 if ($path === null || $path === '') {
                     return null;
@@ -219,6 +186,48 @@ class SiteSettingResource extends Resource
             ->filter()
             ->values()
             ->all();
+    }
+
+    protected static function normalizeStoredLogoPath(mixed $value): ?string
+    {
+        $path = self::extractLogoPath($value);
+
+        if ($path === null || $path === '') {
+            return null;
+        }
+
+        $normalizedPath = str_replace('\\', '/', trim((string) $path));
+
+        if ($normalizedPath === '') {
+            return null;
+        }
+
+        if (Str::startsWith($normalizedPath, ['http://', 'https://'])) {
+            return $normalizedPath;
+        }
+
+        $publicRoot = str_replace('\\', '/', public_path());
+
+        if ($publicRoot !== '' && Str::startsWith($normalizedPath, $publicRoot)) {
+            $normalizedPath = substr($normalizedPath, strlen($publicRoot));
+        }
+
+        $normalizedPath = preg_replace('#^(?:public/)?storage/(?:app/public/)?#', '', $normalizedPath) ?? $normalizedPath;
+        $normalizedPath = ltrim($normalizedPath, '/');
+
+        if ($normalizedPath === '') {
+            return null;
+        }
+
+        if (Str::startsWith($normalizedPath, ['home_brand_logos/', 'beranda/', 'intro_video/', 'logo/', 'sdgs/'])) {
+            return $normalizedPath;
+        }
+
+        if (Str::contains($normalizedPath, '/home_brand_logos/')) {
+            return preg_replace('#^.*?/home_brand_logos/#', 'home_brand_logos/', $normalizedPath);
+        }
+
+        return $normalizedPath;
     }
 
     protected static function extractLogoPath(mixed $value): ?string

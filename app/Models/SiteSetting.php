@@ -101,6 +101,13 @@ class SiteSetting extends Model
                             return $item;
                         })
                         ->filter(fn ($item) => filled($item))
+                        ->map(function ($item) {
+                            if (is_string($item)) {
+                                return self::normalizeValuePath($item);
+                            }
+
+                            return $item;
+                        })
                         ->values()
                         ->all();
                 }
@@ -126,6 +133,29 @@ class SiteSetting extends Model
                             return $item;
                         })
                         ->filter(fn ($item) => filled($item))
+                        ->map(function ($item) {
+                            if (is_string($item)) {
+                                return self::normalizeValuePath($item);
+                            }
+
+                            return $item;
+                        })
+                        ->values()
+                        ->all();
+
+                    return ['setting_value' => $normalized];
+                }
+
+                if (in_array($attributes['setting_key'] ?? null, ['home_background_image', 'intro_video'], true)) {
+                    $normalized = collect(is_array($value) ? $value : ($value === null ? [] : [$value]))
+                        ->filter(fn ($item) => filled($item))
+                        ->map(function ($item) {
+                            if (is_string($item)) {
+                                return self::normalizeValuePath($item);
+                            }
+
+                            return $item;
+                        })
                         ->values()
                         ->all();
 
@@ -135,6 +165,23 @@ class SiteSetting extends Model
                 return ['setting_value' => is_array($value) || $value === null ? $value : [$value]];
             },
         );
+    }
+
+    protected static function normalizeValuePath(string $path): string
+    {
+        $normalizedPath = str_replace('\\', '/', trim($path));
+        $normalizedPath = preg_replace('#^(?:public/)?storage/(?:app/public/)?#', '', $normalizedPath) ?? $normalizedPath;
+        $normalizedPath = ltrim($normalizedPath, '/');
+
+        if (Str::startsWith($normalizedPath, 'home_brand_logos/')) {
+            return $normalizedPath;
+        }
+
+        if (Str::startsWith($normalizedPath, 'beranda/')) {
+            return $normalizedPath;
+        }
+
+        return $normalizedPath;
     }
 
     protected static function booted(): void
