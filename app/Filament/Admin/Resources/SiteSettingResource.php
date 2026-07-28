@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\SiteSettingResource\Pages;
 use App\Models\SiteSetting;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -84,7 +85,60 @@ class SiteSettingResource extends Resource
                             ->imageCropAspectRatio('1:1'),
                     ])
                     ->createItemButtonLabel('Tambah Logo')
-                    ->columns(1),
+                    ->columns(1)
+                    ->reorderableWithButtons()
+                    ->deleteAction(function (Action $action): Action {
+                        return $action
+                            ->label('Hapus logo')
+                            ->icon('heroicon-o-trash')
+                            ->color('danger');
+                    })
+                    ->moveUpAction(function (Action $action): Action {
+                        return $action
+                            ->label('Pindahkan naik')
+                            ->icon('heroicon-o-arrow-up')
+                            ->color('gray');
+                    })
+                    ->moveDownAction(function (Action $action): Action {
+                        return $action
+                            ->label('Pindahkan turun')
+                            ->icon('heroicon-o-arrow-down')
+                            ->color('gray');
+                    })
+                    ->default([])
+                    ->afterStateHydrated(function (mixed $state, ?SiteSetting $record): array {
+                        if (is_bool($state) || $state === null) {
+                            return [];
+                        }
+
+                        if (is_string($state)) {
+                            $decoded = json_decode($state, true);
+
+                            if (json_last_error() === JSON_ERROR_NONE) {
+                                $state = $decoded;
+                            }
+                        }
+
+                        if (! is_array($state)) {
+                            return [];
+                        }
+
+                        return collect($state)
+                            ->map(function ($item) {
+                                if (is_array($item)) {
+                                    return $item;
+                                }
+
+                                if (is_string($item)) {
+                                    return ['path' => $item];
+                                }
+
+                                return null;
+                            })
+                            ->filter()
+                            ->values()
+                            ->all();
+                    }),
                 TextInput::make('setting_value')
                     ->label('Upload')
                     ->visible(fn (callable $get, ?SiteSetting $record): bool => in_array($get('setting_type'), ['image', 'video'], true) && ($record?->setting_key !== 'maintenance_mode') && ($get('setting_key') !== 'home_brand_logos' && $record?->setting_key !== 'home_brand_logos'))

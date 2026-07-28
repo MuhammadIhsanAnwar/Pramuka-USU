@@ -15,6 +15,10 @@ class EditSiteSetting extends EditRecord
     {
         if (($data['setting_key'] ?? null) === 'home_brand_logos') {
             $data['setting_value'] = \App\Filament\Admin\Resources\SiteSettingResource::normalizeHomeBrandLogosForForm($data['setting_value'] ?? []);
+
+            if (! is_array($data['setting_value'])) {
+                $data['setting_value'] = [];
+            }
         }
 
         return $data;
