@@ -9,6 +9,8 @@ class EditSiteSetting extends EditRecord
 {
     protected static string $resource = SiteSettingResource::class;
 
+    protected static ?string $title = 'Ubah Pengaturan Website';
+
     protected function mutateFormDataBeforeFill(array $data): array
     {
         if (($data['setting_key'] ?? null) === 'home_brand_logos') {
