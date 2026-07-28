@@ -6,6 +6,8 @@ use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RouteController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
@@ -69,6 +71,16 @@ Route::middleware('guest:web')->group(function (): void {
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth:web')
     ->name('logout');
+
+Route::get('/logout', function (Request $request) {
+    if (Auth::check()) {
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+    }
+
+    return redirect('/');
+});
 
 Route::middleware('auth')->group(function (): void {
 	Route::get('/presensi/{eventAgenda}/{token}', [AttendanceController::class, 'scan'])->name('attendance.scan');

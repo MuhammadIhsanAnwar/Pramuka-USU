@@ -37,8 +37,55 @@ class PublicController extends Controller
             'siteName' => $this->siteName(),
             'backgroundImage' => $this->resolveHomeAsset('home_background_image', '/storage/beranda/Beranda.png'),
             'videoIntro' => $this->resolveHomeAsset('intro_video', '/storage/beranda/Intro.mp4'),
+            'brandLogos' => $this->resolveHomeAssets('home_brand_logos'),
             ...$homeData,
         ]);
+    }
+
+    private function resolveHomeAssets(string $key): array
+    {
+        $setting = SiteSetting::query()
+            ->where('setting_key', $key)
+            ->first();
+
+        if ($setting !== null && $setting->is_public === false) {
+            return [];
+        }
+
+        $value = $setting?->value;
+
+        if ($value === null) {
+            return [];
+        }
+
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $value = $decoded;
+            }
+        }
+
+        if (is_string($value)) {
+            $path = $this->normalizeSettingPath($value);
+
+            return $path ? [$path] : [];
+        }
+
+        if (! is_array($value)) {
+            return [];
+        }
+
+        return array_values(array_filter(array_map(function ($item) {
+            if (is_string($item)) {
+                return $this->normalizeSettingPath($item);
+            }
+
+            if (is_array($item) && isset($item['path'])) {
+                return $this->normalizeSettingPath($item['path']);
+            }
+
+            return null;
+        }, $value)));
     }
 
     private function resolveHomeAsset(string $key, string $default): ?string

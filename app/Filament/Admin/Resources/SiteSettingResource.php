@@ -8,6 +8,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -68,17 +69,27 @@ class SiteSettingResource extends Resource
                     ->visible(fn (callable $get, ?SiteSetting $record): bool => $get('setting_type') === 'textarea' && ($record?->setting_key !== 'maintenance_mode'))
                     ->columnSpanFull()
                     ->rows(4),
-                FileUpload::make('setting_value')
-                    ->label('Upload')
-                    ->directory('beranda')
-                    ->disk('public')
-                    ->visibility('public')
-                    ->acceptedFileTypes(fn (callable $get): array => $get('setting_type') === 'video'
-                        ? ['video/mp4', 'video/webm', 'video/ogg']
-                        : ['image/jpeg', 'image/png', 'image/webp'])
-                    ->visible(fn (callable $get, ?SiteSetting $record): bool => in_array($get('setting_type'), ['image', 'video'], true) && ($record?->setting_key !== 'maintenance_mode'))
+                Repeater::make('setting_value')
+                    ->label('Logo Beranda Bawah Video')
+                    ->visible(fn (callable $get, ?SiteSetting $record): bool => $get('setting_key') === 'home_brand_logos' || $record?->setting_key === 'home_brand_logos')
                     ->columnSpanFull()
-                    ->maxSize(10240),
+                    ->schema([
+                        FileUpload::make('path')
+                            ->label('Upload Logo')
+                            ->image()
+                            ->directory('home_brand_logos')
+                            ->disk('public_storage')
+                            ->visibility('public')
+                            ->maxSize(5120)
+                            ->imageCropAspectRatio('1:1'),
+                    ])
+                    ->createItemButtonLabel('Tambah Logo')
+                    ->columns(1),
+                TextInput::make('setting_value')
+                    ->label('Upload')
+                    ->visible(fn (callable $get, ?SiteSetting $record): bool => in_array($get('setting_type'), ['image', 'video'], true) && ($record?->setting_key !== 'maintenance_mode') && ($get('setting_key') !== 'home_brand_logos' && $record?->setting_key !== 'home_brand_logos'))
+                    ->columnSpanFull()
+                    ->maxLength(255),
                 Toggle::make('setting_value')
                     ->label('Upload')
                     ->visible(fn (callable $get, ?SiteSetting $record): bool => $get('setting_type') === 'toggle' && ($record?->setting_key !== 'maintenance_mode'))
@@ -126,5 +137,58 @@ class SiteSettingResource extends Resource
             'index' => Pages\ListSiteSettings::route('/'),
             'edit' => Pages\EditSiteSetting::route('/{record}/edit'),
         ];
+    }
+
+    public static function normalizeHomeBrandLogosForForm(mixed $value): array
+    {
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $value = $decoded;
+            }
+        }
+
+        if (! is_array($value)) {
+            return [];
+        }
+
+        return collect($value)
+            ->map(function ($item): ?array {
+                $path = self::extractLogoPath($item);
+
+                if ($path === null || $path === '') {
+                    return null;
+                }
+
+                return ['path' => (string) $path];
+            })
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    protected static function extractLogoPath(mixed $value): ?string
+    {
+        if (is_string($value)) {
+            return $value;
+        }
+
+        if (is_array($value)) {
+            foreach (['path', 'file', 'url', 'value'] as $key) {
+                if (array_key_exists($key, $value)) {
+                    $extracted = self::extractLogoPath($value[$key]);
+
+                    if ($extracted !== null) {
+                        return $extracted;
+                    }
+                }
+            }
+
+            if (array_key_exists(0, $value)) {
+                return self::extractLogoPath($value[0]);
+            }
+        }
+
+        return null;
     }
 }

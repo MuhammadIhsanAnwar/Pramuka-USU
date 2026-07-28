@@ -28,6 +28,13 @@ class SiteSetting extends Model
                 'setting_value' => ['/storage/beranda/Intro.mp4'],
                 'is_public' => true,
             ],
+            'home_brand_logos' => [
+                'setting_group' => 'home',
+                'label' => 'Logo Beranda Bawah Video',
+                'setting_type' => 'image',
+                'setting_value' => [],
+                'is_public' => true,
+            ],
         ];
 
         foreach ($defaults as $key => $data) {
@@ -70,15 +77,63 @@ class SiteSetting extends Model
                 if (is_string($raw)) {
                     $decoded = json_decode($raw, true);
                     if (json_last_error() === JSON_ERROR_NONE) {
-                        return $decoded;
+                        $raw = $decoded;
+                    } else {
+                        return $raw;
                     }
+                }
 
-                    return $raw;
+                if (($attributes['setting_key'] ?? null) === 'home_brand_logos') {
+                    return collect($raw ?? [])
+                        ->map(function ($item) {
+                            if (is_array($item)) {
+                                if (array_key_exists('path', $item)) {
+                                    return $item['path'];
+                                }
+
+                                if (array_key_exists('file', $item)) {
+                                    return $item['file'];
+                                }
+
+                                return $item[0] ?? null;
+                            }
+
+                            return $item;
+                        })
+                        ->filter(fn ($item) => filled($item))
+                        ->values()
+                        ->all();
                 }
 
                 return $raw;
             },
-            set: static fn ($value) => ['setting_value' => is_array($value) || $value === null ? $value : [$value]],
+            set: static function ($value, array $attributes) {
+                if (($attributes['setting_key'] ?? null) === 'home_brand_logos') {
+                    $normalized = collect(is_array($value) ? $value : ($value === null ? [] : [$value]))
+                        ->map(function ($item) {
+                            if (is_array($item)) {
+                                if (array_key_exists('path', $item)) {
+                                    return $item['path'];
+                                }
+
+                                if (array_key_exists('file', $item)) {
+                                    return $item['file'];
+                                }
+
+                                return $item[0] ?? null;
+                            }
+
+                            return $item;
+                        })
+                        ->filter(fn ($item) => filled($item))
+                        ->values()
+                        ->all();
+
+                    return ['setting_value' => $normalized];
+                }
+
+                return ['setting_value' => is_array($value) || $value === null ? $value : [$value]];
+            },
         );
     }
 

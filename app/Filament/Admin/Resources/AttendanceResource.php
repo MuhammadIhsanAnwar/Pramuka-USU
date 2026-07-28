@@ -95,8 +95,8 @@ class AttendanceResource extends Resource
                     'gray' => 'terlambat',
                 ]),
                 TextColumn::make('scanned_at')->dateTime()->sortable(),
-                TextColumn::make('latitude')->toggleable(),
-                TextColumn::make('longitude')->toggleable(),
+                TextColumn::make('latitude'),
+                TextColumn::make('longitude'),
             ])
             ->actions([
                 EditAction::make(),

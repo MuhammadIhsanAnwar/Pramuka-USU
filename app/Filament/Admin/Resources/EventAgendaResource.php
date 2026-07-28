@@ -102,8 +102,7 @@ class EventAgendaResource extends Resource
                     ->sortable(),
                 TextColumn::make('organizer')
                     ->label('Penyelenggara')
-                    ->searchable()
-                    ->toggleable(),
+                    ->searchable(),
                 TextColumn::make('location')
                     ->label('Lokasi')
                     ->searchable(),

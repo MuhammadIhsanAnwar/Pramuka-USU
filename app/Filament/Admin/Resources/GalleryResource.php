@@ -76,11 +76,9 @@ class GalleryResource extends Resource
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('album')
-                    ->badge()
-                    ->toggleable(),
+                    ->badge(),
                 TextColumn::make('uploader.name')
-                    ->label('Upload Oleh')
-                    ->toggleable(),
+                    ->label('Upload Oleh'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable(),

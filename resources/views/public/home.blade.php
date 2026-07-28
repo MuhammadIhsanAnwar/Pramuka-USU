@@ -22,17 +22,15 @@
                         <video src="{{ $videoIntro }}" autoplay muted loop playsinline class="h-full w-full rounded-4xl block object-cover"></video>
                     </div>
                 @endif
-                <div class="mx-auto w-max overflow-hidden rounded-full bg-white px-4 py-3 shadow-[0_20px_45px_-20px_rgba(15,23,42,0.25)] ring-1 ring-slate-300/80 backdrop-blur-sm">
-                    <div class="flex items-center justify-center gap-1.5 whitespace-nowrap">
-                        <img src="{{ asset('storage/logo/WOSM Ungu.png') }}" alt="WOSM Ungu" class="h-8 w-auto flex-none object-contain">
-                        <img src="{{ asset('storage/logo/Pramuka Scout Movement.png') }}" alt="Pramuka Scout Movement" class="h-8 w-auto flex-none object-contain">
-                        <img src="{{ asset('storage/logo/Logo USU.png') }}" alt="Logo USU" class="h-8 w-auto flex-none object-contain">
-                        <img src="{{ asset('storage/logo/Logo KwardaSU.png') }}" alt="Logo KwardaSU" class="h-8 w-auto flex-none object-contain">
-                        <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Logo Pramuka USU" class="h-8 w-auto flex-none object-contain">
-                        <img src="{{ asset('storage/logo/Pewarta.png') }}" alt="Pewarta" class="h-8 w-auto flex-none object-contain">
-                        <img src="{{ asset('storage/logo/Diktisaintek Berdampak.png') }}" alt="Diktisaintek Berdampak" class="h-8 w-auto flex-none object-contain">
+                @if (! empty($brandLogos))
+                    <div class="mx-auto w-max overflow-hidden rounded-full bg-white px-4 py-3 shadow-[0_20px_45px_-20px_rgba(15,23,42,0.25)] ring-1 ring-slate-300/80 backdrop-blur-sm">
+                        <div class="flex items-center justify-center gap-1.5 whitespace-nowrap">
+                            @foreach ($brandLogos as $logo)
+                                <img src="{{ $logo }}" alt="Logo" class="h-8 w-auto flex-none object-contain">
+                            @endforeach
+                        </div>
                     </div>
-                </div>
+                @endif
             </div>
         </div>
     </div>
