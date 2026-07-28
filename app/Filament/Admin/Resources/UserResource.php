@@ -94,9 +94,10 @@ class UserResource extends Resource
                     ->width(80)
                     ->toggleable(false)
                     ->url(fn (?string $state, $record): ?string => $record?->qr_code_url),
-                ImageColumn::make('avatar_path')
+                ImageColumn::make('avatar_url')
                     ->label('Foto')
-                    ->circular()
+                    ->height(80)
+                    ->width(60)
                     ->defaultImageUrl(fn (): string => asset('images/default-avatar.png')),
                 TextColumn::make('name')
                     ->label('Nama')

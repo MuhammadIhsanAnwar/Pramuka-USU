@@ -13,10 +13,45 @@ class EditSiteSetting extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        if (($data['setting_key'] ?? null) === 'home_brand_logos') {
-            $normalizedValue = \App\Filament\Admin\Resources\SiteSettingResource::normalizeHomeBrandLogosForForm($data['setting_value'] ?? []);
+        $settingKey = $data['setting_key'] ?? $this->record?->setting_key;
+
+        if ($settingKey === 'home_brand_logos') {
+            $value = $data['setting_value'] ?? $data['home_brand_logos'] ?? [];
+
+            if (is_string($value)) {
+                $decoded = json_decode($value, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $value = $decoded;
+                }
+            }
+
+            $normalizedValue = \App\Filament\Admin\Resources\SiteSettingResource::normalizeHomeBrandLogosForForm($value);
             $data['setting_value'] = is_array($normalizedValue) ? $normalizedValue : [];
-            $data['home_brand_logos_items'] = is_array($normalizedValue) ? $normalizedValue : [];
+        }
+
+        if (in_array($settingKey, ['home_background_image', 'intro_video'], true)) {
+            $value = $data['setting_value'] ?? [];
+
+            if (is_array($value)) {
+                $value = $value[0] ?? null;
+            }
+
+            if (is_string($value)) {
+                $decoded = json_decode($value, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $value = $decoded;
+                }
+            }
+
+            if (is_array($value)) {
+                $value = $value[0] ?? null;
+            }
+
+            if (filled($value) && ! is_string($value)) {
+                $value = (string) $value;
+            }
+
+            $data['setting_value'] = filled($value) ? $value : null;
         }
 
         return $data;
@@ -24,8 +59,17 @@ class EditSiteSetting extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        if (($data['setting_key'] ?? null) === 'home_brand_logos') {
-            $normalizedValue = $data['home_brand_logos_items'] ?? ($data['setting_value'] ?? []);
+        $settingKey = $data['setting_key'] ?? $this->record?->setting_key;
+
+        if ($settingKey === 'home_brand_logos') {
+            $normalizedValue = $data['setting_value'] ?? $data['home_brand_logos'] ?? [];
+
+            if (is_string($normalizedValue)) {
+                $decoded = json_decode($normalizedValue, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $normalizedValue = $decoded;
+                }
+            }
 
             if (! is_array($normalizedValue)) {
                 $normalizedValue = [];
@@ -33,18 +77,35 @@ class EditSiteSetting extends EditRecord
 
             $data['setting_value'] = collect($normalizedValue)
                 ->values()
-                ->map(function ($item) {
-                    if (is_array($item)) {
-                        return \App\Filament\Admin\Resources\SiteSettingResource::normalizeStoredLogoPath($item);
-                    }
-
-                    return \App\Filament\Admin\Resources\SiteSettingResource::normalizeStoredLogoPath($item);
-                })
+                ->map(fn ($item) => \App\Filament\Admin\Resources\SiteSettingResource::normalizeStoredLogoPath($item))
                 ->filter(fn ($value): bool => filled($value))
                 ->values()
                 ->all();
+        }
 
-            unset($data['home_brand_logos_items']);
+        if (in_array($settingKey, ['home_background_image', 'intro_video'], true)) {
+            $value = $data['setting_value'] ?? [];
+
+            if (is_array($value)) {
+                $value = $value[0] ?? null;
+            }
+
+            if (is_string($value)) {
+                $decoded = json_decode($value, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $value = $decoded;
+                }
+            }
+
+            if (is_array($value)) {
+                $value = $value[0] ?? null;
+            }
+
+            if (filled($value) && ! is_string($value)) {
+                $value = (string) $value;
+            }
+
+            $data['setting_value'] = filled($value) ? $value : null;
         }
 
         return $data;

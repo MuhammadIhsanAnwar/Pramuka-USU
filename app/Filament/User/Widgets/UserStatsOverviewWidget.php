@@ -28,7 +28,7 @@ class UserStatsOverviewWidget extends StatsOverviewWidget
                 ->color('warning'),
             Stat::make('Jumlah Pembina 08-137', User::query()->where('satuan', 'Gugus Depan Gerakan Pramuka Kota Medan 08-137')->count())
                 ->color('primary'),
-            Stat::make('Jumlah Pembia 08-138', User::query()->where('satuan', 'Gugus Depan Gerakan Pramuka Kota Medan 08-138')->count())
+            Stat::make('Jumlah Pembina 08-138', User::query()->where('satuan', 'Gugus Depan Gerakan Pramuka Kota Medan 08-138')->count())
                 ->color('primary'),
             Stat::make('Jumlah Anggota Racana Soetan Koemala Pontas', User::query()->whereNotIn('jenis_user', [UserKind::Purna->value, UserKind::Tamu->value])->where('satuan', 'Racana Soetan Koemala Pontas')->count())
                 ->color('secondary'),

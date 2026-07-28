@@ -9,6 +9,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
+use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -70,10 +71,9 @@ class SiteSettingResource extends Resource
                     ->visible(fn (callable $get, ?SiteSetting $record): bool => $get('setting_type') === 'textarea' && ($record?->setting_key !== 'maintenance_mode'))
                     ->columnSpanFull()
                     ->rows(4),
-                Repeater::make('home_brand_logos_items')
+                Repeater::make('home_brand_logos')
                     ->label('Logo Beranda Bawah Video')
                     ->visible(fn (callable $get, ?SiteSetting $record): bool => $get('setting_key') === 'home_brand_logos' || $record?->setting_key === 'home_brand_logos')
-                    ->default([])
                     ->columnSpanFull()
                     ->schema([
                         FileUpload::make('path')
@@ -104,12 +104,12 @@ class SiteSettingResource extends Resource
                             ->label('Pindahkan turun')
                             ->icon('heroicon-o-arrow-down')
                             ->color('gray');
-                    })
-                    ->default([]),
+                    }),
                 TextInput::make('setting_value')
-                    ->label('Upload')
+                    ->label('Path File')
                     ->visible(fn (callable $get, ?SiteSetting $record): bool => in_array($get('setting_type'), ['image', 'video'], true) && ($record?->setting_key !== 'maintenance_mode') && ($get('setting_key') !== 'home_brand_logos' && $record?->setting_key !== 'home_brand_logos'))
                     ->columnSpanFull()
+                    ->helperText('Masukkan path file yang ingin dipakai, misalnya /storage/beranda/Beranda.png atau /storage/beranda/Intro.mp4')
                     ->maxLength(255),
                 Toggle::make('setting_value')
                     ->label('Upload')
@@ -160,6 +160,25 @@ class SiteSettingResource extends Resource
         ];
     }
 
+    public static function getUploadConfiguration(string $settingKey): array
+    {
+        if ($settingKey === 'intro_video') {
+            return [
+                'directory' => 'beranda',
+                'maxSize' => 10240,
+                'acceptedFileTypes' => ['video/mp4'],
+                'image' => false,
+            ];
+        }
+
+        return [
+            'directory' => 'beranda',
+            'maxSize' => 5120,
+            'acceptedFileTypes' => ['image/jpeg', 'image/png'],
+            'image' => true,
+        ];
+    }
+
     public static function normalizeHomeBrandLogosForForm(mixed $value): array
     {
         if (is_string($value)) {
@@ -188,7 +207,7 @@ class SiteSettingResource extends Resource
             ->all();
     }
 
-    protected static function normalizeStoredLogoPath(mixed $value): ?string
+    public static function normalizeStoredLogoPath(mixed $value): ?string
     {
         $path = self::extractLogoPath($value);
 
@@ -219,8 +238,27 @@ class SiteSettingResource extends Resource
             return null;
         }
 
-        if (Str::startsWith($normalizedPath, ['home_brand_logos/', 'beranda/', 'intro_video/', 'logo/', 'sdgs/'])) {
+        if (Str::startsWith($normalizedPath, ['home_brand_logo/', 'home_brand_logos/'])) {
+            return preg_replace('#^home_brand_logo/#', 'home_brand_logos/', $normalizedPath);
+        }
+
+        if (Str::startsWith($normalizedPath, 'logo/')) {
+            $filename = substr($normalizedPath, strlen('logo/'));
+            $targetPath = 'home_brand_logos/' . $filename;
+
+            if (Storage::disk('public_storage')->exists($normalizedPath) && ! Storage::disk('public_storage')->exists($targetPath)) {
+                Storage::disk('public_storage')->move($normalizedPath, $targetPath);
+            }
+
+            return $targetPath;
+        }
+
+        if (Str::startsWith($normalizedPath, ['beranda/', 'intro_video/', 'sdgs/'])) {
             return $normalizedPath;
+        }
+
+        if (Str::contains($normalizedPath, '/home_brand_logo/')) {
+            return preg_replace('#^.*?/home_brand_logo/#', 'home_brand_logos/', $normalizedPath);
         }
 
         if (Str::contains($normalizedPath, '/home_brand_logos/')) {

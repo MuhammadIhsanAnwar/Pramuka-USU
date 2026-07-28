@@ -23,7 +23,7 @@ class AdminStatsOverview extends StatsOverviewWidget
                 ->count(),
             'purna' => User::query()->where('jenis_user', UserKind::Purna->value)->count(),
             'pembina_08_137' => User::query()->where('satuan', 'Gugus Depan Gerakan Pramuka Kota Medan 08-137')->count(),
-            'pembia_08_138' => User::query()->where('satuan', 'Gugus Depan Gerakan Pramuka Kota Medan 08-138')->count(),
+            'pembina_08_138' => User::query()->where('satuan', 'Gugus Depan Gerakan Pramuka Kota Medan 08-138')->count(),
             'anggota_racana_soetan' => User::query()
                 ->whereNotIn('jenis_user', [UserKind::Purna->value, UserKind::Tamu->value])
                 ->where('satuan', 'Racana Soetan Koemala Pontas')
@@ -47,7 +47,7 @@ class AdminStatsOverview extends StatsOverviewWidget
             Stat::make('Jumlah User Aktif', $counts['users']),
             Stat::make('Jumlah Purna', $counts['purna']),
             Stat::make('Jumlah Pembina 08-137', $counts['pembina_08_137']),
-            Stat::make('Jumlah Pembia 08-138', $counts['pembia_08_138']),
+            Stat::make('Jumlah Pembina 08-138', $counts['pembina_08_138']),
             Stat::make('Jumlah Anggota Racana Soetan Koemala Pontas', $counts['anggota_racana_soetan']),
             Stat::make('Jumlah Anggota Racana Rasuna Said', $counts['anggota_racana_rasuna']),
             Stat::make('Jumlah Anggota Ambalan Soetan Koemala Pontas', $counts['anggota_ambalan_soetan']),

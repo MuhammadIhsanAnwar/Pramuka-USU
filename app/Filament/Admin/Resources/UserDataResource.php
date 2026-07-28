@@ -53,9 +53,16 @@ class UserDataResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('avatar_path')
+                ImageColumn::make('qr_code_url')
+                    ->label('QR Code')
+                    ->height(72)
+                    ->width(72)
+                    ->toggleable(false)
+                    ->url(fn (?string $state, $record): ?string => $record?->qr_code_url),
+                ImageColumn::make('avatar_url')
                     ->label('Foto')
-                    ->circular()
+                    ->height(80)
+                    ->width(60)
                     ->defaultImageUrl(fn (): string => asset('images/default-avatar.png')),
                 TextColumn::make('name')
                     ->label('Nama')
@@ -73,8 +80,8 @@ class UserDataResource extends Resource
                     ->badge()
                     ->formatStateUsing(fn ($state): ?string => $state ? ucwords(str_replace('_', ' ', is_string($state) ? $state : $state->value)) : null)
                     ->sortable(),
-                TextColumn::make('phone')
-                    ->label('Telepon')
+                TextColumn::make('whatsapp_number')
+                    ->label('Nomor WhatsApp')
                     ->searchable()
                     ->visible(fn (HasTable $livewire): bool => $livewire->activeTab === 'biodata'),
                 TextColumn::make('gender')

@@ -141,11 +141,7 @@ class PublicController extends Controller
             return null;
         }
 
-        if (Str::startsWith($normalizedPath, 'home_brand_logos/')) {
-            return asset('storage/' . $normalizedPath);
-        }
-
-        if (Str::startsWith($normalizedPath, 'beranda/') || Str::startsWith($normalizedPath, 'intro_video/')) {
+        if (Str::startsWith($normalizedPath, ['home_brand_logo/', 'home_brand_logos/', 'beranda/', 'intro_video/', 'logo/', 'sdgs/'])) {
             return asset('storage/' . $normalizedPath);
         }
 

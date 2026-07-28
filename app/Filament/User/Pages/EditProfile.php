@@ -53,8 +53,17 @@ class EditProfile extends BaseEditProfile
                                     ->schema([
                                         Grid::make(2)
                                             ->schema([
-                                                TextInput::make('data.name')->label('Nama')->disabled()->maxLength(255),
-                                                TextInput::make('data.email')->label('Email')->email()->disabled()->maxLength(255),
+                                                TextInput::make('data.name')
+                                                    ->label('Nama')
+                                                    ->disabled()
+                                                    ->helperText('Nama hanya bisa diubah oleh admin')
+                                                    ->maxLength(255),
+                                                TextInput::make('data.email')
+                                                    ->label('Email')
+                                                    ->email()
+                                                    ->disabled()
+                                                    ->helperText('Email hanya bisa diubah oleh admin')
+                                                    ->maxLength(255),
                                                 TextInput::make('data.birth_place')->label('Tempat Lahir')->placeholder('Contoh: Kisaran')->maxLength(255),
                                                 DatePicker::make('data.birth_date')->label('Tanggal Lahir'),
                                                 Select::make('data.gender')->label('Jenis Kelamin')->options(['Laki-laki' => 'Laki-laki', 'Perempuan' => 'Perempuan']),
