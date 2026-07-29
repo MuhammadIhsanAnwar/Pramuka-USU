@@ -62,7 +62,7 @@ class NewsCategoryResource extends Resource
                 ->sortable(),
             TextColumn::make('created_at')
                 ->label('Dibuat')
-                ->dateTime()
+                ->dateTime('d F Y H:i:s')
                 ->sortable(),
         ])->actions([
             EditAction::make(),

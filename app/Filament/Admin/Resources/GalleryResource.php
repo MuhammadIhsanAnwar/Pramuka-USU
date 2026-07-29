@@ -80,7 +80,7 @@ class GalleryResource extends Resource
                 TextColumn::make('uploader.name')
                     ->label('Upload Oleh'),
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->dateTime('d F Y H:i:s')
                     ->sortable(),
             ])
             ->actions([

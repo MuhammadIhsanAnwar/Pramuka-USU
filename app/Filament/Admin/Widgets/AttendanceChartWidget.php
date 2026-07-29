@@ -12,27 +12,36 @@ class AttendanceChartWidget extends ChartWidget
 
     protected function getType(): string
     {
-        return 'line';
+        return 'bar';
     }
 
     protected function getData(): array
     {
         return Cache::remember('dashboard.admin.attendance-chart', now()->addMinutes(10), function (): array {
             $labels = [];
-            $data = [];
+            $presentData = [];
+            $lateData = [];
 
             for ($month = 1; $month <= 12; $month++) {
                 $labels[] = date('M', mktime(0, 0, 0, $month, 1));
-                $data[] = Attendance::query()->whereMonth('scanned_at', $month)->whereYear('scanned_at', now()->year)->count();
+                $presentData[] = Attendance::query()->whereMonth('scanned_at', $month)->whereYear('scanned_at', now()->year)->where('status', 'hadir')->count();
+                $lateData[] = Attendance::query()->whereMonth('scanned_at', $month)->whereYear('scanned_at', now()->year)->where('status', 'terlambat')->count();
             }
 
             return [
                 'datasets' => [
                     [
-                        'label' => 'Presensi',
-                        'data' => $data,
-                        'borderColor' => '#3E271A',
-                        'backgroundColor' => 'rgba(62, 39, 26, 0.2)',
+                        'label' => 'Hadir',
+                        'data' => $presentData,
+                        'borderColor' => '#22c55e',
+                        'backgroundColor' => 'rgba(34, 197, 94, 0.5)',
+                        'fill' => true,
+                    ],
+                    [
+                        'label' => 'Terlambat',
+                        'data' => $lateData,
+                        'borderColor' => '#f59e0b',
+                        'backgroundColor' => 'rgba(245, 158, 11, 0.5)',
                         'fill' => true,
                     ],
                 ],

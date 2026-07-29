@@ -128,7 +128,7 @@ class NewsPostResource extends Resource
                     ->label('Penulis'),
                 TextColumn::make('published_at')
                     ->label('Tanggal Terbit')
-                    ->dateTime()
+                    ->dateTime('d F Y H:i:s')
                     ->sortable(),
                 TextColumn::make('viewer_count')
                     ->label('Jumlah Pengunjung')

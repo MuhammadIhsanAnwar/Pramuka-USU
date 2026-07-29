@@ -2,6 +2,7 @@
 
 namespace App\Filament\User\Pages;
 
+use App\Filament\Concerns\YearFilterable;
 use App\Models\NewsPost;
 use BackedEnum;
 use Filament\Notifications\Notification;
@@ -11,12 +12,22 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Actions\DeleteAction;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class SentNewsPage extends Page implements HasTable
 {
     use InteractsWithTable;
+    use YearFilterable;
+
+    protected function getTableHeader(): View | Htmlable | null
+    {
+        return $this->getYearFilterHeader();
+    }
 
     protected static bool $shouldRegisterNavigation = false;
 
@@ -27,12 +38,15 @@ class SentNewsPage extends Page implements HasTable
     protected static string | UnitEnum | null $navigationGroup = 'User';
     protected string $view = 'filament.user.pages.sent-news';
 
-    protected function getTableQuery()
+    protected function getTableQuery(): Builder | Relation
     {
-        return NewsPost::query()
-            ->where('author_id', Auth::id())
-            ->with('category')
-            ->latest('created_at');
+        return $this->applyYearFilter(
+            NewsPost::query()
+                ->where('author_id', Auth::id())
+                ->with('category')
+                ->latest('created_at'),
+            'published_at',
+        );
     }
 
     protected function getTableColumns(): array
@@ -63,7 +77,7 @@ class SentNewsPage extends Page implements HasTable
                 }),
             TextColumn::make('published_at')
                 ->label('Tanggal Terbit')
-                ->dateTime()
+                ->dateTime('d F Y H:i:s')
                 ->sortable(),
             TextColumn::make('viewer_count')
                 ->label('Jumlah Pengunjung')

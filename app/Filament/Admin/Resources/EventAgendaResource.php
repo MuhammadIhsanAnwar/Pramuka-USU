@@ -7,15 +7,13 @@ use App\Models\EventAgenda;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\BadgeColumn;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use BackedEnum;
@@ -65,7 +63,6 @@ class EventAgendaResource extends Resource
                 TextInput::make('organizer')
                     ->label('Penyelenggara')
                     ->maxLength(255)
-                    ->visible(fn ($get) => $get('type') === 'external')
                     ->required(fn ($get) => $get('type') === 'external'),
                 Select::make('status')
                     ->label('Status')
@@ -114,7 +111,11 @@ class EventAgendaResource extends Resource
                     ]),
                 TextColumn::make('starts_at')
                     ->label('Mulai')
-                    ->dateTime()
+                    ->dateTime('d F Y H:i:s')
+                    ->sortable(),
+                TextColumn::make('ends_at')
+                    ->label('Waktu Selesai')
+                    ->dateTime('d F Y H:i:s')
                     ->sortable(),
             ])
             ->actions([

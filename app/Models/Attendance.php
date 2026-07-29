@@ -16,18 +16,39 @@ class Attendance extends Model
     protected $fillable = [
         'user_id',
         'event_agenda_id',
+        'starts_at',
+        'ends_at',
         'scanned_at',
         'status',
         'latitude',
         'longitude',
         'notes',
+        'photo_path',
+        'method',
+        'device',
+        'browser',
+        'ip_address',
+        'distance',
     ];
 
     protected $casts = [
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
         'scanned_at' => 'datetime',
         'latitude' => 'decimal:7',
         'longitude' => 'decimal:7',
+        'distance' => 'integer',
     ];
+
+    protected function photoUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes): ?string => blank($attributes['photo_path'] ?? null)
+                ? null
+                : asset('storage/'.$attributes['photo_path']),
+        );
+    }
+
 
     public function user(): BelongsTo
     {

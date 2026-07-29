@@ -273,6 +273,17 @@ class User extends Authenticatable implements FilamentUser
         );
     }
 
+    public function getJenisUserLabelAttribute(): string
+    {
+        return match ($this->jenis_user?->value ?? null) {
+            UserKind::Pembina->value => 'Pembina',
+            UserKind::PesertaDidik->value => 'Peserta Didik',
+            UserKind::Purna->value => 'Purna',
+            UserKind::Tamu->value => 'Tamu',
+            default => '-',
+        };
+    }
+
     protected static function booted(): void
     {
         static::creating(function (User $user): void {

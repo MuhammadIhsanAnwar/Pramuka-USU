@@ -222,7 +222,7 @@ class UserDataResource extends Resource
                     ->visible(fn (HasTable $livewire): bool => $livewire->activeTab === 'data-akun'),
                 TextColumn::make('created_at')
                     ->label('Dibuat')
-                    ->dateTime()
+                    ->dateTime('d F Y H:i:s')
                     ->sortable()
                     ->visible(fn (HasTable $livewire): bool => $livewire->activeTab === 'data-akun'),
             ])

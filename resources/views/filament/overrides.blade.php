@@ -32,6 +32,27 @@ html.fi, html.fi body, html.fi .fi-body {
 }
 /* Force livewire progress bar color */
 html.fi .livewire-progress { background-color: #3E271A !important; }
+html.fi .fi-ta-header-cell-sort-btn,
+html.fi .fi-ta-header-cell-sort-btn:hover,
+html.fi .fi-ta-header-cell-sort-btn:focus,
+html.fi .fi-ta-header-cell-sort-btn:focus-visible,
+html.fi th.fi-ta-header-cell button,
+html.fi th.fi-ta-header-cell button:hover,
+html.fi th.fi-ta-header-cell button:focus,
+html.fi th.fi-ta-header-cell button *,
+html.fi .fi-ta-header-cell-sort-btn * {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  color: #000000 !important;
+}
+html.fi .fi-ta-header-cell-sort-btn .fi-icon,
+html.fi th.fi-ta-header-cell button .fi-icon,
+html.fi th.fi-ta-header-cell button .fi-ta-header-cell-sort-icon {
+  color: #000000 !important;
+  fill: #000000 !important;
+}
 </style>
 <style>
 /* Sidebar: dark brown background, white text/icons */

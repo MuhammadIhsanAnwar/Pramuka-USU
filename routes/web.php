@@ -4,12 +4,14 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\IncomingLetterController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PublicController;
+use App\Models\EventAgenda;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RouteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use Laravel\Fortify\Http\Controllers\NewPasswordController;
 use Laravel\Fortify\Http\Controllers\PasswordResetLinkController;
@@ -44,6 +46,11 @@ Route::redirect('/artisan', '/artisan/login.php');
 Route::middleware(['auth', 'role:Admin'])->group(function (): void {
 	Route::get('/admin/surat-masuk', [RouteController::class, 'redirectAdminSuratMasuk']);
 });
+
+// Simple route to show current user's QR
+Route::middleware('auth')->get('/user/qr', function () {
+    return view('filament.user.show-qr-page');
+})->name('user.qr');
 
 // Legacy redirect: keep `/dashboard` pointing to the user panel at `/user`.
 Route::get('/dashboard', [RouteController::class, 'redirectDashboard']);
@@ -82,17 +89,43 @@ Route::get('/logout', function (Request $request) {
     return redirect('/');
 });
 
-Route::middleware('auth')->group(function (): void {
-	Route::get('/presensi/{eventAgenda}/{token}', [AttendanceController::class, 'scan'])->name('attendance.scan');
+Route::middleware(['auth', 'signed'])->group(function (): void {
+    Route::get('/presensi/{eventAgenda}/{token}', [AttendanceController::class, 'scan'])
+        ->name('attendance.scan');
+
+    Route::post('/presensi/{eventAgenda}/{token}', [AttendanceController::class, 'submit'])
+        ->name('attendance.submit');
+
+    // GPS-based attendance (from user dashboard modal)
+    Route::post('/user/presensi/gps', [AttendanceController::class, 'createViaGps'])
+        ->name('user.presensi.gps');
 });
 
-Route::middleware(['auth', 'role:Admin'])->prefix('laporan')->group(function (): void {
-	Route::get('/berita/pdf', [ReportController::class, 'newsPdf'])->name('reports.news.pdf');
-	Route::get('/berita/excel', [ReportController::class, 'newsExcel'])->name('reports.news.excel');
-	Route::get('/agenda/pdf', [ReportController::class, 'agendaPdf'])->name('reports.agenda.pdf');
-	Route::get('/agenda/excel', [ReportController::class, 'agendaExcel'])->name('reports.agenda.excel');
-	Route::get('/presensi/pdf', [ReportController::class, 'attendancePdf'])->name('reports.attendance.pdf');
-	Route::get('/presensi/excel', [ReportController::class, 'attendanceExcel'])->name('reports.attendance.excel');
-	Route::get('/user/pdf', [ReportController::class, 'userPdf'])->name('reports.user.pdf');
-	Route::get('/user/excel', [ReportController::class, 'userExcel'])->name('reports.user.excel');
+Route::middleware(['auth', 'role:Admin'])->group(function (): void {
+    Route::get('/admin/presensi/{eventAgenda}/scan-user', function (EventAgenda $eventAgenda) {
+        $url = URL::temporarySignedRoute(
+            'attendance.scan',
+            now()->addHours(6),
+            [
+                'eventAgenda' => $eventAgenda->slug,
+                'token' => $eventAgenda->qr_token,
+            ],
+        );
+
+        return view('filament.admin.event-agenda-scan-user', compact('eventAgenda', 'url'));
+    })->name('admin.attendance.scan-user');
+
+    Route::post('/admin/presensi/{eventAgenda}/status', [AttendanceController::class, 'adminUpdateStatus'])
+        ->name('admin.attendance.update-status');
+
+    Route::prefix('laporan')->group(function (): void {
+        Route::get('/berita/pdf', [ReportController::class, 'newsPdf'])->name('reports.news.pdf');
+        Route::get('/berita/excel', [ReportController::class, 'newsExcel'])->name('reports.news.excel');
+        Route::get('/agenda/pdf', [ReportController::class, 'agendaPdf'])->name('reports.agenda.pdf');
+        Route::get('/agenda/excel', [ReportController::class, 'agendaExcel'])->name('reports.agenda.excel');
+        Route::get('/presensi/pdf', [ReportController::class, 'attendancePdf'])->name('reports.attendance.pdf');
+        Route::get('/presensi/excel', [ReportController::class, 'attendanceExcel'])->name('reports.attendance.excel');
+        Route::get('/user/pdf', [ReportController::class, 'userPdf'])->name('reports.user.pdf');
+        Route::get('/user/excel', [ReportController::class, 'userExcel'])->name('reports.user.excel');
+    });
 });

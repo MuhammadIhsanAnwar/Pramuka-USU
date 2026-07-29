@@ -21,6 +21,9 @@ class EventAgenda extends Model
         'name',
         'slug',
         'location',
+        'latitude',
+        'longitude',
+        'radius',
         'type',
         'organizer',
         'description',
@@ -36,6 +39,9 @@ class EventAgenda extends Model
     protected $casts = [
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
+        'latitude' => 'decimal:7',
+        'longitude' => 'decimal:7',
+        'radius' => 'integer',
     ];
 
     public function getRouteKeyName(): string
@@ -55,7 +61,7 @@ class EventAgenda extends Model
 
     public function scopePublished($query)
     {
-        return $query->where('status', 'published');
+        return $query->whereIn('status', ['published', 'publish']);
     }
 
     public function scopeUpcoming($query)
@@ -93,5 +99,26 @@ class EventAgenda extends Model
                 'source' => 'name',
             ],
         ];
+    }
+
+    public function calculateDistance(float $latitude, float $longitude): int
+    {
+        if (! isset($this->latitude, $this->longitude)) {
+            return 0;
+        }
+
+        $earthRadius = 6371000;
+        $latFrom = deg2rad($this->latitude);
+        $lngFrom = deg2rad($this->longitude);
+        $latTo = deg2rad($latitude);
+        $lngTo = deg2rad($longitude);
+
+        $latDelta = $latTo - $latFrom;
+        $lngDelta = $lngTo - $lngFrom;
+
+        $a = sin($latDelta / 2) ** 2 + cos($latFrom) * cos($latTo) * sin($lngDelta / 2) ** 2;
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        return (int) round($earthRadius * $c);
     }
 }

@@ -16,6 +16,23 @@
     body {
         @apply bg-[#f8f4ea] text-slate-900 antialiased;
     }
+
+    th.sortable,
+    th.sortable button,
+    th.sortable [role="button"],
+    th.sortable .sort-arrow,
+    th.sortable span {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        appearance: none !important;
+    }
+
+    th.sortable button:hover,
+    th.sortable [role="button"]:hover,
+    th.sortable span:hover {
+        background: transparent !important;
+    }
 }
 
 @layer components {
