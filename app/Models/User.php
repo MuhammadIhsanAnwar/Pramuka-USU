@@ -136,6 +136,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Attendance::class);
     }
 
+    public function presensiRecords(): HasMany
+    {
+        return $this->hasMany(PresensiRecord::class);
+    }
+
     public function eventAgendas(): HasMany
     {
         return $this->hasMany(EventAgenda::class, 'created_by');

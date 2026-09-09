@@ -2,14 +2,13 @@
 
 @section('content')
     <section class="mx-auto max-w-xl px-4 py-20 sm:px-6 lg:px-8">
-        <div class="mb-6 flex items-center justify-center flex-col gap-3">
-            <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Pramuka USU" width="96" height="96" style="width:96px;height:auto;max-width:100%;object-fit:contain;" class="object-contain" />
-            <div class="text-center">
-                <img src="{{ asset('storage/logo/SIPRAUSU.png') }}" alt="SIPRAUSU" style="width:160px;height:auto;max-width:100%;object-fit:contain;margin:0 auto;" />
-                <div class="text-sm text-slate-500">Sistem Informasi Pramuka Universitas Sumatera Utara</div>
-            </div>
-        </div>
         <div class="surface-card rounded-3xl border border-slate-200 bg-white p-8 shadow-lg">
+            <div class="mb-6 flex flex-col items-center justify-center gap-2 text-center">
+                <img src="{{ asset('storage/logo/Logo Pramuka USU.png') }}" alt="Pramuka USU" width="72" height="72" style="width:72px;height:auto;max-width:100%;object-fit:contain;" class="object-contain" />
+                <img src="{{ asset('storage/logo/SIPRAUSU.png') }}" alt="SIPRAUSU" style="width:160px;height:auto;max-width:100%;object-fit:contain;margin:0 auto;" />
+                <div class="text-xs text-slate-500">Sistem Informasi Pramuka Universitas Sumatera Utara</div>
+            </div>
+
             <h1 class="text-2xl font-bold text-slate-900">Masuk</h1>
             <p class="mt-2 text-sm text-slate-600">Silakan masuk dengan email dan password akun Anda.</p>
 

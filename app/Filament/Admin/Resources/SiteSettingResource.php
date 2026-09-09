@@ -62,15 +62,17 @@ class SiteSettingResource extends Resource
                     ->label('Label')
                     ->required()
                     ->maxLength(255),
-                TextInput::make('setting_value')
-                    ->label('Upload')
-                    ->visible(fn (callable $get, ?SiteSetting $record): bool => ($get('setting_type') === 'text' || $get('setting_type') === 'number') && ($record?->setting_key !== 'maintenance_mode'))
-                    ->columnSpanFull(),
                 Textarea::make('setting_value')
                     ->label('Upload')
                     ->visible(fn (callable $get, ?SiteSetting $record): bool => $get('setting_type') === 'textarea' && ($record?->setting_key !== 'maintenance_mode'))
                     ->columnSpanFull()
-                    ->rows(4),
+                    ->rows(4)
+                    ->helperText(fn (callable $get) => $get('setting_value_preview') ? 'Saat ini: ' . Str::limit((string) $get('setting_value_preview'), 300) : null),
+                TextInput::make('setting_value')
+                    ->label('Upload')
+                    ->visible(fn (callable $get, ?SiteSetting $record): bool => ($get('setting_type') === 'text' || $get('setting_type') === 'number') && ($record?->setting_key !== 'maintenance_mode'))
+                    ->columnSpanFull()
+                    ->helperText(fn (callable $get) => $get('setting_value_preview') ? 'Saat ini: ' . Str::limit((string) $get('setting_value_preview'), 300) : null),
                 Repeater::make('home_brand_logos')
                     ->label('Logo Beranda Bawah Video')
                     ->visible(fn (callable $get, ?SiteSetting $record): bool => $get('setting_key') === 'home_brand_logos' || $record?->setting_key === 'home_brand_logos')
@@ -105,9 +107,45 @@ class SiteSettingResource extends Resource
                             ->icon('heroicon-o-arrow-down')
                             ->color('gray');
                     }),
+                Repeater::make('footer_social_links')
+                    ->label('Tautan Media Sosial Footer')
+                    ->visible(fn (callable $get, ?SiteSetting $record): bool => $get('setting_key') === 'footer_social_links' || $record?->setting_key === 'footer_social_links')
+                    ->columnSpanFull()
+                    ->schema([
+                        TextInput::make('label')
+                            ->label('Nama Tautan')
+                            ->required()
+                            ->maxLength(255),
+                        TextInput::make('url')
+                            ->label('URL')
+                            ->required()
+                            ->url()
+                            ->maxLength(2048),
+                    ])
+                    ->createItemButtonLabel('Tambah Tautan')
+                    ->columns(1)
+                    ->reorderableWithButtons()
+                    ->deleteAction(function (Action $action): Action {
+                        return $action
+                            ->label('Hapus tautan')
+                            ->icon('heroicon-o-trash')
+                            ->color('danger');
+                    })
+                    ->moveUpAction(function (Action $action): Action {
+                        return $action
+                            ->label('Pindahkan naik')
+                            ->icon('heroicon-o-arrow-up')
+                            ->color('gray');
+                    })
+                    ->moveDownAction(function (Action $action): Action {
+                        return $action
+                            ->label('Pindahkan turun')
+                            ->icon('heroicon-o-arrow-down')
+                            ->color('gray');
+                    }),
                 TextInput::make('setting_value')
                     ->label('Path File')
-                    ->visible(fn (callable $get, ?SiteSetting $record): bool => in_array($get('setting_type'), ['image', 'video'], true) && ($record?->setting_key !== 'maintenance_mode') && ($get('setting_key') !== 'home_brand_logos' && $record?->setting_key !== 'home_brand_logos'))
+                    ->visible(fn (callable $get, ?SiteSetting $record): bool => in_array($get('setting_type'), ['image', 'video'], true) && ($record?->setting_key !== 'maintenance_mode') && ($get('setting_key') !== 'home_brand_logos' && $record?->setting_key !== 'home_brand_logos' && $record?->setting_key !== 'footer_social_links'))
                     ->columnSpanFull()
                     ->helperText('Masukkan path file yang ingin dipakai, misalnya /storage/beranda/Beranda.png atau /storage/beranda/Intro.mp4')
                     ->maxLength(255),
@@ -125,28 +163,41 @@ class SiteSettingResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('label')->searchable(),
-                ToggleColumn::make('active')
+                TextColumn::make('is_public')
                     ->label('Aktif')
-                    ->getStateUsing(fn ($record): bool =>
-                        $record->setting_key === 'maintenance_mode'
-                            ? (bool) ($record->setting_value[0] ?? $record->setting_value)
-                            : (bool) $record->is_public
-                    )
-                    ->updateStateUsing(function ($state, ToggleColumn $column) {
-                        $record = $column->getRecord();
-
-                        if ($record->setting_key === 'maintenance_mode') {
-                            $record->setting_value = [$state];
-                        } else {
-                            $record->is_public = (bool) $state;
+                    ->getStateUsing(function ($record): bool {
+                        $key = $record?->setting_key ?? null;
+                        if ($key === 'maintenance_mode') {
+                            $val = $record?->setting_value ?? null;
+                            return (bool) ($val[0] ?? $val);
                         }
 
-                        $record->save();
-
-                        return $state;
-                    }),
+                        return (bool) ($record?->is_public ?? false);
+                    })
+                    ->formatStateUsing(fn ($state) => $state ? 'Ya' : 'Tidak'),
+                // maintenance_mode will be controlled via row actions (Aktifkan / Nonaktifkan)
             ])
             ->actions([
+                Action::make('aktifkan')
+                    ->label('Aktifkan')
+                    ->color('success')
+                    ->visible(function ($record) {
+                        return ($record?->setting_key ?? null) === 'maintenance_mode' && ! (bool) (($record->setting_value[0] ?? $record->setting_value) ?? false);
+                    })
+                    ->action(function ($record) {
+                        $record->setting_value = [true];
+                        $record->save();
+                    }),
+                Action::make('nonaktifkan')
+                    ->label('Nonaktifkan')
+                    ->color('danger')
+                    ->visible(function ($record) {
+                        return ($record?->setting_key ?? null) === 'maintenance_mode' && (bool) (($record->setting_value[0] ?? $record->setting_value) ?? false);
+                    })
+                    ->action(function ($record) {
+                        $record->setting_value = [false];
+                        $record->save();
+                    }),
                 EditAction::make(),
             ])
             ->bulkActions([]);

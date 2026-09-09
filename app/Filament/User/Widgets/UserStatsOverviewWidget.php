@@ -42,13 +42,16 @@ class UserStatsOverviewWidget extends StatsOverviewWidget
                 ->color('danger'),
             Stat::make('Presensi', Attendance::query()->where('user_id', $user?->id)->count())
                 ->description('Total riwayat kehadiran Anda')
-                ->color('success'),
+                ->color('success')
+                ->url(url('/user/presensi')),
             Stat::make('Agenda Mendatang', EventAgenda::query()->published()->upcoming()->count())
                 ->description('Agenda yang akan datang')
-                ->color('warning'),
+                ->color('warning')
+                ->url(url('/user/agenda')),
             Stat::make('Berita Saya', NewsPost::query()->where('author_id', $user?->id)->count())
                 ->description('Jumlah berita yang Anda buat')
-                ->color('primary'),
+                ->color('primary')
+                ->url(url('/user/berita-terkirim')),
         ];
     }
 }

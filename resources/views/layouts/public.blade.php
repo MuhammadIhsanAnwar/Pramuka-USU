@@ -356,26 +356,13 @@
                 </div>
                 <div>
                     <div class="text-sm font-semibold uppercase tracking-[0.2em] text-[#5D4037]">Kontak</div>
-                    <p class="mt-4 text-sm text-slate-600">Email: pramuka@usu.ac.id</p>
+                    <p class="mt-4 text-sm text-slate-600">Email: {{ $footerEmail ?? 'pramuka@usu.ac.id' }}</p>
                     <div class="mt-4 flex flex-wrap items-center gap-3">
-                        <a href="https://linktr.ee/PramukaUSU" target="_blank" rel="noopener" class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#F5F5DC]/40 transition hover:bg-[#5D4037]/10 hover:border-[#5D4037]">
-                            <img src="{{ asset('storage/ikon/Linktree copy.png') }}" alt="Linktree" class="h-6 w-6 object-contain" />
-                        </a>
-                        <a href="https://instagram.com/pramuka_usu" target="_blank" rel="noopener" class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#F5F5DC]/40 transition hover:bg-[#5D4037]/10 hover:border-[#5D4037]">
-                            <img src="{{ asset('storage/ikon/Instagram copy.png') }}" alt="Instagram" class="h-6 w-6 object-contain" />
-                        </a>
-                        <a href="https://facebook.com/pramukausu1974" target="_blank" rel="noopener" class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#F5F5DC]/40 transition hover:bg-[#5D4037]/10 hover:border-[#5D4037]">
-                            <img src="{{ asset('storage/ikon/Facebook copy.png') }}" alt="Facebook" class="h-6 w-6 object-contain" />
-                        </a>
-                        <a href="https://threads.com/@pramuka_usu" target="_blank" rel="noopener" class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#F5F5DC]/40 transition hover:bg-[#5D4037]/10 hover:border-[#5D4037]">
-                            <img src="{{ asset('storage/ikon/Threads copy.png') }}" alt="Threads" class="h-6 w-6 object-contain" />
-                        </a>
-                        <a href="https://tiktok.com/@pramuka_usu" target="_blank" rel="noopener" class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#F5F5DC]/40 transition hover:bg-[#5D4037]/10 hover:border-[#5D4037]">
-                            <img src="{{ asset('storage/ikon/Tiktok copy.png') }}" alt="TikTok" class="h-6 w-6 object-contain" />
-                        </a>
-                        <a href="https://youtube.com/@pramuka_usu" target="_blank" rel="noopener" class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#F5F5DC]/40 transition hover:bg-[#5D4037]/10 hover:border-[#5D4037]">
-                            <img src="{{ asset('storage/ikon/Youtube copy.png') }}" alt="YouTube" class="h-6 w-6 object-contain" />
-                        </a>
+                        @foreach ($footerSocialLinks ?? [] as $link)
+                            <a href="{{ $link['url'] }}" target="_blank" rel="noopener" class="inline-flex min-w-[5rem] items-center justify-center rounded-xl bg-[#F5F5DC]/40 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-[#5D4037]/10 hover:border-[#5D4037]">
+                                {{ $link['label'] }}
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>

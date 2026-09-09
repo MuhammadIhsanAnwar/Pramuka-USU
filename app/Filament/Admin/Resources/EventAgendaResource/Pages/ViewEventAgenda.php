@@ -12,6 +12,7 @@ use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Html;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\URL;
 
 class ViewEventAgenda extends ViewRecord
@@ -51,14 +52,17 @@ class ViewEventAgenda extends ViewRecord
                         $eventAgenda->qr_token = (string) Str::uuid();
                     }
 
-                    $signedUrl = URL::temporarySignedRoute(
+                    $relative = URL::temporarySignedRoute(
                         'attendance.scan',
                         now()->addHours(6),
                         [
                             'eventAgenda' => $eventAgenda->slug,
                             'token' => $eventAgenda->qr_token,
                         ],
+                        false,
                     );
+
+                    $signedUrl = rtrim(config('app.url'), '/') . $relative;
 
                     $qrPath = 'agendas/qr/'.$eventAgenda->slug.'.svg';
                     $qrCodeService = app(QrCodeService::class);
@@ -69,7 +73,7 @@ class ViewEventAgenda extends ViewRecord
                 }),
             Action::make('scanUser')
                 ->label('Scan QR User')
-                ->url(fn (): string => route('admin.attendance.scan-user', $this->getRecord()))
+                ->url(fn (): string => rtrim(config('app.url'), '/') . route('admin.attendance.scan-user', $this->getRecord(), false))
                 ->openUrlInNewTab(),
             Action::make('refreshQr')
                 ->label('Segarkan Token Presensi')
@@ -79,17 +83,19 @@ class ViewEventAgenda extends ViewRecord
             Action::make('viewQr')
                 ->label('Munculkan QR Presensi')
                 ->modalHeading('QR Presensi')
-                ->modalContent(fn (): string => view('filament.admin.event-agenda-qr', [
-                    'eventAgenda' => $this->getRecord(),
-                    'signedUrl' => URL::temporarySignedRoute(
-                        'attendance.scan',
-                        now()->addHours(6),
-                        [
-                            'eventAgenda' => $this->getRecord()->slug,
-                            'token' => $this->getRecord()->qr_token,
-                        ],
-                    ),
-                ])->render()),
+                ->modalContent(function () {
+                    $eventAgenda = $this->getRecord()->fresh();
+
+                    if (blank($eventAgenda->qr_token)) {
+                        $this->ensurePresensiQrIsGenerated($eventAgenda);
+                        $eventAgenda = $this->getRecord()->fresh();
+                    }
+
+                    return view('filament.admin.event-agenda-qr', [
+                        'eventAgenda' => $eventAgenda,
+                        'signedUrl' => $this->getAttendanceScanSignedUrl($eventAgenda),
+                    ]);
+                }),
         ];
     }
 
@@ -114,28 +120,50 @@ class ViewEventAgenda extends ViewRecord
     public function refreshQr(): void
     {
         $eventAgenda = $this->getRecord();
-        $qrToken = Str::uuid();
-
         $eventAgenda->forceFill([
-            'qr_token' => $qrToken,
-        ])->saveQuietly();
+            'qr_token' => (string) Str::uuid(),
+        ]);
 
-        $signedUrl = URL::temporarySignedRoute(
+        $this->ensurePresensiQrIsGenerated($eventAgenda, true);
+
+        $this->notify('success', 'Token presensi berhasil diperbarui dan QR disegarkan.');
+    }
+
+    private function ensurePresensiQrIsGenerated($eventAgenda, bool $force = false): void
+    {
+        if (blank($eventAgenda->qr_token)) {
+            $eventAgenda->qr_token = (string) Str::uuid();
+        }
+
+        $qrFileMissing = blank($eventAgenda->qr_code_path)
+            || ! File::exists(public_path('storage/'.$eventAgenda->qr_code_path));
+
+        if ($force || $qrFileMissing) {
+            $relativePath = sprintf(
+                'qr_presensi/%s_%s.svg',
+                now()->format('Ymd_His'),
+                Str::slug($eventAgenda->name),
+            );
+
+            $eventAgenda->qr_code_path = app(QrCodeService::class)->generateSvg(
+                $this->getAttendanceScanSignedUrl($eventAgenda),
+                $relativePath,
+            );
+        }
+
+        $eventAgenda->saveQuietly();
+    }
+
+    private function getAttendanceScanSignedUrl($eventAgenda): string
+    {
+        return rtrim(config('app.url'), '/') . URL::temporarySignedRoute(
             'attendance.scan',
             now()->addHours(6),
             [
                 'eventAgenda' => $eventAgenda->slug,
-                'token' => $qrToken,
+                'token' => $eventAgenda->qr_token,
             ],
+            false,
         );
-
-        $qrPath = 'agendas/qr/'.$eventAgenda->slug.'.svg';
-        $qrCodeService = app(QrCodeService::class);
-
-        $eventAgenda->forceFill([
-            'qr_code_path' => $qrCodeService->generateSvg($signedUrl, $qrPath),
-        ])->saveQuietly();
-
-        $this->notify('success', 'Token presensi berhasil diperbarui dan QR disegarkan.');
     }
 }

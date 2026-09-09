@@ -9,7 +9,6 @@ use App\Models\User;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Facades\Filament;
-use Filament\Forms\Components\Card;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -28,7 +27,7 @@ class UserDataResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Manajemen Akun';
+    protected static string|UnitEnum|null $navigationGroup = 'Manajemen Anggota';
 
     protected static ?string $navigationLabel = 'Data Pengguna';
 

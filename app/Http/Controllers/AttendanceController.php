@@ -22,14 +22,17 @@ class AttendanceController extends Controller
                 ->with('status', 'Anda sudah melakukan presensi untuk agenda ini.');
         }
 
-        $signedSubmitUrl = url()->temporarySignedRoute(
+        $relative = url()->temporarySignedRoute(
             'attendance.submit',
             now()->addHours(6),
             [
                 'eventAgenda' => $eventAgenda->slug,
                 'token' => $token,
             ],
+            false,
         );
+
+        $signedSubmitUrl = rtrim(config('app.url'), '/') . $relative;
 
         return view('presensi.scan', [
             'eventAgenda' => $eventAgenda,
@@ -110,9 +113,19 @@ class AttendanceController extends Controller
                 ]);
             }
         } else {
-            if ($attendance) {
+            if (! $attendance) {
+                $attendance = Attendance::create([
+                    'user_id' => $user->id,
+                    'event_agenda_id' => $eventAgenda->id,
+                    'status' => 'tidak',
+                    'scanned_at' => null,
+                    'method' => null,
+                    'notes' => 'Presensi tidak hadir dibuat oleh admin.',
+                ]);
+            } else {
                 $attendance->update([
                     'status' => 'tidak',
+                    'scanned_at' => null,
                     'method' => null,
                 ]);
             }
@@ -130,7 +143,7 @@ class AttendanceController extends Controller
         return back()->with('status', sprintf('Status presensi %s berhasil diperbarui.', $user->name));
     }
 
-    public function createViaGps(Request $request)
+    public function createViaGps(Request $request, AttendanceService $attendanceService)
     {
         $validated = $request->validate([
             'event_agenda_id' => ['required', 'uuid'],
@@ -140,10 +153,15 @@ class AttendanceController extends Controller
 
         $eventAgenda = EventAgenda::where('id', $validated['event_agenda_id'])->firstOrFail();
 
+        if ($eventAgenda->ends_at !== null && now()->greaterThan($eventAgenda->ends_at)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Waktu batas presensi sudah lewat.',
+            ], 422);
+        }
+
         $latitude = (float) $validated['latitude'];
         $longitude = (float) $validated['longitude'];
-
-        $attendanceService = app(\App\Services\AttendanceService::class);
 
         if (! $attendanceService->isWithinRadius($eventAgenda, $latitude, $longitude)) {
             $distance = $attendanceService->getDistance($eventAgenda, $latitude, $longitude);
@@ -156,15 +174,53 @@ class AttendanceController extends Controller
 
         $user = $request->user();
 
+        if ($user->attendances()->where('event_agenda_id', $eventAgenda->id)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda sudah melakukan presensi untuk agenda ini.',
+            ], 200);
+        }
+
+        $photo = $request->file('photo');
+
+        if ($photo) {
+            $attendance = $attendanceService->createAttendance(
+                $user,
+                $eventAgenda,
+                $photo,
+                $latitude,
+                $longitude,
+                $request->input('notes') ?? 'Presensi via GPS dari dashboard user',
+                $request->userAgent() ?? '',
+                $request->ip(),
+            );
+
+            if (! $attendance->wasRecentlyCreated) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Anda sudah melakukan presensi untuk agenda ini.',
+                ], 200);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Presensi berhasil dicatat.',
+                'status' => ucfirst($attendance->status),
+                'scanned_at' => $attendance->scanned_at?->format('d F Y H:i:s'),
+            ]);
+        }
+
+        // No photo provided — create attendance record with GPS metadata.
         $status = 'hadir';
         if (isset($eventAgenda->starts_at) && now()->greaterThan($eventAgenda->starts_at->addMinutes(15))) {
             $status = 'terlambat';
         }
 
-        $attendance = Attendance::query()->firstOrCreate([
+        $distance = $attendanceService->getDistance($eventAgenda, $latitude, $longitude);
+
+        $attendance = Attendance::create([
             'user_id' => $user->id,
             'event_agenda_id' => $eventAgenda->id,
-        ], [
             'scanned_at' => now(),
             'status' => $status,
             'latitude' => $latitude,
@@ -172,16 +228,9 @@ class AttendanceController extends Controller
             'method' => 'gps',
             'device' => $request->userAgent() ?? '',
             'ip_address' => $request->ip(),
-            'distance' => $attendanceService->getDistance($eventAgenda, $latitude, $longitude),
-            'notes' => 'Presensi via GPS dari dashboard user',
+            'distance' => $distance,
+            'notes' => $request->input('notes') ?? 'Presensi via GPS dari dashboard user',
         ]);
-
-        if (! $attendance->wasRecentlyCreated) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Anda sudah melakukan presensi untuk agenda ini.',
-            ], 200);
-        }
 
         return response()->json([
             'success' => true,

@@ -7,15 +7,72 @@
             <div>
                 <span class="section-kicker">Tentang Kami</span>
                 <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Pramuka USU</h1>
-                <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600">Organisasi pembinaan karakter, kepemimpinan, dan pelayanan yang menguatkan mahasiswa Universitas Sumatera Utara melalui kegiatan pramuka yang inspiratif, inklusif, dan berdampak.</p>
+                <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600">Organisasi pembinaan karakter, kepemimpinan, dan pengabdian yang membentuk mahasiswa Universitas Sumatera Utara menjadi pribadi yang berintegritas, berjiwa kepemimpinan, serta berkontribusi nyata melalui kegiatan kepramukaan yang inspiratif, inklusif, dan berdampak.</p>
+
+                @php
+                    $visionLines = array_values(array_filter(array_map(fn ($line) => trim((string) $line), preg_split('/\R/', trim((string) $aboutVision)))));
+                    $missionLines = array_values(array_filter(array_map(function ($line): string {
+                        $line = trim((string) $line);
+                        $line = preg_replace('/^\s*\d+\.\s*/', '', $line) ?? $line;
+
+                        return trim($line);
+                    }, preg_split('/\R/', trim((string) $aboutMission))), fn ($line) => $line !== ''));
+                @endphp
+
+                <div class="mt-8 rounded-4xl bg-[#F5F5DC] p-6 shadow-sm">
+                    <div class="text-sm font-semibold uppercase tracking-[0.24em] text-[#5D4037]">Anggota</div>
+                    <div class="mt-5 grid gap-3 sm:grid-cols-2">
+                        <div class="rounded-3xl bg-white p-4 shadow-sm">
+                            <div class="text-xs font-semibold uppercase tracking-[0.2em] text-[#5D4037]">Pembina 08-137</div>
+                            <div class="mt-2 text-2xl font-bold text-slate-900">{{ number_format($memberStats['pembina_08_137']) }}</div>
+                        </div>
+                        <div class="rounded-3xl bg-white p-4 shadow-sm">
+                            <div class="text-xs font-semibold uppercase tracking-[0.2em] text-[#5D4037]">Pembina 08-138</div>
+                            <div class="mt-2 text-2xl font-bold text-slate-900">{{ number_format($memberStats['pembina_08_138']) }}</div>
+                        </div>
+                        <div class="rounded-3xl bg-white p-4 shadow-sm">
+                            <div class="text-xs font-semibold uppercase tracking-[0.2em] text-[#5D4037]">Anggota Racana Soetan Koemala Pontas</div>
+                            <div class="mt-2 text-2xl font-bold text-slate-900">{{ number_format($memberStats['anggota_racana_soetan']) }}</div>
+                        </div>
+                        <div class="rounded-3xl bg-white p-4 shadow-sm">
+                            <div class="text-xs font-semibold uppercase tracking-[0.2em] text-[#5D4037]">Anggota Racana Rasuna Said</div>
+                            <div class="mt-2 text-2xl font-bold text-slate-900">{{ number_format($memberStats['anggota_racana_rasuna']) }}</div>
+                        </div>
+                        <div class="rounded-3xl bg-white p-4 shadow-sm">
+                            <div class="text-xs font-semibold uppercase tracking-[0.2em] text-[#5D4037]">Anggota Ambalan Soetan Koemala Pontas</div>
+                            <div class="mt-2 text-2xl font-bold text-slate-900">{{ number_format($memberStats['anggota_ambalan_soetan']) }}</div>
+                        </div>
+                        <div class="rounded-3xl bg-white p-4 shadow-sm">
+                            <div class="text-xs font-semibold uppercase tracking-[0.2em] text-[#5D4037]">Anggota Ambalan Rasuna Said</div>
+                            <div class="mt-2 text-2xl font-bold text-slate-900">{{ number_format($memberStats['anggota_ambalan_rasuna']) }}</div>
+                        </div>
+                        <div class="rounded-3xl bg-white p-4 shadow-sm">
+                            <div class="text-xs font-semibold uppercase tracking-[0.2em] text-[#5D4037]">Tamu</div>
+                            <div class="mt-2 text-2xl font-bold text-slate-900">{{ number_format($memberStats['tamu']) }}</div>
+                        </div>
+                        <div class="rounded-3xl bg-white p-4 shadow-sm">
+                            <div class="text-xs font-semibold uppercase tracking-[0.2em] text-[#5D4037]">Purna</div>
+                            <div class="mt-2 text-2xl font-bold text-slate-900">{{ number_format($memberStats['purna']) }}</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="mt-8 grid gap-4 sm:grid-cols-2">
                     <div class="rounded-3xl bg-[#F5F5DC] p-6 shadow-sm">
-                        <div class="text-sm font-semibold uppercase text-[#5D4037]">Misi</div>
-                        <p class="mt-3 text-sm leading-6 text-slate-700">Membina kader berjiwa luhur, disiplin, mandiri, dan berbakti kepada masyarakat.</p>
+                        <div class="text-sm font-semibold uppercase text-[#5D4037]">Visi</div>
+                        <div class="mt-3 text-sm leading-6 text-slate-700">
+                            @foreach ($visionLines as $line)
+                                <div>{{ $line }}</div>
+                            @endforeach
+                        </div>
                     </div>
                     <div class="rounded-3xl bg-[#F5F5DC] p-6 shadow-sm">
-                        <div class="text-sm font-semibold uppercase text-[#5D4037]">Visi</div>
-                        <p class="mt-3 text-sm leading-6 text-slate-700">Menjadi wadah Pramuka kampus yang unggul, beretika, dan berpengaruh dalam pembangunan karakter bangsa.</p>
+                        <div class="text-sm font-semibold uppercase text-[#5D4037]">Misi</div>
+                        <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm leading-6 text-slate-700">
+                            @foreach ($missionLines as $line)
+                                <li>{{ $line }}</li>
+                            @endforeach
+                        </ol>
                     </div>
                 </div>
             </div>
@@ -49,7 +106,6 @@
             <span class="section-kicker">Struktur Tim</span>
             <h2 class="mt-3 text-3xl font-extrabold tracking-tight text-slate-900">Tim Pengurus dan Pembina</h2>
         </div>
-        <div class="text-sm text-slate-500">Pilih tab untuk melihat masing-masing kelompok tim.</div>
     </div>
 
     <div class="mt-8 overflow-hidden rounded-4xl border border-[#5D4037]/10 bg-white shadow-[0_24px_80px_rgba(93,64,55,0.08)]">

@@ -7,6 +7,7 @@ use App\Models\NewsCategory;
 use App\Models\EventAgenda;
 use App\Models\Gallery;
 use App\Models\NewsPost;
+use App\Enums\UserKind;
 use App\Models\AboutGroup;
 use App\Models\SiteSetting;
 use App\Models\User;
@@ -38,6 +39,8 @@ class PublicController extends Controller
             'backgroundImage' => $this->resolveHomeAsset('home_background_image', '/storage/beranda/Beranda.png'),
             'videoIntro' => $this->resolveHomeAsset('intro_video', '/storage/beranda/Intro.mp4'),
             'brandLogos' => $this->resolveHomeAssets('home_brand_logos'),
+            'quoteText' => $this->settingValue('home_quote_text', 'We never fail when we try to do our duty, we always fail when we neglect to do it.'),
+            'quoteAuthor' => $this->settingValue('home_quote_author', 'Lord Baden Powell'),
             ...$homeData,
         ]);
     }
@@ -187,9 +190,35 @@ class PublicController extends Controller
             ->with(['members' => fn ($query) => $query->active()->orderBy('order')->orderBy('name')])
             ->get();
 
+        $memberStats = [
+            'purna' => User::query()->where('jenis_user', UserKind::Purna->value)->count(),
+            'pembina_08_137' => User::query()->where('satuan', 'Gugus Depan Gerakan Pramuka Kota Medan 08-137')->count(),
+            'pembina_08_138' => User::query()->where('satuan', 'Gugus Depan Gerakan Pramuka Kota Medan 08-138')->count(),
+            'anggota_racana_soetan' => User::query()
+                ->whereNotIn('jenis_user', [UserKind::Purna->value, UserKind::Tamu->value])
+                ->where('satuan', 'Racana Soetan Koemala Pontas')
+                ->count(),
+            'anggota_racana_rasuna' => User::query()
+                ->whereNotIn('jenis_user', [UserKind::Purna->value, UserKind::Tamu->value])
+                ->where('satuan', 'Racana Rasuna Said')
+                ->count(),
+            'anggota_ambalan_soetan' => User::query()
+                ->whereNotIn('jenis_user', [UserKind::Purna->value, UserKind::Tamu->value])
+                ->where('satuan', 'Ambalan Soetan Koemala Pontas')
+                ->count(),
+            'anggota_ambalan_rasuna' => User::query()
+                ->whereNotIn('jenis_user', [UserKind::Purna->value, UserKind::Tamu->value])
+                ->where('satuan', 'Ambalan Rasuna Said')
+                ->count(),
+            'tamu' => User::query()->where('jenis_user', UserKind::Tamu->value)->count(),
+        ];
+
         return view('public.about', [
             'siteName' => $this->siteName(),
             'groups' => $groups,
+            'memberStats' => $memberStats,
+            'aboutVision' => $this->settingValue('about_vision', 'Menjadi wadah Pramuka kampus yang unggul, beretika, dan berpengaruh dalam pembangunan karakter bangsa.'),
+            'aboutMission' => $this->settingValue('about_mission', 'Membina kader berjiwa luhur, disiplin, mandiri, dan berbakti kepada masyarakat.'),
         ]);
     }
 
@@ -288,16 +317,67 @@ class PublicController extends Controller
         ]);
     }
 
-    public function agendaIndex(): View
+    public function agendaIndex(Request $request): View
     {
+        $selectedYear = $request->query('tahun');
+        $selectedType = $request->query('jenis');
+
+        $yearQuery = EventAgenda::query()
+            ->published()
+            ->selectRaw('YEAR(starts_at) as year')
+            ->distinct()
+            ->orderByRaw('year asc')
+            ->pluck('year')
+            ->filter()
+            ->map(fn ($year) => (int) $year)
+            ->values()
+            ->all();
+
+        $currentYear = (int) now()->format('Y');
+        $availableYears = array_unique(array_merge([2026], $yearQuery, [$currentYear]));
+        sort($availableYears);
+
+        // available types from DB (normalize to lowercase, prefer Indonesian label 'eksternal')
+        $typeQuery = EventAgenda::query()
+            ->published()
+            ->select('type')
+            ->distinct()
+            ->pluck('type')
+            ->filter()
+            ->map(fn ($t) => strtolower(trim((string) $t)))
+            ->map(fn ($t) => $t === 'external' ? 'eksternal' : $t)
+            ->unique()
+            ->values()
+            ->all();
+
+        $availableTypes = array_values(array_filter($typeQuery));
+        if (empty($availableTypes)) {
+            $availableTypes = ['internal', 'eksternal'];
+        }
+
         $agendas = EventAgenda::query()
             ->published()
+            ->when(filled($selectedYear), function ($query) use ($selectedYear) {
+                if (is_numeric($selectedYear)) {
+                    $query->whereYear('starts_at', (int) $selectedYear);
+                }
+            })
+            ->when(filled($selectedType), function ($query) use ($selectedType) {
+                $sel = strtolower((string) $selectedType);
+                $sel = $sel === 'external' ? 'eksternal' : $sel;
+                $query->whereRaw('LOWER(type) = ?', [$sel]);
+            })
             ->orderBy('starts_at')
-            ->paginate(9);
+            ->paginate(9)
+            ->withQueryString();
 
         return view('public.agenda.index', [
             'siteName' => $this->siteName(),
             'agendas' => $agendas,
+            'availableYears' => $availableYears,
+            'selectedYear' => $selectedYear,
+            'availableTypes' => $availableTypes,
+            'selectedType' => $selectedType,
         ]);
     }
 
@@ -335,7 +415,14 @@ class PublicController extends Controller
         return view('public.contact', [
             'siteName' => $this->siteName(),
             'contactEmail' => $this->settingValue('contact_email', 'pramuka@usu.ac.id'),
-            'contactPhone' => $this->settingValue('contact_phone', '+62 61 12345678'),
+            'footerSocialLinks' => $this->settingArray('footer_social_links', [
+                ['label' => 'Linktree', 'url' => 'https://linktr.ee/PramukaUSU'],
+                ['label' => 'Instagram', 'url' => 'https://instagram.com/pramuka_usu'],
+                ['label' => 'Facebook', 'url' => 'https://facebook.com/pramukausu1974'],
+                ['label' => 'Threads', 'url' => 'https://threads.com/@pramuka_usu'],
+                ['label' => 'TikTok', 'url' => 'https://tiktok.com/@pramuka_usu'],
+                ['label' => 'YouTube', 'url' => 'https://youtube.com/@pramuka_usu'],
+            ]),
         ]);
     }
 
@@ -379,15 +466,41 @@ class PublicController extends Controller
         }
 
         if (is_array($value)) {
-            if (array_key_exists(0, $value)) {
+            if (array_key_exists(0, $value) && ! array_key_exists('label', $value) && ! array_key_exists('url', $value)) {
                 return $value[0];
             }
 
-            return $allowFalsy ? null : $default;
+            return $allowFalsy ? $value : $default;
         }
 
         if ($value === null || $value === '') {
             return $allowFalsy ? $value : $default;
+        }
+
+        return $value;
+    }
+
+    private function settingArray(string $key, mixed $default = []): array
+    {
+        $setting = SiteSetting::query()
+            ->where('setting_key', $key)
+            ->first();
+
+        if ($setting === null) {
+            return $default;
+        }
+
+        $value = $setting->value;
+
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $value = $decoded;
+            }
+        }
+
+        if (! is_array($value)) {
+            return $default;
         }
 
         return $value;

@@ -36,6 +36,55 @@ class SiteSetting extends Model
                 'setting_value' => [],
                 'is_public' => true,
             ],
+            'home_quote_text' => [
+                'setting_group' => 'home',
+                'label' => 'Kutipan Beranda',
+                'setting_type' => 'textarea',
+                'setting_value' => ['We never fail when we try to do our duty, we always fail when we neglect to do it.'],
+                'is_public' => true,
+            ],
+            'home_quote_author' => [
+                'setting_group' => 'home',
+                'label' => 'Penulis Kutipan Beranda',
+                'setting_type' => 'text',
+                'setting_value' => ['Lord Baden Powell'],
+                'is_public' => true,
+            ],
+            'about_vision' => [
+                'setting_group' => 'about',
+                'label' => 'Visi Halaman Tentang',
+                'setting_type' => 'textarea',
+                'setting_value' => ['Menjadi wadah Pramuka kampus yang unggul, beretika, dan berpengaruh dalam pembangunan karakter bangsa.'],
+                'is_public' => true,
+            ],
+            'about_mission' => [
+                'setting_group' => 'about',
+                'label' => 'Misi Halaman Tentang',
+                'setting_type' => 'textarea',
+                'setting_value' => ['Membina kader berjiwa luhur, disiplin, mandiri, dan berbakti kepada masyarakat.'],
+                'is_public' => true,
+            ],
+            'contact_email' => [
+                'setting_group' => 'contact',
+                'label' => 'Email Kontak',
+                'setting_type' => 'text',
+                'setting_value' => ['pramuka@usu.ac.id'],
+                'is_public' => true,
+            ],
+            'footer_social_links' => [
+                'setting_group' => 'footer',
+                'label' => 'Tautan Media Sosial Footer',
+                'setting_type' => 'repeater',
+                'setting_value' => [
+                    ['label' => 'Linktree', 'url' => 'https://linktr.ee/PramukaUSU'],
+                    ['label' => 'Instagram', 'url' => 'https://instagram.com/pramuka_usu'],
+                    ['label' => 'Facebook', 'url' => 'https://facebook.com/pramukausu1974'],
+                    ['label' => 'Threads', 'url' => 'https://threads.com/@pramuka_usu'],
+                    ['label' => 'TikTok', 'url' => 'https://tiktok.com/@pramuka_usu'],
+                    ['label' => 'YouTube', 'url' => 'https://youtube.com/@pramuka_usu'],
+                ],
+                'is_public' => true,
+            ],
         ];
 
         foreach ($defaults as $key => $data) {

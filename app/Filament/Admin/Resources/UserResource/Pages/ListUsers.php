@@ -17,6 +17,16 @@ class ListUsers extends ListRecords
     {
         return [
             CreateAction::make()->label('Buat Pengguna'),
+            Action::make('exportPdf')
+                ->label('PDF Pengguna')
+                ->icon('heroicon-o-document-text')
+                ->url(fn (): string => route('reports.user.pdf'))
+                ->openUrlInNewTab(),
+            Action::make('exportExcel')
+                ->label('Excel Pengguna')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->url(fn (): string => route('reports.user.excel'))
+                ->openUrlInNewTab(),
             Action::make('generateMassQr')
                 ->label('Generate Massal QR')
                 ->color('success')

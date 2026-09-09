@@ -8,6 +8,10 @@
         @csrf
         <input type="hidden" name="event_agenda_id" value="{{ $eventAgenda->id }}">
         <div class="mb-3">
+            <label class="text-xs text-slate-500">Foto Bukti (opsional)</label>
+            <input id="photo" name="photo" type="file" accept="image/*" class="w-full rounded border px-3 py-2 text-sm" />
+        </div>
+        <div class="mb-3">
             <label class="text-xs text-slate-500">Latitude</label>
             <input id="latitude" name="latitude" class="w-full rounded border px-3 py-2 text-sm" readonly>
         </div>

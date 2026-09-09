@@ -59,6 +59,11 @@ class EventAgenda extends Model
         return $this->hasMany(Attendance::class, 'event_agenda_id');
     }
 
+    public function presensiSessions(): HasMany
+    {
+        return $this->hasMany(PresensiSession::class, 'event_agenda_id');
+    }
+
     public function scopePublished($query)
     {
         return $query->whereIn('status', ['published', 'publish']);

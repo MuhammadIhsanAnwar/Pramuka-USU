@@ -4,17 +4,23 @@ namespace App\Filament\Admin\Resources\AttendanceResource\Pages;
 
 use App\Filament\Admin\Resources\AttendanceResource;
 use App\Models\Attendance;
+use App\Models\EventAgenda;
 use App\Models\User;
+use App\Services\QrCodeService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Placeholder;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Html;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\URL;
 
 class ViewAttendance extends ViewRecord
 {
+    public ?EventAgenda $qrEventAgenda = null;
+
     protected static string $resource = AttendanceResource::class;
     protected static ?string $title = 'Detail Presensi';
 
@@ -29,24 +35,34 @@ class ViewAttendance extends ViewRecord
         return [
             Action::make('scanUser')
                 ->label('Scan QR User')
-                ->url(fn (): string => route('admin.attendance.scan-user', $eventAgenda))
+                ->url(fn (): string => rtrim(config('app.url'), '/') . route('admin.attendance.scan-user', $eventAgenda, false))
                 ->openUrlInNewTab(),
             Action::make('viewQr')
                 ->label('Munculkan QR Presensi')
                 ->modalHeading('QR Presensi')
-                ->modalContent(fn (): string => filled($eventAgenda->qr_token)
-                    ? view('filament.admin.event-agenda-qr', [
+                ->modalContent(function () use ($eventAgenda) {
+                    $eventAgenda = $this->qrEventAgenda ?: $eventAgenda->fresh();
+
+                    if (blank($eventAgenda->qr_token)) {
+                        $this->ensurePresensiQrIsGenerated($eventAgenda);
+                        $eventAgenda = $this->qrEventAgenda ?: $eventAgenda->fresh();
+                    }
+
+                    $signedUrl = rtrim(config('app.url'), '/') . URL::temporarySignedRoute(
+                        'attendance.scan',
+                        now()->addHours(6),
+                        [
+                            'eventAgenda' => $eventAgenda->slug,
+                            'token' => $eventAgenda->qr_token,
+                        ],
+                        false,
+                    );
+
+                    return view('filament.admin.event-agenda-qr', [
                         'eventAgenda' => $eventAgenda,
-                        'signedUrl' => URL::temporarySignedRoute(
-                            'attendance.scan',
-                            now()->addHours(6),
-                            [
-                                'eventAgenda' => $eventAgenda->slug,
-                                'token' => $eventAgenda->qr_token,
-                            ],
-                        ),
-                    ])->render()
-                    : '<div class="p-6 text-sm text-slate-700">QR Presensi belum dihasilkan untuk agenda ini.</div>'),
+                        'signedUrl' => $signedUrl,
+                    ]);
+                }),
         ];
     }
 
@@ -92,5 +108,38 @@ class ViewAttendance extends ViewRecord
                 ])->render())
                 ->columnSpanFull(),
         ]);
+    }
+
+    private function ensurePresensiQrIsGenerated(EventAgenda $eventAgenda): void
+    {
+        if (blank($eventAgenda->qr_token)) {
+            $eventAgenda->qr_token = (string) Str::uuid();
+        }
+
+        $qrFileMissing = blank($eventAgenda->qr_code_path)
+            || ! File::exists(public_path('storage/'.$eventAgenda->qr_code_path));
+
+        if ($qrFileMissing) {
+            $relativePath = sprintf(
+                'qr_presensi/%s_%s.svg',
+                now()->format('Ymd_His'),
+                Str::slug($eventAgenda->name),
+            );
+
+            $eventAgenda->qr_code_path = app(QrCodeService::class)->generateSvg(
+                rtrim(config('app.url'), '/') . URL::temporarySignedRoute(
+                    'attendance.scan',
+                    now()->addHours(6),
+                    [
+                        'eventAgenda' => $eventAgenda->slug,
+                        'token' => $eventAgenda->qr_token,
+                    ],
+                    false,
+                ),
+                $relativePath,
+            );
+        }
+
+        $eventAgenda->saveQuietly();
     }
 }

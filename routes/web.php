@@ -2,12 +2,15 @@
 
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\IncomingLetterController;
+use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PublicController;
 use App\Models\EventAgenda;
+use App\Models\PresensiSession;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RouteController;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Middleware\ValidateSignature;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
@@ -75,6 +78,14 @@ Route::middleware('guest:web')->group(function (): void {
     Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.update');
 });
 
+// Helper route: set the intended URL in session and redirect to the login page.
+Route::get('/login/with-intended', function (Request $request) {
+    $intended = $request->query('intended', url()->full());
+    $request->session()->put('url.intended', $intended);
+
+    return redirect()->route('login');
+})->name('login.with_intended');
+
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth:web')
     ->name('logout');
@@ -89,31 +100,63 @@ Route::get('/logout', function (Request $request) {
     return redirect('/');
 });
 
-Route::middleware(['auth', 'signed'])->group(function (): void {
+// Allow scanning QR links without authentication so mobile users can open the
+// presensi page and be prompted to log in. Submission routes remain protected.
+Route::middleware([ValidateSignature::relative()])->group(function (): void {
     Route::get('/presensi/{eventAgenda}/{token}', [AttendanceController::class, 'scan'])
         ->name('attendance.scan');
 
+    Route::get('/presensi/session/{presensiSession}/{token}', [PresensiController::class, 'scan'])
+        ->name('presensi.scan');
+});
+
+Route::middleware(['auth', ValidateSignature::relative()])->group(function (): void {
     Route::post('/presensi/{eventAgenda}/{token}', [AttendanceController::class, 'submit'])
         ->name('attendance.submit');
 
     // GPS-based attendance (from user dashboard modal)
     Route::post('/user/presensi/gps', [AttendanceController::class, 'createViaGps'])
         ->name('user.presensi.gps');
+
+    Route::post('/presensi/session/{presensiSession}/{token}', [PresensiController::class, 'submit'])
+        ->name('presensi.submit');
 });
 
 Route::middleware(['auth', 'role:Admin'])->group(function (): void {
     Route::get('/admin/presensi/{eventAgenda}/scan-user', function (EventAgenda $eventAgenda) {
-        $url = URL::temporarySignedRoute(
+        $relative = URL::temporarySignedRoute(
             'attendance.scan',
             now()->addHours(6),
             [
                 'eventAgenda' => $eventAgenda->slug,
                 'token' => $eventAgenda->qr_token,
             ],
+            false,
         );
+
+        $url = rtrim(config('app.url'), '/') . $relative;
 
         return view('filament.admin.event-agenda-scan-user', compact('eventAgenda', 'url'));
     })->name('admin.attendance.scan-user');
+
+    Route::get('/admin/presensi/session/{presensiSession}/scan-user', function (PresensiSession $presensiSession) {
+        $relative = URL::temporarySignedRoute(
+            'presensi.scan',
+            now()->addHours(6),
+            [
+                'presensiSession' => $presensiSession->id,
+                'token' => $presensiSession->qr_token,
+            ],
+            false,
+        );
+
+        $url = rtrim(config('app.url'), '/') . $relative;
+
+        return view('filament.admin.presensi-session-scan-user', compact('presensiSession', 'url'));
+    })->name('admin.presensi.scan-user');
+
+    Route::post('/admin/presensi/session/{presensiSession}/status', [PresensiController::class, 'adminUpdateStatus'])
+        ->name('admin.presensi.update-status');
 
     Route::post('/admin/presensi/{eventAgenda}/status', [AttendanceController::class, 'adminUpdateStatus'])
         ->name('admin.attendance.update-status');
@@ -125,7 +168,11 @@ Route::middleware(['auth', 'role:Admin'])->group(function (): void {
         Route::get('/agenda/excel', [ReportController::class, 'agendaExcel'])->name('reports.agenda.excel');
         Route::get('/presensi/pdf', [ReportController::class, 'attendancePdf'])->name('reports.attendance.pdf');
         Route::get('/presensi/excel', [ReportController::class, 'attendanceExcel'])->name('reports.attendance.excel');
+        Route::get('/presensi/rekap/pdf', [ReportController::class, 'attendanceRecapPdf'])->name('reports.attendance_recap.pdf');
+        Route::get('/presensi/rekap/excel', [ReportController::class, 'attendanceRecapExcel'])->name('reports.attendance_recap.excel');
         Route::get('/user/pdf', [ReportController::class, 'userPdf'])->name('reports.user.pdf');
         Route::get('/user/excel', [ReportController::class, 'userExcel'])->name('reports.user.excel');
+        Route::get('/user/data/pdf', [ReportController::class, 'userDataPdf'])->name('reports.userdata.pdf');
+        Route::get('/user/data/excel', [ReportController::class, 'userDataExcel'])->name('reports.userdata.excel');
     });
 });

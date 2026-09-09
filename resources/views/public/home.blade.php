@@ -61,6 +61,34 @@
     </div>
 </section>
 
+<section class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+    <div class="flex items-end justify-between gap-4">
+        <div>
+            <span class="section-kicker">Agenda Mendatang</span>
+        </div>
+        <a href="{{ route('agenda.index') }}" class="hidden text-sm font-semibold text-[#5D4037] md:inline-flex">Lihat semua agenda</a>
+    </div>
+
+    <div class="mt-8 grid gap-6 md:grid-cols-3">
+        @forelse ($upcomingAgendas as $agenda)
+        <article class="surface-card overflow-hidden">
+            <div class="p-6">
+                <div class="text-xs font-semibold uppercase tracking-[0.2em] text-[#5D4037]">{{ $agenda->status }}</div>
+                <h3 class="mt-3 text-lg font-bold text-slate-900">{{ $agenda->name }}</h3>
+                <p class="mt-3 text-sm text-slate-600">{{ $agenda->location }}</p>
+                <p class="mt-3 text-sm text-slate-500">{{ $agenda->starts_at?->format('d M Y, H:i') }}</p>
+                @if (filled($agenda->organizer))
+                <p class="mt-2 text-sm text-slate-500">Penyelenggara: {{ $agenda->organizer }}</p>
+                @endif
+                <a href="{{ route('agenda.show', $agenda) }}" class="mt-5 inline-flex text-sm font-semibold text-[#5D4037]">Lihat detail</a>
+            </div>
+        </article>
+        @empty
+        <div class="surface-card p-6 text-sm text-slate-600">Belum ada agenda mendatang.</div>
+        @endforelse
+    </div>
+</section>
+
 <section class="bg-[#5D4037]">
     <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div class="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
@@ -130,13 +158,13 @@
                 <span class="section-kicker">Kutipan</span>
 
                 <h2 class="mt-6 max-w-3xl text-3xl font-semibold leading-tight text-white lg:text-4xl">
-                    “We never fail when we try to do our duty, we always fail when we neglect to do it.”
+                    “{{ $quoteText }}”
                 </h2>
 
                 <p class="quote-attribution mt-4">
                     <span class="text-[#C9A227]">—</span>
                     <span class="quote-name">
-                        Lord Baden Powell
+                        {{ $quoteAuthor }}
                     </span>
                 </p>
 
@@ -149,7 +177,7 @@
         <div class="flex items-end justify-end">
             <img
                 src="{{ asset('storage/kutipan/Baden Powell.png') }}"
-                alt="Lord Baden Powell"
+                alt="{{ $quoteAuthor }}"
                 class="quote-portrait" />
         </div>
     </div>

@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Observers\EventAgendaObserver;
 use App\Observers\GalleryObserver;
 use App\Observers\NewsPostObserver;
+use Illuminate\Support\Facades\View;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\Request;
@@ -94,6 +95,31 @@ class AppServiceProvider extends ServiceProvider
         });
         Fortify::requestPasswordResetLinkView('auth.passwords.email');
         Fortify::resetPasswordView('auth.passwords.reset');
+
+        View::composer('layouts.public', static function ($view): void {
+            $footerEmailSetting = SiteSetting::query()
+                ->where('setting_key', 'contact_email')
+                ->first();
+
+            $footerEmail = $footerEmailSetting?->value;
+            if (is_array($footerEmail)) {
+                $footerEmail = $footerEmail[0] ?? null;
+            }
+
+            $footerSocialLinksSetting = SiteSetting::query()
+                ->where('setting_key', 'footer_social_links')
+                ->first();
+
+            $footerSocialLinks = $footerSocialLinksSetting?->value;
+            if (! is_array($footerSocialLinks)) {
+                $footerSocialLinks = [];
+            }
+
+            $view->with([
+                'footerEmail' => $footerEmail ?? 'pramuka@usu.ac.id',
+                'footerSocialLinks' => $footerSocialLinks,
+            ]);
+        });
 
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::lower($request->input(Fortify::username()) . '|' . $request->ip());

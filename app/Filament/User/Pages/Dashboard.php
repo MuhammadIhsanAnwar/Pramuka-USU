@@ -13,8 +13,8 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
-            UserStatsOverviewWidget::class,
             UserDashboardSummaryWidget::class,
+            UserStatsOverviewWidget::class,
         ];
     }
 

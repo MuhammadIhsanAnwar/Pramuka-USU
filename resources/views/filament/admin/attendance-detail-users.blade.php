@@ -50,6 +50,9 @@
                             <th class="w-40 px-4 py-3 border-b border-slate-200 text-left text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
                                 <span class="text-slate-700 font-semibold uppercase tracking-[0.24em] text-xs">Metode</span>
                             </th>
+                            <th class="w-56 px-4 py-3 border-b border-slate-200 text-left text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
+                                <span class="text-slate-700 font-semibold uppercase tracking-[0.24em] text-xs">Lokasi Presensi</span>
+                            </th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 bg-white">
@@ -68,7 +71,13 @@
                                     @endif
                                 </td>
                                 <td class="px-4 py-4 align-middle border-b border-slate-200 whitespace-nowrap">
-                                    <img src="{{ $avatarUrl }}" alt="Foto {{ $user->name }}" style="height:72px;width:54px;object-fit:cover;border-radius:8px;border:1px solid #cbd5e1;" />
+                                    @if ($attendance && filled($attendance->photo_path))
+                                        <a href="{{ asset('storage/'.$attendance->photo_path) }}" target="_blank" rel="noopener">
+                                            <img src="{{ asset('storage/'.$attendance->photo_path) }}" alt="Bukti {{ $user->name }}" style="height:72px;width:54px;object-fit:cover;border-radius:8px;border:1px solid #cbd5e1;" />
+                                        </a>
+                                    @else
+                                        <img src="{{ $avatarUrl }}" alt="Foto {{ $user->name }}" style="height:72px;width:54px;object-fit:cover;border-radius:8px;border:1px solid #cbd5e1;" />
+                                    @endif
                                 </td>
                                 <td class="px-4 py-4 align-middle border-b border-slate-200">
                                     <div class="text-sm font-semibold text-slate-900">{{ $user->name }}</div>
@@ -96,6 +105,18 @@
                                 </td>
                                 <td class="scanned-cell px-4 py-4 align-middle border-b border-slate-200 whitespace-nowrap text-slate-700">{{ $attendance?->scanned_at?->format('d M Y H:i') ?? '-' }}</td>
                                 <td class="method-cell px-4 py-4 align-middle border-b border-slate-200 whitespace-nowrap text-slate-700">{{ $attendance?->method ? ucfirst($attendance->method) : '-' }}</td>
+                                <td class="location-cell px-4 py-4 align-middle border-b border-slate-200 whitespace-nowrap text-slate-700">
+                                    @if ($attendance && filled($attendance->latitude) && filled($attendance->longitude))
+                                        @php
+                                            $lat = $attendance->latitude;
+                                            $lon = $attendance->longitude;
+                                            $mapsUrl = "https://www.google.com/maps/search/?api=1&query={$lat},{$lon}";
+                                        @endphp
+                                        <a href="{{ $mapsUrl }}" target="_blank" rel="noopener" class="text-indigo-600 underline">{{ number_format($lat, 6) }}, {{ number_format($lon, 6) }}</a>
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -110,7 +131,7 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    (function () {
         const table = document.getElementById('attendance-detail-users-table');
         if (!table) {
             return;
@@ -141,7 +162,6 @@
         }
 
         table.querySelectorAll('th.sortable').forEach(header => {
-            const button = header.querySelector('button');
             const arrow = header.querySelector('.sort-arrow');
             header.addEventListener('click', () => {
                 const sortKey = header.dataset.sort;
@@ -170,16 +190,17 @@
 
             const response = await fetch(updateUrl, {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
                     'X-CSRF-TOKEN': csrfToken,
                     'Accept': 'application/json',
                 },
-                body: JSON.stringify({ user_id: userId, status }),
+                body: new URLSearchParams({ user_id: userId, status }),
             });
 
             if (!response.ok) {
-                console.error('Update status failed', response.statusText);
+                console.error('Update status failed', response.status, response.statusText);
                 return;
             }
 
@@ -194,13 +215,9 @@
                 return;
             }
 
-            const statusCell = row.querySelector('.status-cell');
             const scannedCell = row.querySelector('.scanned-cell');
             const methodCell = row.querySelector('.method-cell');
 
-            if (statusCell) {
-                statusCell.textContent = data.statusLabel;
-            }
             if (scannedCell) {
                 scannedCell.textContent = data.scannedAt;
             }
@@ -216,5 +233,5 @@
                 updateStatus(userId, status, this);
             });
         });
-    });
+    })();
 </script>

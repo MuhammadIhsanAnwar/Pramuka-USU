@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\UserDataResource\Pages;
 use App\Enums\RoleName;
 use App\Filament\Admin\Resources\UserDataResource;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
@@ -31,6 +32,17 @@ class ListUserData extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [];
+        return [
+            Action::make('exportPdf')
+                ->label('PDF Data Pengguna')
+                ->icon('heroicon-o-document-text')
+                ->url(fn (): string => route('reports.user.pdf'))
+                ->openUrlInNewTab(),
+            Action::make('exportExcel')
+                ->label('Excel Data Pengguna')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->url(fn (): string => route('reports.user.excel'))
+                ->openUrlInNewTab(),
+        ];
     }
 }

@@ -43,6 +43,16 @@ class ReportController extends Controller
         return Excel::download(new ArrayReportExport($this->attendanceRows(), ['User', 'Agenda', 'Status', 'Waktu Scan', 'Latitude', 'Longitude']), 'laporan-presensi.xlsx');
     }
 
+    public function attendanceRecapPdf(): Response
+    {
+        return $this->pdfResponse('Rekapitulasi Presensi', $this->attendanceRecapRows(), ['Nama Kegiatan', 'Tanggal', 'Total Presensi', 'Hadir', 'Terlambat', 'Izin', 'Tidak Hadir']);
+    }
+
+    public function attendanceRecapExcel()
+    {
+        return Excel::download(new ArrayReportExport($this->attendanceRecapRows(), ['Nama Kegiatan', 'Tanggal', 'Total Presensi', 'Hadir', 'Terlambat', 'Izin', 'Tidak Hadir']), 'rekapitulasi-presensi.xlsx');
+    }
+
     public function userPdf(): Response
     {
         return $this->pdfResponse('Laporan User', $this->userRows(), ['Nama', 'Email', 'Role', 'Jenis User', 'Aktif']);
@@ -51,6 +61,16 @@ class ReportController extends Controller
     public function userExcel()
     {
         return Excel::download(new ArrayReportExport($this->userRows(), ['Nama', 'Email', 'Role', 'Jenis User', 'Aktif']), 'laporan-user.xlsx');
+    }
+
+    public function userDataPdf(): Response
+    {
+        return $this->pdfResponse('Data Pengguna', $this->userDataRows(), ['Nama', 'Email', 'Role', 'Jenis User', 'Aktif']);
+    }
+
+    public function userDataExcel()
+    {
+        return Excel::download(new ArrayReportExport($this->userDataRows(), ['Nama', 'Email', 'Role', 'Jenis User', 'Aktif']), 'data-pengguna.xlsx');
     }
 
     private function pdfResponse(string $title, array $rows, array $headers): Response
@@ -138,6 +158,48 @@ class ReportController extends Controller
                 $user->roles->pluck('name')->join(', '),
                 $user->jenis_user?->value ?? $user->jenis_user,
                 $user->is_active ? 'Ya' : 'Tidak',
+            ])
+            ->all();
+    }
+
+    private function userDataRows(): array
+    {
+        return User::query()
+            ->whereDoesntHave('roles', fn ($query) => $query->where('name', 'Admin'))
+            ->with('roles')
+            ->latest()
+            ->get()
+            ->map(static fn (User $user): array => [
+                $user->name,
+                $user->email,
+                $user->roles->pluck('name')->join(', '),
+                $user->jenis_user?->value ?? $user->jenis_user,
+                $user->is_active ? 'Ya' : 'Tidak',
+            ])
+            ->all();
+    }
+
+    private function attendanceRecapRows(): array
+    {
+        return EventAgenda::query()
+            ->published()
+            ->withCount([
+                'attendances as total_attendances',
+                'attendances as hadir_count' => fn ($query) => $query->where('status', 'hadir'),
+                'attendances as terlambat_count' => fn ($query) => $query->where('status', 'terlambat'),
+                'attendances as izin_count' => fn ($query) => $query->where('status', 'izin'),
+                'attendances as tidak_count' => fn ($query) => $query->where('status', 'tidak'),
+            ])
+            ->orderBy('starts_at', 'desc')
+            ->get()
+            ->map(static fn (EventAgenda $agenda): array => [
+                $agenda->name,
+                $agenda->starts_at?->format('d M Y H:i'),
+                $agenda->total_attendances,
+                $agenda->hadir_count,
+                $agenda->terlambat_count,
+                $agenda->izin_count,
+                $agenda->tidak_count,
             ])
             ->all();
     }

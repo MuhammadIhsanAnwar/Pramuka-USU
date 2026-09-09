@@ -9,6 +9,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
@@ -24,6 +25,8 @@ use UnitEnum;
 class AttendanceResource extends Resource
 {
     protected static ?string $model = Attendance::class;
+
+    protected static bool $shouldRegisterNavigation = false;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-qr-code';
 
@@ -46,10 +49,8 @@ class AttendanceResource extends Resource
         return $schema
             ->columns(2)
             ->components([
-                TextInput::make('user_id')
-                    ->hidden()
-                    ->default(fn () => Auth::id())
-                    ->required(),
+                Hidden::make('user_id')
+                    ->default(fn () => Auth::id()),
                 Select::make('event_agenda_id')
                     ->label('Agenda')
                     ->relationship('agenda', 'name')

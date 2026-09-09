@@ -4,18 +4,19 @@ namespace App\Filament\User\Pages;
 
 use App\Filament\Concerns\YearFilterable;
 use App\Models\Attendance;
+use App\Models\EventAgenda;
 use BackedEnum;
+use Filament\Actions\ViewAction;
+use Filament\Facades\Filament;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\ViewAction;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class AttendancePage extends Page implements HasTable
@@ -30,37 +31,78 @@ class AttendancePage extends Page implements HasTable
 
     protected function getTableQuery(): Builder | Relation
     {
+        $this->createExpiredAttendancesForCurrentUser();
+
         return $this->applyYearFilter(
-            Attendance::query()
-                ->with('agenda')
-                ->where('user_id', Auth::id())
-                ->latest('scanned_at'),
-            'scanned_at',
+            EventAgenda::query()
+                ->published()
+                ->with(['attendances' => fn ($query) => $query->where('user_id', Filament::auth()->id())])
+                ->orderBy('starts_at'),
+            'starts_at',
         );
+    }
+
+    private function createExpiredAttendancesForCurrentUser(): void
+    {
+        $userId = Filament::auth()->id();
+
+        if (! $userId) {
+            return;
+        }
+
+        $expiredAgendas = EventAgenda::published()
+            ->whereNotNull('ends_at')
+            ->where('ends_at', '<', now())
+            ->whereDoesntHave('attendances', fn ($query) => $query->where('user_id', $userId))
+            ->get();
+
+        foreach ($expiredAgendas as $agenda) {
+            Attendance::firstOrCreate(
+                [
+                    'user_id' => $userId,
+                    'event_agenda_id' => $agenda->id,
+                ],
+                [
+                    'status' => 'tidak',
+                    'scanned_at' => null,
+                    'method' => 'auto',
+                    'notes' => 'Presensi otomatis ditandai tidak hadir karena melewati batas waktu.',
+                ],
+            );
+        }
     }
 
     protected function getTableColumns(): array
     {
         return [
-            TextColumn::make('agenda.name')
-                ->label('Agenda')
+            TextColumn::make('name')
+                ->label('Presensi')
                 ->searchable(),
-            BadgeColumn::make('status')
+            BadgeColumn::make('attendances.0.status')
                 ->label('Status Presensi')
                 ->colors([
                     'success' => 'hadir',
-                    'danger' => 'terlambat',
-                    'secondary' => 'tidak',
+                    'warning' => 'terlambat',
+                    'secondary' => 'izin',
+                    'danger' => ['alpha', 'tidak'],
                 ])
                 ->formatStateUsing(fn (?string $state): string => match ($state) {
                     'hadir' => 'Hadir',
                     'terlambat' => 'Terlambat',
-                    default => 'Tidak',
+                    'izin' => 'Izin',
+                    'tidak' => 'Tidak Hadir',
+                    'alpha' => 'Tidak',
+                    default => 'Belum Presensi',
                 }),
-            TextColumn::make('scanned_at')
+            TextColumn::make('waktu_scan')
                 ->label('Waktu Scan')
-                ->dateTime('d F Y H:i:s')
-                ->sortable(),
+                ->getStateUsing(fn (EventAgenda $record) => $record->attendances->first()?->scanned_at)
+                ->dateTime('d F Y H:i:s'),
+            TextColumn::make('bukti')
+                ->label('Bukti')
+                ->getStateUsing(fn (EventAgenda $record) => $record->attendances->first()?->photoUrl)
+                ->formatStateUsing(fn (?string $url) => $url ? "<img src=\"{$url}\" style=\"height:48px;width:48px;object-fit:cover;border-radius:8px;\" />" : '-')
+                ->html(),
             TextColumn::make('starts_at')
                 ->label('Mulai Presensi')
                 ->dateTime('d F Y H:i:s')
@@ -79,7 +121,9 @@ class AttendancePage extends Page implements HasTable
                 ->label('Lakukan Presensi')
                 ->modalHeading('Lakukan Presensi')
                 ->modalWidth('md')
-                ->modalContent(fn ($record) => view('filament.user.partials.presensi-gps-modal', ['eventAgenda' => $record->agenda])),
+                ->disabled(fn (EventAgenda $record): bool => $record->attendances->isNotEmpty()
+                    || ($record->ends_at !== null && now()->greaterThan($record->ends_at)))
+                ->modalContent(fn (EventAgenda $record) => view('filament.user.partials.presensi-gps-modal', ['eventAgenda' => $record])),
         ];
     }
 
@@ -95,14 +139,4 @@ class AttendancePage extends Page implements HasTable
     protected static string | UnitEnum | null $navigationGroup = 'User';
     protected string $view = 'filament.user.pages.attendance';
 
-    public function getViewData(): array
-    {
-        return [
-            'attendances' => Attendance::query()
-                ->with('agenda')
-                ->where('user_id', Auth::id())
-                ->latest('scanned_at')
-                ->get(),
-        ];
-    }
 }
